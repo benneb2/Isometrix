@@ -146,6 +146,32 @@
     <ctl>Adding an Incident record - 2/4</ctl>
     <ctr></ctr>
     <content>
+      <div id="popDiv" class="ontop" ng-init="_click=false; popupHourPM = 0">
+        <div id="popup" style="overflow:scroll; border: 1px solid #bbb">
+          <div style="height: 20%; border-bottom: 1px solid #bbb;color:#fff ;margin: 0; padding: 0;">
+            Location
+          </div>
+        <div style="padding-top: 5px; padding-bottom: 5px;">
+          <div id="expList" class="gui-extra">
+            <div ng-include="'partialMenu'" ng-init="sites = model.sites"></div>
+          </div>
+
+          <script type="text/ng-template" id="partialMenu">
+            <ul>
+              <li ng-repeat="site in sites" siteId={{site.SiteID}}> {{site.Site}} <x ng-if="site.children.length > 0">&#xf067;</x>
+                  <div ng-if="site.children.length > 0" ng-init="sites = site.children" ng-include="'partialMenu'"></div>
+              </li>
+            </ul>
+          </script>
+        </div>
+         <div style=" position: absolute;bottom: 0; height:20%;width:100%;padding-top: 2px; padding-bottom: 2px; background: rgba(240, 240, 240, 1) !important" >
+      <button style="border: 1px solid #000;border-radius: 1px;width: 100%; height: 90%; float: right; background: rgb(200,200,200);" type="button" onClick="_incidentCapture.hide('popDiv')" >Cancel</button>
+    </div>
+      </div>
+    </div>
+
+
+
       <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
           <tr>
              <td class="cardFormElementTitle">Person Reporting</td>
@@ -199,17 +225,13 @@
               <div  class="cardInlay">
                <ul>
 		        <li class="cardListElement">
-		         <table>
-		          <tr>
-		            <td align="right">
-                  <select ng-model="dropDownItem">
-                  <option value="">Please Select Location</option>
-                  <option value="1">To the Left</option>
-                  <option value="2">To the Right</option>
-                  <option value="3">Right Here</option>
-		            </td>
-		          </tr>
-		         </table>
+		         <table class="locationOccurred">
+              <tr>
+                <td align="right">
+                  <input type="Text" ng-model="common.text" disabled/>
+                </td>
+              </tr>
+             </table>
 		        </li>
 		       </ul>
               </div>
@@ -321,60 +343,15 @@
     <ctl>Adding an Incident record - 4/4</ctl>
     <ctr></ctr>
     <content>
-
-<div id="listContainer2">
-  <ul id="expList2" class="gui-extra">
-    <li class="gui-extra" >Item A <x>&#xf067;</x>
-      <ul>
-        <li>Item A.1 <x>&#xf067;</x>
-          <ul>
-            <li>
-              <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sagittis ultricies arcu, quis porttitor risus placerat et. Proin quis metus diam, quis sbibendum dolor. Nulla nec dapibus nunc. Quisque ac erat sit amet nisl venenatis consequat nec in nibh. Aliquam viverra vestibulum elit faucibus sollicitudin.</span>
-            </li>
-          </ul>
-        </li>
-        <li>Item A.2</li>
-        <li>Item A.3
-          <ul>
-            <li>
-              <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sagittis ultricies arcu, quis porttitor risus placerat et. Proin quis metus diam, quis bibendum dolor. Nulla nec dapibus nunc. Quisque ac erat sit amet nisl venenatis consequat nec in nibh. Aliquam viverra vestibulum elit faucibus sollicitudin.</span>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <li>Item B</li>
-    <li>Item C
-      <ul>
-        <li>Item C.1</li>
-        <li>Item C.2
-          <ul>
-            <li>
-              <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sagittis ultricies arcu, quis porttitor risus placerat et. Proin quis metus diam, quis bibendum dolor. Nulla nec dapibus nunc. Quisque ac erat sit amet nisl venenatis consequat nenibh. Aliquam viverra vestibulum elit faucibus sollicitudin.</span>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</div>
-<br>
     
-<div id="listContainer">
-  <ul id="expList" class="gui-extra">
+<div id="expList" class="gui-extra">
     <div ng-include="'partialMenu'" ng-init="sites = model.sites"></div>
-  </ul>
 </div>
 
     <script type="text/ng-template" id="partialMenu">
       <ul>
-        <li ng-repeat="site in sites">
-          {{site.Site}}
-          <div ng-switch on="site.children != null">
-            <div ng-switch-when="true">
-              <div ng-init="sites = site.children" ng-include="'partialMenu'"></div>
-            </div>
-          </div>
+        <li ng-repeat="site in sites"> {{site.Site}} <x ng-if="site.children.length > 0">&#xf067;</x>
+            <div ng-if="site.children.length > 0" ng-init="sites = site.children" ng-include="'partialMenu'"></div>
         </li>
       </ul>
     </script>
@@ -411,3 +388,6 @@
 </face>
 
 </card>
+
+ 
+

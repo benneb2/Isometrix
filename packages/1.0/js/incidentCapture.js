@@ -63,11 +63,71 @@ _incidentCapture = {
       layout.attach('#incidentCaptureComplete');
 
     },
-  didPrep:false,
+
+  getFullLocation: function(id,children)
+  {
+      _log.d("getFullLocation " + id);
+      var found = false;
+      for(var i in children)
+      {
+        _log.d("1");
+        var site = children[i]
+        _log.d("2 " +site.SiteID +"-" + id);
+        if(site.SiteID == id)
+        {
+          _log.d("3");
+          found = true;
+          alert("Site GEkry " + site.Site );
+          return  site.ParentID + "." + site.SiteID;
+        }
+        _log.d("4");
+      }
+      _log.d("5");
+      if(found == false)
+      {
+        _log.d("6");
+        for(var i in children)
+        {
+          var site = children[i]
+          _log.d("7");
+
+          if (typeof(site.children) !== "undefined") 
+          {
+            if(site.children.length > 0)
+            {
+              _log.d("8");
+              var ret = _incidentCapture.getFullLocation(id,site.children);
+              _log.d("11 " + ret);
+              if(ret != false)
+              {
+                _log.d("12" );
+                return site.ParentID + "." + ret;
+              }
+              
+            }else
+            {
+              _log.d("13");
+              return false;
+            }
+          }else
+          {
+            _log.d("14");
+            return false;
+          }
+
+        }
+
+      }
+
+  }
+  ,
+  didPrep:false
+  ,
   prepareList : function() {
     if(_incidentCapture.didPrep == false)
     {
-      
+      _incidentCapture.didPrep = true;
+
       setTimeout(
       function() {
         _incidentCapture.didPrep = false;
@@ -75,32 +135,36 @@ _incidentCapture = {
 
       $('#expList').find('li').click( function(event) {
 
-            if (this == event.target) {
-              if($(this).has('ul').length)
-              {
-                
-                $(this).toggleClass('expanded');
-                if($(this).has('x').length)
-                {
-                  if($(this).hasClass( "expanded" ))
-                  {
-                    $(this).children('x')[0].innerHTML = '&#xf068;';
-                  }else
-                  {
-                    $(this).children('x')[0].innerHTML = '&#xf067;';
-                  }
-                  
-                }
-
-                $(this).children('ul').toggle('medium');
-              }else
-              {
-                alert("END ITEM");
-              }
+          if(_incidentCapture.locpop != false)
+          {
+            return;
           }
-          
+          if (this == event.target) {
+            if($(this).has('ul').length)
+            {
+              $(this).toggleClass('expanded');
+              if($(this).has('x').length)
+              {
+                if($(this).hasClass( "expanded" ))
+                {
+                  $(this).children('x')[0].innerHTML = '&#xf068;';
+                }else
+                {
+                  $(this).children('x')[0].innerHTML = '&#xf067;';
+                } 
+              }
+
+              $(this).children('div').toggle('medium');
+            }else
+            {
+              _incidentCapture.hide('popDiv')
+              _incidentCapture.getFullLocation($(this).attr("siteId"),_incidentCapture.sites);
+              
+            }
+          }
+
           return false;
-        }).addClass('collapsed').children('ul').hide();
+        }).addClass('collapsed').children('div').hide();
 
       $('#expList').find('x').click( function(event) {
 
@@ -110,7 +174,7 @@ _incidentCapture = {
             if($(li).has('ul').length)
             {
               $(li).toggleClass('expanded');
-              $(li).children('ul').toggle('medium');
+              $(li).children('div').toggle('medium');
 
               if($(li).hasClass( "expanded" ))
               {
@@ -163,20 +227,19 @@ Ctrl2: function($scope){
 $scope.model = {};
 $scope.model.users = _incidentCapture.users;
 $scope.model.usersSelect = _incidentCapture.usersSelect;
-},
-
-Ctrl4: function($scope){
-
-  
-  $scope.model = {};
-  $scope.model.sites = _incidentCapture.sites;
+_incidentCapture.setupPopup();
+$scope.model.sites = _incidentCapture.sites;
 
   setTimeout(
       function() {
         _incidentCapture.prepareList();
       } , 1000);
-  
-  
+
+},
+
+Ctrl4: function($scope){
+
+  $scope.model = {};
 },
 
 save: function(step)
@@ -211,6 +274,56 @@ FlipCard: function(flipTarget, cb){
       }
     });
   },
+didLocPop:false,
+setupPopup : function()
+{
+  if(_incidentCapture.didLocPop == false)
+  {
+    _incidentCapture.didLocPop = true;
 
+    setTimeout(
+    function() {
+      _incidentCapture.didLocPop = false;
+    } , 1000);
+
+    var evt = _util.getEvt();
+    $('.locationOccurred').on(evt, function () {
+          var me = $(this);
+          _incidentCapture.handlePopup(me);   
+     });
+  }
+
+},
+locbox: null,
+handlePopup : function(me)
+{
+  try{
+      
+        _incidentCapture.locbox = me;
+        _incidentCapture.pop('popDiv');
+
+      }catch(err)
+      {
+        alert(err);
+      }
+}, 
+locpop: null, 
+pop : function(div) {
+     _incidentCapture.locpop = true;
+      document.getElementById(div).style.display = 'block';
+      setTimeout(
+    function() {
+      _incidentCapture.locpop = false;
+    } , 1000);
+  },
+hide : function(div) {
+
+    if(_incidentCapture.locpop == false)
+    {
+      document.getElementById(div).style.display = 'none';
+      
+    }
+    
+  },
 };
 ;;

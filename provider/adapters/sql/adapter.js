@@ -42,22 +42,55 @@ var sql = {
 
   }
   ,
+  printTree: function(elements,tier)
+  {
+    _log.d("printTree " );
+    for (var i in elements) {
+
+      var element = elements[i];
+      _log.d(JSON.stringify(element));
+
+      if (typeof(element.children) !== "undefined") 
+      {
+          if(element.children.length > 0)
+          {
+            for(var j in element.children)
+            {
+              sql.printTree(element.children[j], (tier+1));
+            }
+          }
+          else
+          {
+            _log.d("length == 0");
+          }
+          _log.d(tier + ":" + element.Site);     
+      }else
+      {
+        _log.d("UNDEFINED");
+      }
+    }
+  }
+  ,
   buildTree: function(elements,parentId) 
   {
-    branch = [];
-    var newElement = {
-      SiteID : 0,
-      children : []
-    };
+    
+    var branch = [];
+
     for (var i in elements) {
       var element = elements[i];
 
         if (element.ParentID == parentId) {
             children = sql.buildTree(elements, element.SiteID);
-            if (children) {
-              newElement.SiteID = element.SiteID;
-              newElement.Site = element.Site;
-              newElement.children = children.slice();
+      
+              newElement = {
+              ParentID : element.ParentID,
+              SiteID : element.SiteID,
+              Site : element.Site,
+              children : []
+            };
+
+            if (children.length > 0) {
+              newElement.children = JSON.parse(JSON.stringify(children));
             }
             branch.push(newElement);
         }
@@ -83,7 +116,7 @@ var sql = {
       }
     };
 
-    var queryString = "Select SiteID, ParentID,Site from [dbo].[tblSite] where isDeleted IS NULL order by Site";;
+    var queryString = "Select SiteID, ParentID,Site from [dbo].[tblSite] where isDeleted IS NULL";
     // _log.d(queryString);
     var connection = new mssql.Connection(sqlConfig, function (err) {
       if (err)
@@ -104,7 +137,13 @@ var sql = {
         {
             _log.d("getSites: GOOD " + JSON.stringify(recordset));
 
+            for (var i in recordset) 
+            {
+              _log.d("SITE: " + JSON.stringify(recordset[i]));
+            }
+
             siteObj = sql.buildTree(recordset,0);
+            //sql.printTree(siteObj,0);
             _log.d("");
             _log.d("getSites: siteObj " + JSON.stringify(siteObj));
             _log.d("");
