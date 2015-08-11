@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html ng-app="angularjs-starter">
+
+  <head lang="en">
+    <title>Recursive ng-include</title>
+    <script data-require="angular.js@*" data-semver="1.2.3" src="http://code.angularjs.org/1.2.3/angular.js"></script>
+  </head>
+
+  <body ng-controller="MainCtrl">
+  
+    <h1>Recursive ng-include</h1>
+    For <a href="http://stackoverflow.com/a/14814205/1402988">http://stackoverflow.com/a/14814205/1402988</a>:
+        <hr />
+
+    <div ng-include="'partialMenu'"></div>
+
+    <script type="text/ng-template" id="partialMenu">
+      <ul>
+        <li ng-repeat="link in menu">
+          <a href="{{link.url}}">{{link.text}}</a>
+          <div ng-switch on="link.submenu != null">
+            <div ng-switch-when="true">
+              <div ng-init="menu = link.submenu" ng-include="'partialMenu'"></div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </script>
+
+    <script>
+      angular
+      .module('angularjs-starter', [])
+      .controller('MainCtrl', function($scope) {
+        $scope.menu = [
+            {
+                text: 'Menu Item 1',
+                url: '#',
+                submenu: [
+                    {
+                        text: 'Sub-menu Item 7',
+                        url: '#',
+                    }
+                ]
+            },{
+                text: 'Menu Item 2',
+                url: '#',
+                submenu: [
+                    {
+                        text: 'Sub-menu Item 3',
+                        url: '#',
+                    },{
+                        text: 'Sub-menu Item 4',
+                        url: '#',
+                        submenu: [
+                            {
+                                text: 'Sub-sub-menu Item 5',
+                                url: '#',
+                            },{
+                                text: 'Sub-sub-menu Item 6',
+                                url: '#',
+                            }
+                        ]
+                    }
+                ]
+            },{
+                text: 'Menu Item 3',
+                url: '#',
+            }
+        ];
+      });
+    </script>
+  </body>
+
+</html>

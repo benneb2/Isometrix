@@ -1,0 +1,413 @@
+<card id="incidentCapture" fill="true" flip="rl">
+
+<face id="incidentCaptureFront" settings="default:true" controller="_incidentCapture.Ctrl">
+  <ctl>Adding an Incident record</ctl>
+  <ctr></ctr>
+  <content>
+    <table>
+    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep1',false)">Step 1</td></tr>
+    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep2',false)">Step 2</td></tr>
+    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep3',false)">Step 3</td></tr>
+    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep4',false)">Step 4</td></tr>
+  </table>
+  <content>
+    <cbl></cbl>
+    <cbr>
+      <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf0ed;</x>
+      <x onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Save Incident</x>
+    </cbr>
+</face>
+
+<face id="incidentCaptureBack" >
+  <ctl>BACK</ctl>
+  <ctr></ctr>
+  <content>
+    <table>
+    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep1',false)">Step 1</td></tr>
+    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep2',false)">Step 2</td></tr>
+    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep3',false)">Step 3</td></tr>
+    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep4',false)">Step 4</td></tr>
+  </table>
+  <content>
+    <cbl></cbl>
+    <cbr>
+      <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf0ed;</x>
+      <x onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Save Incident</x>
+    </cbr>
+</face>
+
+
+
+  <face id="incidentCaptureStep1" controller="_incidentCapture.Ctrl1">
+    <ctl>Adding an Incident record - 1/4</ctl>
+    <ctr></ctr>
+    <content>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Incident description</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+		        <li class="cardListElement">
+		         <table>
+		          <tr>
+		            <td align="right">
+		              <input type="Text" ng-model="common.text" />
+		            </td>
+		          </tr>
+		         </table>
+		        </li>
+		       </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Incident status</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+		        <li class="cardListElement">
+		         <table>
+		          <tr>
+		            <td align="right">
+                  <select ng-model="model.incidentStatusSelect" ng-options="status.SourceList for status in model.incidentStatus" ></select>
+		            </td>
+		          </tr>
+		         </table>
+		        </li>
+		       </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Date incident occurred</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+		        <li class="cardListElement">
+		         <table>
+		          <tr>
+		            <td align="right">
+		              <input type="date" ng-model="other.date"  />
+		            </td>
+		          </tr>
+		         </table>
+		        </li>
+		       </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Time incident occurred</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+            <li class="cardListElement">
+             <table>
+              <tr>
+                <td align="right">
+                  <input type="time" ng-model="other.time" />
+                </td>
+              </tr>
+             </table>
+            </li>
+           </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+    </content>
+    <cbl>
+      <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf053;</x>
+      <x class="txtTitle" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Back</x>
+    </cbl>
+    <cbr onClick="_incidentCapture.save(1)">
+      <x class="gui-extra" >&#xf0ed; Save</x>
+    </cbr>
+
+</face>
+
+
+<face id="incidentCaptureStep2" controller="_incidentCapture.Ctrl2">
+    <ctl>Adding an Incident record - 2/4</ctl>
+    <ctr></ctr>
+    <content>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Person Reporting</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+		        <li class="cardListElement">
+		         <table>
+		          <tr>
+		            <td align="right">
+		              <input type="Text" ng-model="common.text" />
+		            </td>
+		          </tr>
+		         </table>
+		        </li>
+		       </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Incident reported to</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+		        <li class="cardListElement">
+		         <table>
+		          <tr>
+		            <td align="right">
+                 <select ng-model="model.usersSelect" ng-options="user.name for user in model.users" ></select>
+		            </td>
+		          </tr>
+		         </table>
+		        </li>
+		       </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Where incident occurred</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+		        <li class="cardListElement">
+		         <table>
+		          <tr>
+		            <td align="right">
+                  <select ng-model="dropDownItem">
+                  <option value="">Please Select Location</option>
+                  <option value="1">To the Left</option>
+                  <option value="2">To the Right</option>
+                  <option value="3">Right Here</option>
+		            </td>
+		          </tr>
+		         </table>
+		        </li>
+		       </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Specific location</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+		        <li class="cardListElement">
+		         <table>
+		          <tr>
+		            <td align="right">
+		              <input type="Text" ng-model="common.text" />
+		            </td>
+		          </tr>
+		         </table>
+		        </li>
+		       </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+    </content>
+    <cbl>
+      <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf053;</x>
+      <x class="txtTitle" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Back</x>
+    </cbl>
+    <cbr onClick="_incidentCapture.save(2)">
+      <x class="gui-extra" >&#xf0ed; Save</x>
+    </cbr>
+</face>
+
+<face id="incidentCaptureStep3" face="back">
+    <ctl>Adding an Incident record - 3/4</ctl>
+    <ctr></ctr>
+    <content>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Risk discipline (Nature of the impact)</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+		        <li class="cardListElement">
+		         <table>
+		          <tr>
+		            <td align="right">
+		              <input type="checkbox" ng-model="common.checkbox.bike" value="1"/> Risk Discipline 1
+                  <br>
+      					  <input type="checkbox" ng-model="common.checkbox.car" value="2"/> Risk Discipline 2
+                  <br>
+                  <input type="checkbox" ng-model="common.checkbox.plane" value="3"/> Risk Discipline 3
+                  <br>
+		            </td>
+		          </tr>
+		         </table>
+		        </li>
+		       </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br />
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Incident category / sub category</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+		        <li class="cardListElement">
+		         <table>
+		          <tr>
+		            <td align="right">
+		              <input type="checkbox" ng-model="common.checkbox.bike" value="1"/> Incident Category 1
+                  <br>
+      					  <input type="checkbox" ng-model="common.checkbox.car" value="2"/> Incident Category 2
+                  <br>
+                  <input type="checkbox" ng-model="common.checkbox.plane" value="3"/> Incident Category 3
+                  <br>
+		            </td>
+		          </tr>
+		         </table>
+		        </li>
+		       </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br />
+    </content>
+      <cbl>
+        <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf053;</x>
+        <x class="txtTitle" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Back</x>
+      </cbl>
+      <cbr>
+        <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf0ed;</x>
+        <x onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Save</x>
+      </cbr>
+</face>
+
+<face id="incidentCaptureStep4" controller="_incidentCapture.Ctrl4">
+    <ctl>Adding an Incident record - 4/4</ctl>
+    <ctr></ctr>
+    <content>
+
+<div id="listContainer2">
+  <ul id="expList2" class="gui-extra">
+    <li class="gui-extra" >Item A <x>&#xf067;</x>
+      <ul>
+        <li>Item A.1 <x>&#xf067;</x>
+          <ul>
+            <li>
+              <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sagittis ultricies arcu, quis porttitor risus placerat et. Proin quis metus diam, quis sbibendum dolor. Nulla nec dapibus nunc. Quisque ac erat sit amet nisl venenatis consequat nec in nibh. Aliquam viverra vestibulum elit faucibus sollicitudin.</span>
+            </li>
+          </ul>
+        </li>
+        <li>Item A.2</li>
+        <li>Item A.3
+          <ul>
+            <li>
+              <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sagittis ultricies arcu, quis porttitor risus placerat et. Proin quis metus diam, quis bibendum dolor. Nulla nec dapibus nunc. Quisque ac erat sit amet nisl venenatis consequat nec in nibh. Aliquam viverra vestibulum elit faucibus sollicitudin.</span>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>Item B</li>
+    <li>Item C
+      <ul>
+        <li>Item C.1</li>
+        <li>Item C.2
+          <ul>
+            <li>
+              <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sagittis ultricies arcu, quis porttitor risus placerat et. Proin quis metus diam, quis bibendum dolor. Nulla nec dapibus nunc. Quisque ac erat sit amet nisl venenatis consequat nenibh. Aliquam viverra vestibulum elit faucibus sollicitudin.</span>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+<br>
+    
+<div id="listContainer">
+  <ul id="expList" class="gui-extra">
+    <div ng-include="'partialMenu'" ng-init="sites = model.sites"></div>
+  </ul>
+</div>
+
+    <script type="text/ng-template" id="partialMenu">
+      <ul>
+        <li ng-repeat="site in sites">
+          {{site.Site}}
+          <div ng-switch on="site.children != null">
+            <div ng-switch-when="true">
+              <div ng-init="sites = site.children" ng-include="'partialMenu'"></div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </script>
+
+
+
+    </content>
+    <cbl>
+      <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf053;</x>
+      <x class="txtTitle" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Back</x>
+    </cbl>
+    <cbr>
+      <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf0ed;</x>
+      <x onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Save</x>
+    </cbr>
+</face>
+
+<face id="incidentCaptureComplete" face="back">
+    <ctl>Adding an Incident record</ctl>
+    <ctr></ctr>
+    <content>
+        <placeholder>
+              Incident has been captured and added to the job Queue
+        </placeholder>
+    </content>
+    <cbl>
+      <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureStep4',false)">&#xf053;</x>
+      <x class="txtTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep4',false)">Back</x>
+    </cbl>
+    <cbr>
+      <x onclick="_incidentCapture.submitToQueue()" class="gui-extra">&#xf0ed;</x>
+      <x onclick="_incidentCapture.submitToQueue()">Save</x>
+    </cbr>
+</face>
+
+</card>
