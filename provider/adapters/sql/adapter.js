@@ -2,11 +2,250 @@ var mssql = require('mssql');
 var config   = require('../sql/config');
 var _log = require('../../lib/log');
 var grep = require('grep-from-array');
-
+var fs = require('fs');
+var crypto = require('crypto');
 var sql = {
 
+Views:3,
+IncidentStatus:25,
+Levels:1,
+IncidentCategories:1050,
+ReportedTo:474,
+External:537,
 
-  getControls: function(callback)
+getControls: function(callback)
+{
+    RESPONSE = [];
+
+    sql.getInfoProc(function(controls){
+      RESPONSE.push(controls);
+      callback(RESPONSE);
+
+    });
+
+},
+getInfoProc:function(callback)
+{
+  fs.readFile('provider/adapters/sql/InfoProc.sql', 'utf8', function (err,data) {
+    if (err) {
+       _log.d(err);
+       return;
+    }
+
+    var conParams = config.conParams[GLOBAL.RELEASE];
+
+    var sqlConfig =
+    {
+      user: conParams.user,
+      password: conParams.password,
+      server: conParams.server,
+      database: conParams.database,
+      options: {
+        appName : conParams.applicationName
+      }
+    };
+
+    var queryString = data;
+    // _log.d(queryString);
+    var connection = new mssql.Connection(sqlConfig, function (err) {
+      if (err)
+      {
+        _log.d("getInfoProc: mssql Conn Error " + err);
+        callback(false);
+        return;
+      }
+      var request = new mssql.Request(connection); // or: var request = connection.request();
+      request.multiple = true;
+      request.query(queryString, function (err, recordset) {
+        if (err)
+        {
+          _log.d("getInfoProc: Query Error " + err);
+          callback(false);
+          return;
+        }
+        else
+        {
+            _log.d("getInfoProc: GOOD " );
+            controls = {
+              controlID :0,
+              Views:[],
+              IncidentStatus:[],
+              Levels:[],
+              IncidentCategories:[],
+              Users:[],
+              ReportedTo:[],
+              External:[],
+            }
+
+            var tmpLevels = [];
+            var tmpCategories = [];
+            for(var i in recordset[1])
+            {
+              record = recordset[1][i];
+              if(record.SourceID == sql.Views)
+              {
+                controls.Views.push(record);
+                _log.d("View " + record.SourceList);
+              }else if(record.SourceID == sql.IncidentStatus)
+              {
+                controls.IncidentStatus.push(record);
+                _log.d("IncidentStatus " + record.SourceList);
+              }else if(record.SourceID == sql.Levels)
+              {
+                tmpLevels.push(record);
+                _log.d("Levels " + record.SourceList);
+              }else if(record.SourceID == sql.IncidentCategories)
+              {
+                tmpCategories.push(record);
+                _log.d("IncidentCategories " + record.SourceList);
+              }
+              else if(record.SourceID == sql.ReportedTo)
+              {
+                controls.ReportedTo.push(record);
+                _log.d("ReportedTo " + record.SourceList);
+              }else if(record.SourceID == sql.External)
+              {
+                controls.External.push(record);
+                _log.d("External " + record.SourceList);
+              }
+
+            }
+
+
+
+            controls.Levels = sql.buildTree(tmpLevels,0);
+
+            controls.IncidentCategories = sql.buildTree2(tmpCategories,0);
+
+            _log.d(controls.IncidentCategories);
+
+            callback(controls);
+            return;
+
+            // sql.getUsers(function(obj){
+            //   if(obj != false)
+            //   {
+            //     controls.Users = obj;
+            //     callback(controls);
+            //     return;
+            //   }
+            // });
+          }
+      });
+    }); 
+  });
+},
+
+ buildTree2: function(elements,parentId) 
+  {
+
+    for(var i = elements.length; i--; )
+    {
+      for(var j in elements)
+      {
+        // _log.d(i + " " + j);
+        if(elements[i].SourceListParentID == elements[j].SourceListID)
+        {
+            if (typeof(elements[j].children ) === "undefined")
+            {
+              elements[j].children = [];
+              elements[j].children.push(JSON.parse(JSON.stringify(elements[i])));
+            }else
+            {
+              elements[j].children.push(JSON.parse(JSON.stringify(elements[i])));
+            }
+            elements.splice(i,1);
+            break;
+        }
+      }
+    }
+    return elements;
+  }
+  ,
+  buildTree: function(elements,parentId) 
+  {
+    
+    var branch = [];
+
+    for (var i in elements) {
+      var element = elements[i];
+
+        if (element.SourceListParentID == parentId) {
+            children = sql.buildTree(elements, element.SourceListID);
+      
+              newElement = {
+              ParentID : element.SourceListParentID,
+              SiteID : element.SourceListID,
+              Site : element.SourceList,
+              children : []
+            };
+
+            if (children.length > 0) {
+              newElement.children = JSON.parse(JSON.stringify(children));
+            }
+            branch.push(newElement);
+        }
+    }
+    return branch;
+  }
+  ,
+  login : function(obj,callback)
+  {
+
+    _log.d("Login with " + JSON.stringify(obj));
+
+    var conParams = config.conParams[GLOBAL.RELEASE];
+
+    var sqlConfig =
+    {
+      user: conParams.user,
+      password: conParams.password,
+      server: conParams.server,
+      database: conParams.database,
+      options: {
+        appName : conParams.applicationName
+      }
+    };
+
+    shasum = crypto.createHash('sha1');
+    shasum.update(obj.credentials.password);
+    password = shasum.digest('hex');
+
+    var queryString = "Select TOP 1 * from [dbo].[tblUser] where UserName = '"+ obj.credentials.username + "' and Password='"+password+"' and isDeleted IS NULL";
+     _log.d(queryString);
+    var connection = new mssql.Connection(sqlConfig, function (err) {
+      if (err)
+      {
+        _log.d("Login: mssql Conn Error " + err);
+        callback(false);
+        return;
+      }
+      var request = new mssql.Request(connection); // or: var request = connection.request();
+      request.query(queryString, function (err, recordset) {
+        if (err)
+        {
+          _log.d("Login: Query Error " + err);
+          callback(false);
+          return;
+        }
+        else
+        {
+          if(recordset.length == 0)
+          {
+            _log.d("Login: User Not Found ");
+            callback(false);
+            return;
+          }else
+          {
+            _log.d("Login: GOOD " + JSON.stringify(recordset[0]));
+            callback(recordset[0]);
+            return;
+          }
+        }
+      });
+    });    
+  },
+  getControls_old: function(callback)
   {
       RESPONSE = [];
       controls = {
@@ -33,8 +272,16 @@ var sql = {
             {
               controls.sites = obj;
             }
-            RESPONSE.push(controls);
-            callback(RESPONSE);
+
+            sql.getRiskType(function(obj){
+              if(obj != false)
+              {
+                controls.risks = obj;
+              }
+              RESPONSE.push(controls);
+              callback(RESPONSE);
+            });
+
           });
 
         });
@@ -42,60 +289,55 @@ var sql = {
 
   }
   ,
-  printTree: function(elements,tier)
+  getRiskType : function(callback)
   {
-    _log.d("printTree " );
-    for (var i in elements) {
+    _log.d("getRiskType");
 
-      var element = elements[i];
-      _log.d(JSON.stringify(element));
+    var conParams = config.conParams[GLOBAL.RELEASE];
 
-      if (typeof(element.children) !== "undefined") 
-      {
-          if(element.children.length > 0)
-          {
-            for(var j in element.children)
-            {
-              sql.printTree(element.children[j], (tier+1));
-            }
-          }
-          else
-          {
-            _log.d("length == 0");
-          }
-          _log.d(tier + ":" + element.Site);     
-      }else
-      {
-        _log.d("UNDEFINED");
+    var sqlConfig =
+    {
+      user: conParams.user,
+      password: conParams.password,
+      server: conParams.server,
+      database: conParams.database,
+      options: {
+        appName : conParams.applicationName
       }
-    }
-  }
-  ,
-  buildTree: function(elements,parentId) 
-  {
-    
-    var branch = [];
+    };
 
-    for (var i in elements) {
-      var element = elements[i];
-
-        if (element.ParentID == parentId) {
-            children = sql.buildTree(elements, element.SiteID);
-      
-              newElement = {
-              ParentID : element.ParentID,
-              SiteID : element.SiteID,
-              Site : element.Site,
-              children : []
-            };
-
-            if (children.length > 0) {
-              newElement.children = JSON.parse(JSON.stringify(children));
-            }
-            branch.push(newElement);
+    var queryString = "Select RiskTypeID, RiskType from [dbo].[tblRiskType] order by RiskType asc";
+    // _log.d(queryString);
+    var connection = new mssql.Connection(sqlConfig, function (err) {
+      if (err)
+      {
+        _log.d("getRiskType: mssql Conn Error " + err);
+        callback(false);
+        return;
+      }
+      var request = new mssql.Request(connection); // or: var request = connection.request();
+      request.query(queryString, function (err, recordset) {
+        if (err)
+        {
+          _log.d("getRiskType: Query Error " + err);
+          callback(false);
+          return;
         }
-    }
-    return branch;
+        else
+        {
+            _log.d("getRiskType: GOOD " + JSON.stringify(recordset));
+
+            for (var i in recordset) 
+            {
+              _log.d("TYPE: " + JSON.stringify(recordset[i]));
+            }
+
+            _log.d("getRiskType: riskTypeObj " + JSON.stringify(recordset));
+            callback(recordset);
+            return;
+        }
+      });
+    }); 
   }
   ,
 
@@ -137,16 +379,12 @@ var sql = {
         {
             _log.d("getSites: GOOD " + JSON.stringify(recordset));
 
-            for (var i in recordset) 
-            {
-              _log.d("SITE: " + JSON.stringify(recordset[i]));
-            }
+            // for (var i in recordset) 
+            // {
+            //   _log.d("SITE: " + JSON.stringify(recordset[i]));
+            // }
 
             siteObj = sql.buildTree(recordset,0);
-            //sql.printTree(siteObj,0);
-            _log.d("");
-            _log.d("getSites: siteObj " + JSON.stringify(siteObj));
-            _log.d("");
             callback(siteObj);
             return;
         }
@@ -190,7 +428,7 @@ var sql = {
         }
         else
         {
-            _log.d("getUser: GOOD " + JSON.stringify(recordset));
+            // _log.d("getUser: GOOD " + JSON.stringify(recordset));
             callback(recordset);
             return;
         }
@@ -250,61 +488,6 @@ var sql = {
     }); 
 
   },
-
-  login : function(obj,callback)
-  {
-
-    _log.d("Login with " + JSON.stringify(obj));
-
-    var conParams = config.conParams[GLOBAL.RELEASE];
-
-    var sqlConfig =
-    {
-      user: conParams.user,
-      password: conParams.password,
-      server: conParams.server,
-      database: conParams.database,
-      options: {
-        appName : conParams.applicationName
-      }
-    };
-
-
-    var queryString = "Select TOP 1 * from [dbo].[tblUser] where UserName = '"+ obj.credentials.username + "'";
-    // _log.d(queryString);
-    var connection = new mssql.Connection(sqlConfig, function (err) {
-      if (err)
-      {
-        _log.d("Login: mssql Conn Error " + err);
-        callback(false);
-        return;
-      }
-      var request = new mssql.Request(connection); // or: var request = connection.request();
-      request.query(queryString, function (err, recordset) {
-        if (err)
-        {
-          _log.d("Login: Query Error " + err);
-          callback(false);
-          return;
-        }
-        else
-        {
-          if(recordset.length == 0)
-          {
-            _log.d("Login: User Not Found ");
-            callback(false);
-            return;
-          }else
-          {
-            _log.d("Login: GOOD " + JSON.stringify(recordset[0]));
-            callback(recordset[0]);
-            return;
-          }
-        }
-      });
-    });    
-  }
-  ,
   getControlsWithValues_old: function(callback)
   {
     var LoggedInUserID = 1;  //change this to use the actual user

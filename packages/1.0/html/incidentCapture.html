@@ -54,7 +54,7 @@
 		         <table>
 		          <tr>
 		            <td align="right">
-		              <input type="Text" ng-model="common.text" />
+		              <input type="Text" ng-model="model.description" />
 		            </td>
 		          </tr>
 		         </table>
@@ -98,7 +98,7 @@
 		         <table>
 		          <tr>
 		            <td align="right">
-		              <input type="date" ng-model="other.date"  />
+		              <input type="date" ng-model="model.date"  />
 		            </td>
 		          </tr>
 		         </table>
@@ -120,7 +120,7 @@
              <table>
               <tr>
                 <td align="right">
-                  <input type="time" ng-model="other.time" />
+                  <input type="time" ng-model="model.time" />
                 </td>
               </tr>
              </table>
@@ -146,30 +146,29 @@
     <ctl>Adding an Incident record - 2/4</ctl>
     <ctr></ctr>
     <content>
-      <div id="popDiv" class="ontop" ng-init="_click=false; popupHourPM = 0">
-        <div id="popup" style="overflow:scroll; border: 1px solid #bbb">
-          <div style="height: 20%; border-bottom: 1px solid #bbb;color:#fff ;margin: 0; padding: 0;">
+
+      <div id="popDiv" class="ontop" ng-init="_click=false;">
+        <div id="popup" style="border: 1px solid #bbb">
+          <div style="height: 20%; border-bottom: 1px solid #bbb;color:#000 ;margin: 0; padding: 0;">
             Location
           </div>
-        <div style="padding-top: 5px; padding-bottom: 5px;">
+        <div id="level-scroll" style="height: 100px ;padding-top: 5px; padding-bottom: 5px; overflow:auto">
           <div id="expList" class="gui-extra">
             <div ng-include="'partialMenu'" ng-init="sites = model.sites"></div>
           </div>
-
-          <script type="text/ng-template" id="partialMenu">
+        </div>
+         <div style=" position: absolute;bottom: 0; height:20%;width:100%;padding-top: 2px; padding-bottom: 2px; background: rgba(240, 240, 240, 1) !important" >
+           <button style="border: 1px solid #000;border-radius: 1px;width: 100%; height: 90%; float: right; background: rgb(200,200,200);" type="button" onClick="_incidentCapture.hide('popDiv')" >Cancel</button>
+         </div>
+      </div>
+    </div>
+    <script type="text/ng-template" id="partialMenu">
             <ul>
               <li ng-repeat="site in sites" siteId={{site.SiteID}}> {{site.Site}} <x ng-if="site.children.length > 0">&#xf067;</x>
                   <div ng-if="site.children.length > 0" ng-init="sites = site.children" ng-include="'partialMenu'"></div>
               </li>
             </ul>
           </script>
-        </div>
-         <div style=" position: absolute;bottom: 0; height:20%;width:100%;padding-top: 2px; padding-bottom: 2px; background: rgba(240, 240, 240, 1) !important" >
-      <button style="border: 1px solid #000;border-radius: 1px;width: 100%; height: 90%; float: right; background: rgb(200,200,200);" type="button" onClick="_incidentCapture.hide('popDiv')" >Cancel</button>
-    </div>
-      </div>
-    </div>
-
 
 
       <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
@@ -184,7 +183,7 @@
 		         <table>
 		          <tr>
 		            <td align="right">
-		              <input type="Text" ng-model="common.text" />
+		              <input type="Text" ng-model="model.person" />
 		            </td>
 		          </tr>
 		         </table>
@@ -228,7 +227,7 @@
 		         <table class="locationOccurred">
               <tr>
                 <td align="right">
-                  <input type="Text" ng-model="common.text" disabled/>
+                  <input id="sitePath" type="Text" style="overflow:auto" ng-model="model.sitePath" />
                 </td>
               </tr>
              </table>
@@ -250,7 +249,7 @@
 		         <table>
 		          <tr>
 		            <td align="right">
-		              <input type="Text" ng-model="common.text" />
+		              <input type="Text" ng-model="model.location" />
 		            </td>
 		          </tr>
 		         </table>
@@ -270,64 +269,63 @@
     </cbr>
 </face>
 
-<face id="incidentCaptureStep3" face="back">
+<face id="incidentCaptureStep3" face="back" controller="_incidentCapture.Ctrl3">
     <ctl>Adding an Incident record - 3/4</ctl>
     <ctr></ctr>
     <content>
-      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+
+      <div style=" height: 50%">
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
           <tr>
              <td class="cardFormElementTitle">Risk discipline (Nature of the impact)</td>
           </tr>
            <tr>
             <td colspan="2" class="cardFormElementContent">
-              <div  class="cardInlay">
+              <div  id="risk-scroll"  class="cardInlay" style="overflow:auto;height:150px">
                <ul>
-		        <li class="cardListElement">
-		         <table>
-		          <tr>
-		            <td align="right">
-		              <input type="checkbox" ng-model="common.checkbox.bike" value="1"/> Risk Discipline 1
-                  <br>
-      					  <input type="checkbox" ng-model="common.checkbox.car" value="2"/> Risk Discipline 2
-                  <br>
-                  <input type="checkbox" ng-model="common.checkbox.plane" value="3"/> Risk Discipline 3
-                  <br>
-		            </td>
-		          </tr>
-		         </table>
-		        </li>
-		       </ul>
+    		        <li class="cardListElement"> 
+    		         <table>
+    		          <tr ng-repeat="view in model.views">
+                    <td align="right">
+                      <input type="checkbox" onChange="_incidentCapture.reloadSubCat()" ng-model="view.checked" value="1"/> {{view.SourceList}}
+                      <br>
+                    </td>
+                  </tr>
+    		         </table>
+    		        </li>
+    		       </ul>
               </div>
              </td>
            </tr>
-      </table><br />
-      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+      </table>
+    </div>
+    <br />
+
+ <div style=" height: 50%">
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
           <tr>
              <td class="cardFormElementTitle">Incident category / sub category</td>
           </tr>
            <tr>
             <td colspan="2" class="cardFormElementContent">
-              <div  class="cardInlay">
+              <div  id="risk-scroll2"  class="cardInlay" style="overflow:auto;height:150px">
                <ul>
 		        <li class="cardListElement">
 		         <table>
-		          <tr>
-		            <td align="right">
-		              <input type="checkbox" ng-model="common.checkbox.bike" value="1"/> Incident Category 1
-                  <br>
-      					  <input type="checkbox" ng-model="common.checkbox.car" value="2"/> Incident Category 2
-                  <br>
-                  <input type="checkbox" ng-model="common.checkbox.plane" value="3"/> Incident Category 3
-                  <br>
-		            </td>
-		          </tr>
+		          <tr ng-repeat="view in model.subViews">
+                    <td align="right">
+                      <input type="checkbox" ng-click="" ng-model="view.checked" value="1"/> {{view.SourceList}}
+                      <br>
+                    </td>
+                  </tr>
 		         </table>
 		        </li>
 		       </ul>
               </div>
              </td>
            </tr>
-      </table><br />
+      </table>
+    </div>
     </content>
       <cbl>
         <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf053;</x>
@@ -343,20 +341,66 @@
     <ctl>Adding an Incident record - 4/4</ctl>
     <ctr></ctr>
     <content>
-    
-<div id="expList" class="gui-extra">
-    <div ng-include="'partialMenu'" ng-init="sites = model.sites"></div>
-</div>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
+          <tr>
+             <td class="cardFormElementTitle">Immediate action taken with reason for action taken</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay" >
+               <ul>
+                <li class="cardListElement"> 
+                 <textarea name="Text1" cols="40" rows="5" ng-model="model.action"></textarea>
+                </li>
+               </ul>
+              </div>
+             </td>
+           </tr>
+      </table>
+    <br />
+    <div >
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
+          <tr>
+             <td class="cardFormElementTitle">External party involved?</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div   class="cardInlay" style="overflow:auto;height:150px:" align="center">
+                <center>
+                  Yes  <input type="range" name="points" min="0" max="1" style="width:100px" ng-model="model.external" >  No
+                </center>
+              </div>
+             </td>
+           </tr>
+      </table>
+    </div>
+    <br />
 
-    <script type="text/ng-template" id="partialMenu">
-      <ul>
-        <li ng-repeat="site in sites"> {{site.Site}} <x ng-if="site.children.length > 0">&#xf067;</x>
-            <div ng-if="site.children.length > 0" ng-init="sites = site.children" ng-include="'partialMenu'"></div>
-        </li>
-      </ul>
-    </script>
-
-
+        <div ng-show="model.external == 0">
+          <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
+              <tr>
+                 <td class="cardFormElementTitle">External party</td>
+              </tr>
+               <tr>
+                <td colspan="2" class="cardFormElementContent">
+                  <div  id="risk-scroll"  class="cardInlay" >
+                   <ul>
+                    <li class="cardListElement"> 
+                     <table>
+                      <tr ng-repeat="view in model.externalList">
+                        <td align="right">
+                          <input type="checkbox" ng-model="view.checked" value="1"/> {{view.SourceList}}
+                          <br>
+                        </td>
+                      </tr>
+                     </table>
+                    </li>
+                   </ul>
+                  </div>
+                 </td>
+               </tr>
+          </table>
+        </div>
 
     </content>
     <cbl>
