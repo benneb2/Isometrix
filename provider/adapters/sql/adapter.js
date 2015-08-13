@@ -115,9 +115,36 @@ getInfoProc:function(callback)
 
             controls.Levels = sql.buildTree(tmpLevels,0);
 
-            controls.IncidentCategories = sql.buildTree2(tmpCategories,0);
+            controls.IncidentCategories = sql.buildTree3(tmpCategories,0);
 
-            _log.d(controls.IncidentCategories);
+            _log.d(JSON.stringify(controls.IncidentCategories));
+
+
+            gbarr = [];
+            var een = {
+              test : 1,
+              arr : []
+            }
+
+            var twee = {
+              test : 2,
+              arr : []
+            }
+
+            var drie = {
+              test : 3,
+              arr : []
+            }
+
+            // gbarr.push(een);
+            // gbarr.push(twee);
+            // gbarr.push(drie);
+
+            // een.arr.push(twee);
+
+            // gbarr[1].arr.push(drie);
+            // _log.d(JSON.stringify(een));
+            // _log.d(JSON.stringify(gbarr));
 
             callback(controls);
             return;
@@ -136,7 +163,67 @@ getInfoProc:function(callback)
   });
 },
 
- buildTree2: function(elements,parentId) 
+ buildTree3: function(elements,parentId) 
+  {
+      var level = 1;
+      var found = false;
+      var tree = [];
+      var gbTree = [];
+      for(var i in elements)
+      {
+        var element = elements[i];
+        if(element.HierarchyLevel == level)
+        {
+          _log.d(level + " " + element.SourceList);
+          var category = {
+            SourceListID : element.SourceListID,
+            SourceListParentID : element.SourceListParentID,
+            SourceList : element.SourceList,
+            HasChild : element.HasChild,
+            children : [],
+          }
+          gbTree.push(category);
+          tree.push(category);
+        }
+      }
+
+    do{
+        level++;
+        found = false;
+        for(var i in elements)
+        {
+          var element = elements[i];
+          if(element.HierarchyLevel == level)
+          {
+            _log.d(level + " " + element.SourceList);
+            for(var j in tree)
+            {
+              node = tree[j];
+              if(node.SourceListID == element.SourceListParentID)
+              {
+                var category = {
+                  SourceListID : element.SourceListID,
+                  SourceListParentID : element.SourceListParentID,
+                  SourceList : element.SourceList,
+                  HasChild : element.HasChild,
+                  children : [],
+                }
+                node.children.push(category);
+                break;
+              }
+            }
+
+            found = true
+          }
+        }
+        _log.d(level + " " + found);
+      }while(found == true)
+
+
+    return tree;  
+  }
+  ,
+  buildTree2: function(elements,parentId) 
   {
 
     for(var i = elements.length; i--; )
