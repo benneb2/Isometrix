@@ -1,6 +1,6 @@
 <card id="incidentCapture" fill="true" flip="rl">
 
-<face id="incidentCaptureFront" settings="default:true" controller="_incidentCapture.Ctrl">
+<!-- <face id="incidentCaptureFront" settings="default:true" controller="_incidentCapture.Ctrl">
   <ctl>Adding an Incident record</ctl>
   <ctr></ctr>
   <content>
@@ -34,14 +34,15 @@
       <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf0ed;</x>
       <x onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Save Incident</x>
     </cbr>
-</face>
+</face> -->
 
 
 
-  <face id="incidentCaptureStep1" controller="_incidentCapture.Ctrl1">
+  <face id="incidentCaptureStep1" settings="default:true" controller="_incidentCapture.Ctrl1">
     <ctl>Adding an Incident record - 1/4</ctl>
     <ctr></ctr>
-    <content>
+    <content id="frontContent">
+      <div id="step1" ng-show="currStep == 1">
       <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
           <tr>
              <td class="cardFormElementTitle">Incident description</td>
@@ -130,13 +131,14 @@
              </td>
            </tr>
       </table><br/>
+    </div>
     </content>
     <cbl>
-      <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf053;</x>
-      <x class="txtTitle" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Back</x>
+      <!-- <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf053; Back</x> -->
     </cbl>
-    <cbr onClick="_incidentCapture.save(1)">
-      <x class="gui-extra" >&#xf0ed; Save</x>
+    <cbr >
+      <x class="gui-extra" style="padding-right:5px ;" onClick="_incidentCapture.save(1)">&#xf0ed; Save</x>
+      <x class="gui-extra" onClick="_incidentCapture.onMessage(2)">Next &#xf054;</x>
     </cbr>
 
 </face>
@@ -146,7 +148,7 @@
     <ctl>Adding an Incident record - 2/4</ctl>
     <ctr></ctr>
     <content>
-
+      <div id="step2">
       <div id="popDiv" class="ontop" ng-init="_click=false;">
         <div id="popup" style="border: 1px solid #bbb">
           <div style="height: 20%; border-bottom: 1px solid #bbb;color:#000 ;margin: 0; padding: 0;">
@@ -259,13 +261,14 @@
              </td>
            </tr>
       </table><br/>
+    </div>
     </content>
     <cbl>
-      <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf053;</x>
-      <x class="txtTitle" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Back</x>
+      <x class="gui-extra" onClick="_incidentCapture.onMessage(1)">&#xf053; Back</x>
     </cbl>
-    <cbr onClick="_incidentCapture.save(2)">
-      <x class="gui-extra" >&#xf0ed; Save</x>
+    <cbr >
+      <x class="gui-extra" style="padding-right:5px ;" onClick="_incidentCapture.save(2)">&#xf0ed; Save</x>
+      <x class="gui-extra" onClick="_incidentCapture.onMessage(3)">Next &#xf054;</x>
     </cbr>
 </face>
 
@@ -311,14 +314,30 @@
               <div  id="risk-scroll2"  class="cardInlay" style="overflow:auto;height:150px">
                <ul>
 		        <li class="cardListElement">
-		         <table>
-		          <tr ng-repeat="view in model.subViews">
-                    <td align="right">
-                      <input type="checkbox" ng-click="" ng-model="view.checked" value="1"/> {{view.SourceList}}
-                      <br>
-                    </td>
-                  </tr>
+		         <div id="catList" class="gui-extra">
+              <table>
+		          <tr ng-repeat="view in model.views">
+                <td align="right">
+                  <div ng-show="view.checked && view.categories.length > 0">
+
+                    
+                      <div ng-include="'partialCat'" ng-init="cats = view.categories"></div>
+                    
+                       <!--  <input type="checkbox" ng-click="" ng-model="view.checked" value="1"/> {{view.categories[0].SourceList}}
+                        <br> -->
+                    <script type="text/ng-template" id="partialCat">
+                      <ul>
+                        <li ng-repeat="cat in cats" SourceListID={{cat.SourceListID}}> <input type="checkbox" ng-if="cat.children.length == 0" ng-model="cat.checked" />{{cat.SourceList}} <x ng-if="cat.children.length > 0">&#xf068;</x>
+                        <br ng-if="cat.children.length == 0">
+                            <div ng-if="cat.children.length > 0" ng-init="cats = cat.children" ng-include="'partialCat'" style="padding: 5px;"></div>
+                        </li>
+                      </ul>
+                    </script>
+                  </div>
+                </td>
+              </tr>
 		         </table>
+             </div>
 		        </li>
 		       </ul>
               </div>
@@ -327,14 +346,13 @@
       </table>
     </div>
     </content>
-      <cbl>
-        <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf053;</x>
-        <x class="txtTitle" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Back</x>
-      </cbl>
-      <cbr>
-        <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf0ed;</x>
-        <x onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Save</x>
-      </cbr>
+    <cbl>
+      <x class="gui-extra" onClick="_incidentCapture.onMessage(2)">&#xf053; Back</x>
+    </cbl>
+    <cbr >
+      <x class="gui-extra" style="padding-right:5px ;" onClick="_incidentCapture.save(3)">&#xf0ed; Save</x>
+      <x class="gui-extra" onClick="_incidentCapture.onMessage(4)">Next &#xf054;</x>
+    </cbr>
 </face>
 
 <face id="incidentCaptureStep4" controller="_incidentCapture.Ctrl4">
@@ -404,12 +422,11 @@
 
     </content>
     <cbl>
-      <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf053;</x>
-      <x class="txtTitle" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Back</x>
+      <x class="gui-extra" onClick="_incidentCapture.onMessage(3)">&#xf053; Back</x>
     </cbl>
-    <cbr>
-      <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf0ed;</x>
-      <x onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Save</x>
+    <cbr >
+      <x class="gui-extra" style="padding-right:5px ;" onClick="_incidentCapture.save(4)">&#xf0ed; Save</x>
+      <!-- <x class="gui-extra" onClick="_incidentCapture.onMessage(3)" hidden >Next &#xf054;</x> -->
     </cbr>
 </face>
 

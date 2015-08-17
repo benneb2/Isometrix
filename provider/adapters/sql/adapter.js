@@ -181,6 +181,8 @@ getInfoProc:function(callback)
             SourceList : element.SourceList,
             HasChild : element.HasChild,
             children : [],
+            Level : 1,
+            checked : false,
           }
           gbTree.push(category);
           tree.push(category);
@@ -196,20 +198,27 @@ getInfoProc:function(callback)
           if(element.HierarchyLevel == level)
           {
             _log.d(level + " " + element.SourceList);
-            for(var j in tree)
+            for(var j in gbTree)
             {
-              node = tree[j];
-              if(node.SourceListID == element.SourceListParentID)
+              node = gbTree[j];
+
+              if(node.SourceListID == element.SourceListParentID && node.Level == (level -1))
               {
-                var category = {
-                  SourceListID : element.SourceListID,
-                  SourceListParentID : element.SourceListParentID,
-                  SourceList : element.SourceList,
-                  HasChild : element.HasChild,
-                  children : [],
-                }
-                node.children.push(category);
-                break;
+                  var category = {
+                    SourceListID : element.SourceListID,
+                    SourceListParentID : element.SourceListParentID,
+                    SourceList : element.SourceList,
+                    HasChild : element.HasChild,
+                    Level : level,
+                    children : [],
+                    checked : false,
+                  }
+                  node.children.push(category);
+                  gbTree.push(category);
+                  _log.d(JSON.stringify(tree[0]));
+                  break;
+                // _log.d("ELEMENT: " + JSON.stringify(element));
+                // _log.d("PARENT: " + JSON.stringify(node));
               }
             }
 

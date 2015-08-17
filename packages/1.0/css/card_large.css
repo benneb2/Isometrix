@@ -282,9 +282,9 @@ background: -webkit-linear-gradient(top,  #b5babc 0%,#847777 100%);
 
 .cardListElement :last-child {
 
-  border-bottom: none;
+/*  border-bottom: none;
   padding: 5px;
-  height: auto;
+  height: auto;*/
    /*max-height: 60px;
   min-height: 60px;
   overflow: hidden; */

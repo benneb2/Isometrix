@@ -92,7 +92,24 @@ _incidentCapture = {
             var categories = _.model.IncidentCategories[i];
              _.IncidentCategories.push(categories);
           }
-          
+
+          for(var i in _.views)
+          {
+            var view = _.views[i];
+            for(var j in _.IncidentCategories)
+            {
+              var categories = _.IncidentCategories[j];
+              if(view.SourceList == categories.SourceList)
+              {
+                if (typeof(view.categories ) === "undefined")
+                { 
+                  view.categories = [];
+                }
+                view.categories.push(categories);
+              }
+            }
+            
+          }
 
         }catch(err)
         {
@@ -101,7 +118,7 @@ _incidentCapture = {
       // _incidentCapture._Ctrl();
       });
 
-      layout.attach('#incidentCaptureFront');
+      // layout.attach('#incidentCaptureFront');
       layout.attach('#incidentCaptureStep1');
       layout.attach('#incidentCaptureStep2');
       layout.attach('#incidentCaptureStep3');
@@ -232,6 +249,18 @@ _incidentCapture = {
 
 preparePage3:function()
 {
+  if(_incidentCapture.didPrep == true)
+  {
+    return;
+  }
+
+  _incidentCapture.didPrep = true;
+
+  setTimeout(
+  function() {
+    _incidentCapture.didPrep = false;
+  } , 1000);
+
   setTimeout(
       function() {
         try
@@ -246,7 +275,62 @@ preparePage3:function()
         }
       } , 1000);
 
-    
+    $("#catList").find('li').off("click");
+    $('#catList').find('li').click( function(event) {
+
+      if (this == event.target) {
+        if($(this).has('ul').length)
+        {
+          $(this).toggleClass('expanded');
+          if($(this).has('x').length)
+          {
+            if($(this).hasClass( "expanded" ))
+            {
+              $(this).children('x')[0].innerHTML = '&#xf067;';
+            }else
+            {
+              $(this).children('x')[0].innerHTML = '&#xf068;';
+            } 
+          }
+
+          $(this).children('div').toggle('medium');
+          _.currScrolls[0].refresh();
+        }else
+        {
+          // _incidentCapture.hide('popDiv');
+          // _incidentCapture.siteSelect = $(this).attr("siteId");
+          // _incidentCapture.sitePath = _incidentCapture.getFullLocation(_incidentCapture.siteSelect,_incidentCapture.sites);
+          // _incidentCapture._Ctrl2();
+
+        }
+      }
+    }).addClass('collapsed').children('div');//.hide();
+
+    $("#catList").find('x').off("click");
+    $('#catList').find('x').click( function(event) {
+
+          if (this == event.target) 
+          {
+            var li = $(this).closest("li");
+            if($(li).has('ul').length)
+            {
+              $(li).toggleClass('expanded');
+              $(li).children('div').toggle('medium');
+
+              if($(li).hasClass( "expanded" ))
+              {
+                $(li).children('x')[0].innerHTML = '&#xf068;';
+              }else
+              {
+                $(li).children('x')[0].innerHTML = '&#xf067;';
+              }
+              _.currScrolls[0].refresh();
+            }
+
+          }
+          return false;
+        });
+
 },
 
 currStep : 0,
@@ -268,6 +352,12 @@ _Ctrl: function($scope){
 ,
 Ctrl1: function($scope){
   $scope.model = {};
+  $scope.currStep = 1;
+  // if(_incidentCapture.currStep == 1)
+    $scope.model.show = true;
+  // else
+  //   $scope.model.show = false;
+
   $scope.model.description = _incidentCapture.description;
   $scope.model.date = _incidentCapture.date;
   $scope.model.time = _incidentCapture.time;
@@ -320,30 +410,17 @@ Ctrl3: function($scope)
 {
   $scope.model = {};
   $scope.model.views = _incidentCapture.views;
-  try
-  {
-    for(var i in $scope.model.views)
-    {
-      if($scope.model.views[i].checked)
-      {
-        $scope.model.subViews.push($scope.model.views[i]);
-
-      }
-    }
-  }catch(err)
-  {
-    alert("q " + err);
-  }
   _incidentCapture.preparePage3();
 
 }
 ,
 reloadSubCat : function()
 {
-   setTimeout(
-      function() {
-        _incidentCapture._Ctrl3();
-      } , 300);
+  _incidentCapture.preparePage3();
+   // setTimeout(
+   //    function() {
+   //      _incidentCapture._Ctrl3();
+   //    } , 300);
 
   
 }
@@ -361,20 +438,6 @@ _Ctrl3: function($scope){
         scope.model = {};
         scope.model.views = _incidentCapture.views;
         scope.model.subViews = [];
-        try
-        {
-          for(var i in scope.model.views)
-          {
-            if(scope.model.views[i].checked)
-            {
-              scope.model.subViews.push(scope.model.views[i]);
-            }
-          }
-        }catch(err)
-        {
-          alert("q1 " + err);
-        }
-        
         _incidentCapture.preparePage3();
       });
 
@@ -408,19 +471,58 @@ save: function(step)
   }
 
 },
+flipBusy:function(cb)
+{
+  setTimeout(
+      function() {
+        if( _cardEngine.cards.incidentCapture.instance.flipBusy)
+        {
+          _log.d("flipBusy");
+          _incidentCapture.flipBusy(cb);
+        }
+        else
+        {
+          cb();
+        }
+      } , 100);
+}
+,
 FlipCard: function(flipTarget, cb){
 
+  if( _cardEngine.cards.incidentCapture.instance.isFlipped )
+  {
+    _cardEngine.revert("incidentCapture");
 
+    _incidentCapture.flipBusy(function()
+    {
+        _cardEngine.flip("incidentCapture" , flipTarget, function(release) {
+      _log.d("Flip Target:");
+      _log.d(flipTarget);
+      release();
+      layout.attach('#'+flipTarget);
+
+        if(cb) {
+          cb();
+        }
+      });
+
+
+    })
+
+
+  }else
+  {
       _cardEngine.flip("incidentCapture" , flipTarget, function(release) {
       _log.d("Flip Target:");
       _log.d(flipTarget);
       release();
       layout.attach('#'+flipTarget);
 
-      if(cb) {
-        cb();
-      }
-    });
+        if(cb) {
+          cb();
+        }
+      });
+    }
   },
 didLocPop:false,
 setupPopup : function()
