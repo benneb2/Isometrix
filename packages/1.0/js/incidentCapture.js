@@ -15,7 +15,7 @@ _incidentCapture = {
     time: null,
     person:null,
     location:null,
-    external:0,
+    external:"0",
     externalList:[],
     action: null,
     IncidentCategories:[],
@@ -51,19 +51,7 @@ _incidentCapture = {
         }
 
         try{
-          // for(var i in _.model.Users)
-          // {
-          //   var item = _.model.Users[i];
 
-          //   if(item.FirstName != "" && item.LastName)
-          //   {
-          //     user = {
-          //       UserID : item.UserID,
-          //       name : item.FirstName + " " + item.LastName,
-          //     }
-          //      _.users.push(user);
-          //   }
-          // }
           for(var i in _.model.ReportedTo)
           {
             var item = _.model.ReportedTo[i];
@@ -118,12 +106,7 @@ _incidentCapture = {
       // _incidentCapture._Ctrl();
       });
 
-      // layout.attach('#incidentCaptureFront');
       layout.attach('#incidentCaptureStep1');
-      layout.attach('#incidentCaptureStep2');
-      layout.attach('#incidentCaptureStep3');
-      layout.attach('#incidentCaptureStep4');
-      layout.attach('#incidentCaptureComplete');
 
     },
 
@@ -173,6 +156,7 @@ _incidentCapture = {
   didPrep:false
   ,
   prepareList : function() {
+
     if(_incidentCapture.didPrep == false)
     {
       _incidentCapture.didPrep = true;
@@ -182,6 +166,7 @@ _incidentCapture = {
         _incidentCapture.didPrep = false;
       } , 1000);
 
+      $("#expList").find('li').off("click"); 
       $('#expList').find('li').click( function(event) {
 
           if(_incidentCapture.locpop != false)
@@ -189,6 +174,7 @@ _incidentCapture = {
             return;
           }
           if (this == event.target) {
+
             if($(this).has('ul').length)
             {
               $(this).toggleClass('expanded');
@@ -212,7 +198,14 @@ _incidentCapture = {
               _incidentCapture.sitePath = _incidentCapture.getFullLocation(_incidentCapture.siteSelect,_incidentCapture.sites);
               
 
-              _incidentCapture._Ctrl2();
+             e = document.getElementById('incidentCaptureStep1__FACE');
+             scope = angular.element(e).scope();
+
+              _incidentCapture.usersSelect = scope.model.usersSelect;
+              _incidentCapture.person = scope.model.person;
+              _incidentCapture.location = scope.model.location;
+
+               _incidentCapture._Ctrl();
 
             }
           }
@@ -220,6 +213,7 @@ _incidentCapture = {
           return false;
         }).addClass('collapsed').children('div').hide();
 
+      $("#expList").find('x').off("click");
       $('#expList').find('x').click( function(event) {
 
           if (this == event.target) 
@@ -333,40 +327,54 @@ preparePage3:function()
 
 },
 
-currStep : 0,
+currStep : 1,
 onMessage : function(data) {
   
+  _log.d("onMessage " + data);
+
+  e = document.getElementById('incidentCaptureStep1__FACE');
+  scope = angular.element(e).scope();
+
+  if(_incidentCapture.currStep == 1)
+  {
+    
+    _incidentCapture.description = scope.model.description ;
+    _incidentCapture.incidentStatusSelect = scope.model.incidentStatusSelect ;
+    _incidentCapture.date = scope.model.date;
+    _incidentCapture.time = scope.model.time;
+
+  }else if(_incidentCapture.currStep == 2)
+  {
+     _incidentCapture.usersSelect = scope.model.usersSelect;
+     _incidentCapture.person = scope.model.person;
+     _incidentCapture.location = scope.model.location;
+     _incidentCapture.sitePath = scope.model.sitePath;
+     // _incidentCapture.siteSelect = scope.model.siteSelect;
+  }else if(_incidentCapture.currStep == 3)
+  {
+     _incidentCapture.views = scope.model.views;
+  }else if(_incidentCapture.currStep == 4)
+  {
+    _incidentCapture.action = scope.model.action;
+    _incidentCapture.external = scope.model.external;
+    _incidentCapture.externalList = scope.model.externalList;
+  }
+
     _incidentCapture.currStep = data;
-    _incidentCapture.FlipCard('incidentCaptureStep' + data,false);
+    _incidentCapture._Ctrl();
 
-
-},
-
+}
+,
 Ctrl: function($scope){
-
-}
-,
-_Ctrl: function($scope){
-
-}
-,
-Ctrl1: function($scope){
   $scope.model = {};
   $scope.currStep = 1;
-  // if(_incidentCapture.currStep == 1)
-    $scope.model.show = true;
-  // else
-  //   $scope.model.show = false;
-
+  $scope.model.show = true;
   $scope.model.description = _incidentCapture.description;
   $scope.model.date = _incidentCapture.date;
   $scope.model.time = _incidentCapture.time;
   $scope.model.incidentStatus = _incidentCapture.incidentStatus;
   $scope.model.incidentStatusSelect = _incidentCapture.incidentStatusSelect;
-}
-,
-Ctrl2: function($scope){
-  $scope.model = {};
+
   $scope.model.users = _incidentCapture.users;
   $scope.model.usersSelect = _incidentCapture.usersSelect;
   $scope.model.person = _incidentCapture.person;
@@ -374,159 +382,184 @@ Ctrl2: function($scope){
   $scope.model.location = _incidentCapture.location;
   $scope.model.sitePath = _incidentCapture.sitePath;
 
-  _incidentCapture.setupPopup();
+  // _incidentCapture.setupPopup();
+
+  $scope.model.views = _incidentCapture.views;
+  $scope.model.subViews = [];
+  _incidentCapture.preparePage3();
+
+
+  $scope.model.action = _incidentCapture.action;
+  $scope.model.external = _incidentCapture.external;
+  $scope.model.externalList = _incidentCapture.externalList;
 
   setTimeout(
       function() {
         _incidentCapture.prepareList();
       } , 1000);
 
+      setTimeout(
+        function() {
+          _scroll.add($('#scrollWrapper_incidentCaptureStep1__FACE')[0])
+        } , 1000);
+
+  
 }
 ,
-_Ctrl2: function($scope){
+_Ctrl: function($scope){
 
-    e = document.getElementById('incidentCaptureStep2__FACE');
+  e = document.getElementById('incidentCaptureStep1__FACE');
       
-      scope = angular.element(e).scope();
-      alert(scope.person);
-      alert(scope.location);
-      scope.$apply(function() 
-      {  
-        scope.model = {};
-        scope.model.users = _incidentCapture.users;
-        scope.model.usersSelect = _incidentCapture.usersSelect;
-        scope.model.person = _incidentCapture.person;
-        scope.model.sites = _incidentCapture.sites;
-        scope.model.location = _incidentCapture.location;
-        scope.model.sitePath = _incidentCapture.sitePath;
+  scope = angular.element(e).scope();
+  scope.$apply(function() 
+  {  
+    scope.model = {};
+    scope.currStep = _incidentCapture.currStep;
+    scope.model.description = _incidentCapture.description;
+    scope.model.date = _incidentCapture.date;
+    scope.model.time = _incidentCapture.time;
+    scope.model.incidentStatus = _incidentCapture.incidentStatus;
+    scope.model.incidentStatusSelect = _incidentCapture.incidentStatusSelect;
 
-      });
+    scope.model.users = _incidentCapture.users;
+    scope.model.usersSelect = _incidentCapture.usersSelect;
+    scope.model.person = _incidentCapture.person;
+    scope.model.sites = _incidentCapture.sites;
+    scope.model.location = _incidentCapture.location;
+    scope.model.sitePath = _incidentCapture.sitePath;
+
+setTimeout(
+    function() {
+      _incidentCapture.setupPopup();
+    } , 1000);
+
+    
+
+    scope.model.views = _incidentCapture.views;
+    scope.model.subViews = [];
+    _incidentCapture.preparePage3();
 
 
-}
-,
+    scope.model.action = _incidentCapture.action;
+    scope.model.external = _incidentCapture.external;
+    scope.model.externalList = _incidentCapture.externalList;
 
-Ctrl3: function($scope)
-{
-  $scope.model = {};
-  $scope.model.views = _incidentCapture.views;
-  _incidentCapture.preparePage3();
+    setTimeout(
+        function() {
+          _incidentCapture.prepareList();
+        } , 1000);
 
+    setTimeout(
+        function() {
+          _scroll.add($('#scrollWrapper_incidentCaptureStep1__FACE')[0])
+        } , 300);
+
+    });
+
+ 
 }
 ,
 reloadSubCat : function()
 {
   _incidentCapture.preparePage3();
-   // setTimeout(
-   //    function() {
-   //      _incidentCapture._Ctrl3();
-   //    } , 300);
-
-  
 }
 ,
-_Ctrl3: function($scope){
-
-    e = document.getElementById('incidentCaptureStep3__FACE');
-    
-
-
-      scope = angular.element(e).scope();
-      
-      scope.$apply(function() 
-      {  
-        scope.model = {};
-        scope.model.views = _incidentCapture.views;
-        scope.model.subViews = [];
-        _incidentCapture.preparePage3();
-      });
-
-
-}
-,
-
-Ctrl4: function($scope){
-
-  $scope.model = {};
-  $scope.model.action = _incidentCapture.action;
-  $scope.model.external = _incidentCapture.external;
-  $scope.model.externalList = _incidentCapture.externalList;
-},
-
-save: function(step)
+save: function()
 {
-  if(step == 1)
-  {
-    e = document.getElementById('incidentCaptureStep1__FACE');
-    scope = angular.element(e).scope();
-    alert("save " + scope.model.incidentStatusSelect.SourceList);
+  e = document.getElementById('incidentCaptureStep1__FACE');
+  scope = angular.element(e).scope();
 
-  }else if(step == 2)
+  if(_incidentCapture.currStep == 1)
   {
-    alert("SAVE2");
-    e = document.getElementById('incidentCaptureStep2__FACE');
-    scope = angular.element(e).scope();
-    alert("save " + scope.model.usersSelect.name);
+    
+    _incidentCapture.description = scope.model.description ;
+    _incidentCapture.incidentStatusSelect = scope.model.incidentStatusSelect ;
+    _incidentCapture.date = scope.model.date;
+    _incidentCapture.time = scope.model.time;
 
+  }else if(_incidentCapture.currStep == 2)
+  {
+     _incidentCapture.usersSelect = scope.model.usersSelect;
+     _incidentCapture.person = scope.model.person;
+     _incidentCapture.location = scope.model.location;
+     _incidentCapture.sitePath = scope.model.sitePath;
+     // _incidentCapture.siteSelect = scope.model.siteSelect;
+  }else if(_incidentCapture.currStep == 3)
+  {
+     _incidentCapture.views = scope.model.views;
+  }else if(_incidentCapture.currStep == 4)
+  {
+    _incidentCapture.action = scope.model.action;
+    _incidentCapture.external = scope.model.external;
+    _incidentCapture.externalList = scope.model.externalList;
+
+    _incidentCapture.submitData();
   }
 
 },
-flipBusy:function(cb)
+submitData : function()
 {
-  setTimeout(
-      function() {
-        if( _cardEngine.cards.incidentCapture.instance.flipBusy)
+  try
+      {
+
+        var data = { 
+          userID : _login.roles,
+          description : _incidentCapture.description,
+          incidentStatusSelect : _incidentCapture.incidentStatusSelect.SourceListID,
+          date : _incidentCapture.date,
+          time : _incidentCapture.time,
+          usersSelect : _incidentCapture.usersSelect.UserID,
+          person : _incidentCapture.person,
+          location : _incidentCapture.location,
+          siteSelect : _incidentCapture.siteSelect,
+          // //views : _incidentCapture.views,
+          action : _incidentCapture.action,
+          external : 3200,
+          // //externalList : _incidentCapture.externalList,
+
+        };
+
+        if(_incidentCapture.external == 1)
         {
-          _log.d("flipBusy");
-          _incidentCapture.flipBusy(cb);
+          data.external = 3201;
         }
-        else
-        {
-          cb();
-        }
-      } , 100);
+
+        var jobData = { action:'postIncident', data: data};
+
+        var JOB = {
+          jobName: "Name",
+          jobDesc: _incidentCapture.description,
+          data: jobData,
+          allowDuplicate: true,
+          clearOnDone: false,
+        };
+      
+        _log.d("JOB = " + JSON.stringify(JOB));
+        jobid = jobQueue.add(JOB);
+
+      }catch(err)
+      {
+
+          alert(err);
+
+      }
 }
 ,
-FlipCard: function(flipTarget, cb){
-
-  if( _cardEngine.cards.incidentCapture.instance.isFlipped )
-  {
-    _cardEngine.revert("incidentCapture");
-
-    _incidentCapture.flipBusy(function()
-    {
-        _cardEngine.flip("incidentCapture" , flipTarget, function(release) {
-      _log.d("Flip Target:");
-      _log.d(flipTarget);
-      release();
-      layout.attach('#'+flipTarget);
-
-        if(cb) {
-          cb();
-        }
-      });
-
-
-    })
-
-
-  }else
-  {
-      _cardEngine.flip("incidentCapture" , flipTarget, function(release) {
-      _log.d("Flip Target:");
-      _log.d(flipTarget);
-      release();
-      layout.attach('#'+flipTarget);
-
-        if(cb) {
-          cb();
-        }
-      });
-    }
-  },
-didLocPop:false,
+nextStep : function()
+{
+  _incidentCapture.onMessage(_incidentCapture.currStep + 1);
+}
+,
+prevStep : function()
+{
+  _incidentCapture.onMessage(_incidentCapture.currStep - 1);
+}
+,
+didLocPop:false
+,
 setupPopup : function()
 {
+
   if(_incidentCapture.didLocPop == false)
   {
     _incidentCapture.didLocPop = true;
@@ -537,6 +570,7 @@ setupPopup : function()
     } , 1000);
 
     var evt = _util.getEvt();
+    $(".locationOccurred").off(evt);
     $('.locationOccurred').on(evt, function () {
           var me = $(this);
           _incidentCapture.handlePopup(me);   
@@ -544,12 +578,11 @@ setupPopup : function()
   }
 
 },
-locbox: null,
-handlePopup : function(me)
+
+handlePopup : function()
 {
   try{
       
-        _incidentCapture.locbox = me;
         _incidentCapture.pop('popDiv');
 
       }catch(err)
@@ -575,7 +608,7 @@ hide : function(div) {
     {
       document.getElementById(div).style.display = 'none';
       _.currScrolls[0].destroy();
-      _scroll.add($('#scrollWrapper_incidentCaptureStep2__FACE')[0])
+      _scroll.add($('#scrollWrapper_incidentCaptureStep1__FACE')[0])
     }
     
   },

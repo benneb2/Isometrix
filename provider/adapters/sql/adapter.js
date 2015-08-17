@@ -882,6 +882,72 @@ getInfoProc:function(callback)
   },
   postIncident: function(obj, callback)
   {
+    _log.d("postIncident - Start" );
+    _log.d(JSON.stringify(obj) );
+
+    var conParams = config.conParams[GLOBAL.RELEASE];
+
+    var sqlConfig =
+    {
+      user: conParams.user,
+      password: conParams.password,
+      server: conParams.server,
+      database: conParams.database,
+      options: {
+        appName : conParams.applicationName
+      }
+    };
+
+   var connection = new mssql.Connection(sqlConfig, function (err) {
+      if (err)
+      {
+        _log.d("postIncident: mssql Conn Error " + err);
+        callback(false);
+        return;
+      }
+      var request = new mssql.Request(connection); // or: var request = connection.request();
+      _log.d("obj.data.siteSelect " + obj.data.siteSelect);
+      // var request = new mssql.Request(connection);
+       request.input('SiteID_xml', null);
+       request.input('RiskTypeID_xml', null);
+       request.input('c1E8BCC9E', obj.data.person);
+       request.input('c385D7025', obj.data.siteSelect);
+       request.input('c3D7380B8', obj.data.description);
+       request.input('c3E7CF6D4', obj.data.action);
+       request.input('c7C5F61F0', 13);
+       request.input('c85B29C24', obj.data.usersSelect);
+       request.input('cA299231D', obj.data.location);
+       request.input('cAA24747C', obj.data.external);
+       request.input('cBCDBB162', obj.data.date + " " + obj.data.time);
+       request.input('cBF638E94', obj.data.incidentStatusSelect);
+       request.input('UserID', obj.data.userID);
+       request.output('Scope', mssql.BigInt);
+
+      var storedProcedure = '[dbo].[spi_M380_1]';
+      request.execute(storedProcedure, function (err, recordsets, returnValue)
+      {
+        if (err)
+        {
+          _log.d(err);
+        }
+        else
+        {
+
+          _log.d("GOOD ");
+          _log.d(JSON.stringify(recordsets));
+          _log.d(JSON.stringify(returnValue));
+
+          callback(recordsets);
+
+        }
+      });
+    });
+
+
+  }
+  ,
+  postIncident_old: function(obj, callback)
+  {
     _log.d("postIncident - Start");
     _log.d("obj: " + JSON.stringify(obj));
     //this might not return a value so we need to implement a callback

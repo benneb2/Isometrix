@@ -1,48 +1,9 @@
-<card id="incidentCapture" fill="true" flip="rl">
-
-<!-- <face id="incidentCaptureFront" settings="default:true" controller="_incidentCapture.Ctrl">
-  <ctl>Adding an Incident record</ctl>
-  <ctr></ctr>
-  <content>
-    <table>
-    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep1',false)">Step 1</td></tr>
-    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep2',false)">Step 2</td></tr>
-    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep3',false)">Step 3</td></tr>
-    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep4',false)">Step 4</td></tr>
-  </table>
-  <content>
-    <cbl></cbl>
-    <cbr>
-      <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf0ed;</x>
-      <x onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Save Incident</x>
-    </cbr>
-</face>
-
-<face id="incidentCaptureBack" >
-  <ctl>BACK</ctl>
-  <ctr></ctr>
-  <content>
-    <table>
-    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep1',false)">Step 1</td></tr>
-    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep2',false)">Step 2</td></tr>
-    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep3',false)">Step 3</td></tr>
-    <tr><td class="cardFormElementTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep4',false)">Step 4</td></tr>
-  </table>
-  <content>
-    <cbl></cbl>
-    <cbr>
-      <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf0ed;</x>
-      <x onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">Save Incident</x>
-    </cbr>
-</face> -->
-
-
-
-  <face id="incidentCaptureStep1" settings="default:true" controller="_incidentCapture.Ctrl1">
-    <ctl>Adding an Incident record - 1/4</ctl>
+<card id="incidentCapture" fill="true">
+  <face id="incidentCaptureStep1" settings="default:true" controller="_incidentCapture.Ctrl">
+    <ctl>Adding an Incident record - {{currStep}}/4</ctl>
     <ctr></ctr>
     <content id="frontContent">
-      <div id="step1" ng-show="currStep == 1">
+      <div id="step1" ng-if="currStep == 1">
       <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
           <tr>
              <td class="cardFormElementTitle">Incident description</td>
@@ -132,23 +93,7 @@
            </tr>
       </table><br/>
     </div>
-    </content>
-    <cbl>
-      <!-- <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureFront',false)">&#xf053; Back</x> -->
-    </cbl>
-    <cbr >
-      <x class="gui-extra" style="padding-right:5px ;" onClick="_incidentCapture.save(1)">&#xf0ed; Save</x>
-      <x class="gui-extra" onClick="_incidentCapture.onMessage(2)">Next &#xf054;</x>
-    </cbr>
-
-</face>
-
-
-<face id="incidentCaptureStep2" controller="_incidentCapture.Ctrl2">
-    <ctl>Adding an Incident record - 2/4</ctl>
-    <ctr></ctr>
-    <content>
-      <div id="step2">
+    <div id="step2" ng-if="currStep == 2">
       <div id="popDiv" class="ontop" ng-init="_click=false;">
         <div id="popup" style="border: 1px solid #bbb">
           <div style="height: 20%; border-bottom: 1px solid #bbb;color:#000 ;margin: 0; padding: 0;">
@@ -181,16 +126,16 @@
             <td colspan="2" class="cardFormElementContent">
               <div  class="cardInlay">
                <ul>
-		        <li class="cardListElement">
-		         <table>
-		          <tr>
-		            <td align="right">
-		              <input type="Text" ng-model="model.person" />
-		            </td>
-		          </tr>
-		         </table>
-		        </li>
-		       </ul>
+            <li class="cardListElement">
+             <table>
+              <tr>
+                <td align="right">
+                  <input type="Text" ng-model="model.person" />
+                </td>
+              </tr>
+             </table>
+            </li>
+           </ul>
               </div>
              </td>
            </tr>
@@ -203,16 +148,16 @@
             <td colspan="2" class="cardFormElementContent">
               <div  class="cardInlay">
                <ul>
-		        <li class="cardListElement">
-		         <table>
-		          <tr>
-		            <td align="right">
+            <li class="cardListElement">
+             <table>
+              <tr>
+                <td align="right">
                  <select ng-model="model.usersSelect" ng-options="user.name for user in model.users" ></select>
-		            </td>
-		          </tr>
-		         </table>
-		        </li>
-		       </ul>
+                </td>
+              </tr>
+             </table>
+            </li>
+           </ul>
               </div>
              </td>
            </tr>
@@ -225,16 +170,16 @@
             <td colspan="2" class="cardFormElementContent">
               <div  class="cardInlay">
                <ul>
-		        <li class="cardListElement">
-		         <table class="locationOccurred">
+            <li class="cardListElement">
+             <table class="locationOccurred">
               <tr>
                 <td align="right">
                   <input id="sitePath" type="Text" style="overflow:auto" ng-model="model.sitePath" />
                 </td>
               </tr>
              </table>
-		        </li>
-		       </ul>
+            </li>
+           </ul>
               </div>
              </td>
            </tr>
@@ -247,37 +192,24 @@
             <td colspan="2" class="cardFormElementContent">
               <div  class="cardInlay">
                <ul>
-		        <li class="cardListElement">
-		         <table>
-		          <tr>
-		            <td align="right">
-		              <input type="Text" ng-model="model.location" />
-		            </td>
-		          </tr>
-		         </table>
-		        </li>
-		       </ul>
+            <li class="cardListElement">
+             <table>
+              <tr>
+                <td align="right">
+                  <input type="Text" ng-model="model.location" />
+                </td>
+              </tr>
+             </table>
+            </li>
+           </ul>
               </div>
              </td>
            </tr>
       </table><br/>
     </div>
-    </content>
-    <cbl>
-      <x class="gui-extra" onClick="_incidentCapture.onMessage(1)">&#xf053; Back</x>
-    </cbl>
-    <cbr >
-      <x class="gui-extra" style="padding-right:5px ;" onClick="_incidentCapture.save(2)">&#xf0ed; Save</x>
-      <x class="gui-extra" onClick="_incidentCapture.onMessage(3)">Next &#xf054;</x>
-    </cbr>
-</face>
 
-<face id="incidentCaptureStep3" face="back" controller="_incidentCapture.Ctrl3">
-    <ctl>Adding an Incident record - 3/4</ctl>
-    <ctr></ctr>
-    <content>
-
-      <div style=" height: 50%">
+    <div id="step3" ng-if="currStep == 3">
+       <div style=" height: 50%">
       <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
           <tr>
              <td class="cardFormElementTitle">Risk discipline (Nature of the impact)</td>
@@ -286,17 +218,17 @@
             <td colspan="2" class="cardFormElementContent">
               <div  id="risk-scroll"  class="cardInlay" style="overflow:auto;height:150px">
                <ul>
-    		        <li class="cardListElement"> 
-    		         <table>
-    		          <tr ng-repeat="view in model.views">
+                <li class="cardListElement"> 
+                 <table>
+                  <tr ng-repeat="view in model.views">
                     <td align="right">
                       <input type="checkbox" onChange="_incidentCapture.reloadSubCat()" ng-model="view.checked" value="1"/> {{view.SourceList}}
                       <br>
                     </td>
                   </tr>
-    		         </table>
-    		        </li>
-    		       </ul>
+                 </table>
+                </li>
+               </ul>
               </div>
              </td>
            </tr>
@@ -313,10 +245,10 @@
             <td colspan="2" class="cardFormElementContent">
               <div  id="risk-scroll2"  class="cardInlay" style="overflow:auto;height:150px">
                <ul>
-		        <li class="cardListElement">
-		         <div id="catList" class="gui-extra">
+            <li class="cardListElement">
+             <div id="catList" class="gui-extra">
               <table>
-		          <tr ng-repeat="view in model.views">
+              <tr ng-repeat="view in model.views">
                 <td align="right">
                   <div ng-show="view.checked && view.categories.length > 0">
 
@@ -336,30 +268,18 @@
                   </div>
                 </td>
               </tr>
-		         </table>
+             </table>
              </div>
-		        </li>
-		       </ul>
+            </li>
+           </ul>
               </div>
              </td>
            </tr>
       </table>
     </div>
-    </content>
-    <cbl>
-      <x class="gui-extra" onClick="_incidentCapture.onMessage(2)">&#xf053; Back</x>
-    </cbl>
-    <cbr >
-      <x class="gui-extra" style="padding-right:5px ;" onClick="_incidentCapture.save(3)">&#xf0ed; Save</x>
-      <x class="gui-extra" onClick="_incidentCapture.onMessage(4)">Next &#xf054;</x>
-    </cbr>
-</face>
-
-<face id="incidentCaptureStep4" controller="_incidentCapture.Ctrl4">
-    <ctl>Adding an Incident record - 4/4</ctl>
-    <ctr></ctr>
-    <content>
-      <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
+    </div>
+    <div id="step4" ng-if="currStep == 4">
+<table class="cardFormContainer" cellspacing='0' cellpadding='0' >
           <tr>
              <td class="cardFormElementTitle">Immediate action taken with reason for action taken</td>
           </tr>
@@ -419,34 +339,18 @@
                </tr>
           </table>
         </div>
-
+    </div>
     </content>
     <cbl>
-      <x class="gui-extra" onClick="_incidentCapture.onMessage(3)">&#xf053; Back</x>
+      <x ng-show="currStep > 1" class="gui-extra" onClick="_incidentCapture.prevStep()">&#xf053; Back</x>
     </cbl>
     <cbr >
-      <x class="gui-extra" style="padding-right:5px ;" onClick="_incidentCapture.save(4)">&#xf0ed; Save</x>
-      <!-- <x class="gui-extra" onClick="_incidentCapture.onMessage(3)" hidden >Next &#xf054;</x> -->
+      <x class="gui-extra" style="padding-right:5px ;" onClick="_incidentCapture.save()">&#xf0ed; Save</x>
+      <x ng-show="currStep < 4" class="gui-extra" onClick="_incidentCapture.nextStep()">Next &#xf054;</x>
     </cbr>
+
 </face>
 
-<face id="incidentCaptureComplete" face="back">
-    <ctl>Adding an Incident record</ctl>
-    <ctr></ctr>
-    <content>
-        <placeholder>
-              Incident has been captured and added to the job Queue
-        </placeholder>
-    </content>
-    <cbl>
-      <x class="gui-extra" onClick="_incidentCapture.FlipCard('incidentCaptureStep4',false)">&#xf053;</x>
-      <x class="txtTitle" onClick="_incidentCapture.FlipCard('incidentCaptureStep4',false)">Back</x>
-    </cbl>
-    <cbr>
-      <x onclick="_incidentCapture.submitToQueue()" class="gui-extra">&#xf0ed;</x>
-      <x onclick="_incidentCapture.submitToQueue()">Save</x>
-    </cbr>
-</face>
 
 </card>
 

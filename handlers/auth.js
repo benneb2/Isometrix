@@ -16,7 +16,7 @@ exports.req = function (obj, cb) {
 		}else
 		{
 			obj.RESPONSE = true;
-			obj.user = response;
+			obj.ROLES = response.UserID;
 			cb(obj);
 			return;
 		}
