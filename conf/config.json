@@ -188,11 +188,47 @@
     "SERVICES":
         [
           {
-            "service":"controlService",
-            "label":"Incident Management Controls",
-            "key":"controlID",
-            "handler":"controlHandler"
+            "service":"incidentStatus",
+            "label":"Incident Status",
+            "key":"SourceListID",
+            "handler":"incidentStatus"
           }
+          ,
+          {
+            "service":"incidentUsers",
+            "label":"Incident reported to",
+            "key":"SourceListID",
+            "handler":"incidentUsers"
+          }
+          ,
+          {
+            "service":"incidentLevels",
+            "label":"Where indident occurred",
+            "key":"SourceListID",
+            "handler":"incidentLevels"
+          }
+          ,
+          {
+            "service":"incidentViews",
+            "label":"Risk discipline",
+            "key":"SourceListID",
+            "handler":"incidentViews"
+          }
+          ,
+          {
+            "service":"incidentCategory",
+            "label":"Incident Category",
+            "key":"SourceListID",
+            "handler":"incidentCategory"
+          }
+          ,
+          {
+            "service":"externalParty",
+            "label":"External party",
+            "key":"SourceListID",
+            "handler":"externalParty"
+          }
+
         ],
    "ACTIONS":
         [

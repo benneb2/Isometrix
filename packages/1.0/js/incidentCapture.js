@@ -25,85 +25,64 @@ _incidentCapture = {
 
     onLoaded: function () { var _ = this;
 
-      _model.getAll('controlService', function(model) {
-        if(model.length == 0)
-        {
-          //alert("DOWNLOAD THE CONTROLLS");
-        }
-        _.model = model[model.length -1];
-
-        for(var i in _.model.IncidentStatus)
-        {
-          var item =  _.model.IncidentStatus[i];
-           _.incidentStatus.push(item);
-        }
-
-        for(var i in _.model.Views)
-        {
-          var item =  _.model.Views[i];
-          item.checked = false;
-           _.views.push(item);
-        }
-
-        if(_.incidentStatus.length > 0)
-        {
-          _.incidentStatusSelect = _.incidentStatus[0];
-        }
-
-        try{
-
-          for(var i in _.model.ReportedTo)
+      _model.getAll('incidentStatus', function(model) {
+          _log.d("incidentStatus " + model.length);
+          _.incidentStatus = model;
+          if(_.incidentStatus.length > 0)
           {
-            var item = _.model.ReportedTo[i];
-
-              user = {
-                UserID : item.SourceListID,
-                name : item.SourceList,
-              }
-               _.users.push(user);
+            _.incidentStatusSelect = _.incidentStatus[0];
           }
 
-          for(var i in _.model.Levels)
+          _incidentCapture._Ctrl();
+      });
+
+      _model.getAll('incidentUsers', function(model) {
+          _log.d("incidentUsers " + model.length);
+          _.users = model;
+      });
+
+      _model.getAll('incidentLevels', function(model) {
+          _log.d("incidentLevels " + model.length);
+          _.sites = _.buildTree(model,0);
+      });
+
+      _model.getAll('incidentViews', function(model) {
+          _log.d("incidentViews " + model.length);
+          for(var i in model)
           {
-            var site = _.model.Levels[i];
-             _.sites.push(site);
+            var item =  model[i];
+            item.checked = false;
+             _.views.push(item);
           }
 
-          for(var i in _.model.External)
-          {
-            var external = _.model.External[i];
-             _.externalList.push(external);
-          }
+          _model.getAll('incidentCategory', function(model) {
+            _log.d("incidentCategory " + model.length);
+            _.IncidentCategories = _.buildCatTree(model,0);
 
-          for(var i in _.model.IncidentCategories)
-          {
-            var categories = _.model.IncidentCategories[i];
-             _.IncidentCategories.push(categories);
-          }
-
-          for(var i in _.views)
-          {
-            var view = _.views[i];
-            for(var j in _.IncidentCategories)
+            for(var i in _.views)
             {
-              var categories = _.IncidentCategories[j];
-              if(view.SourceList == categories.SourceList)
+              var view = _.views[i];
+              for(var j in _.IncidentCategories)
               {
-                if (typeof(view.categories ) === "undefined")
-                { 
-                  view.categories = [];
+                var categories = _.IncidentCategories[j];
+                if(view.SourceList == categories.SourceList)
+                {
+                  if (typeof(view.categories ) === "undefined")
+                  { 
+                    view.categories = [];
+                  }
+                  view.categories.push(categories);
                 }
-                view.categories.push(categories);
               }
+              
             }
-            
-          }
+        });
 
-        }catch(err)
-        {
-          alert(err);
-        }
-      // _incidentCapture._Ctrl();
+      });
+
+      _model.getAll('externalParty', function(model) {
+          _log.d("externalParty " + model.length);
+          _.externalList = model;
       });
 
       layout.attach('#incidentCaptureStep1');
@@ -537,17 +516,32 @@ submitData : function()
   try
       {
 
+
+        var riskTypeID_xml = '<rt>';
+        for(var i in _incidentCapture.views )
+        {
+          var view = _incidentCapture.views[i];
+          if(view.checked)
+          {
+            
+            riskTypeID_xml = riskTypeID_xml + '<r id="" riskTypeId="'+view.SourceListID+'" />';
+            _incidentCapture.viewSelect.push(view.SourceList);
+          }
+        }
+        riskTypeID_xml = riskTypeID_xml + '</rt>';
+
         var data = { 
           userID : _login.roles,
           description : _incidentCapture.description,
           incidentStatusSelect : _incidentCapture.incidentStatusSelect.SourceListID,
           date : _incidentCapture.date,
           time : _incidentCapture.time,
-          usersSelect : _incidentCapture.usersSelect.UserID,
+          usersSelect : _incidentCapture.usersSelect.SourceListID,
           person : _incidentCapture.person,
           location : _incidentCapture.location,
           siteSelect : _incidentCapture.siteSelect,
           // //views : _incidentCapture.views,
+          riskTypeID_xml: riskTypeID_xml,
           action : _incidentCapture.action,
           external : 3200,
           // //externalList : _incidentCapture.externalList,
@@ -573,7 +567,7 @@ submitData : function()
         jobid = jobQueue.add(JOB);
 
         data.incidentStatusSelectString = _incidentCapture.incidentStatusSelect.SourceList;
-        data.userSelectString = _incidentCapture.usersSelect.name;
+        data.userSelectString = _incidentCapture.usersSelect.SourceList;
         data.sitePath = _incidentCapture.sitePath;
 
         if(_incidentCapture.external == 0)
@@ -623,6 +617,101 @@ submitData : function()
           alert(err);
 
       }
+}
+,
+buildTree: function(elements,parentId) 
+{
+  
+  var branch = [];
+
+  for (var i in elements) {
+    var element = elements[i];
+
+      if (element.SourceListParentID == parentId) {
+          children = _incidentCapture.buildTree(elements, element.SourceListID);
+    
+            newElement = {
+            ParentID : element.SourceListParentID,
+            SiteID : element.SourceListID,
+            Site : element.SourceList,
+            children : []
+          };
+
+          if (children.length > 0) {
+            newElement.children = JSON.parse(JSON.stringify(children));
+          }
+          branch.push(newElement);
+      }
+  }
+  return branch;
+}
+,
+buildCatTree: function(elements,parentId) 
+{
+    var level = 1;
+    var found = false;
+    var tree = [];
+    var gbTree = [];
+    for(var i in elements)
+    {
+      var element = elements[i];
+      if(element.HierarchyLevel == level)
+      {
+        _log.d(level + " " + element.SourceList);
+        var category = {
+          SourceListID : element.SourceListID,
+          SourceListParentID : element.SourceListParentID,
+          SourceList : element.SourceList,
+          HasChild : element.HasChild,
+          children : [],
+          Level : 1,
+          checked : false,
+        }
+        gbTree.push(category);
+        tree.push(category);
+      }
+    }
+
+  do{
+      level++;
+      found = false;
+      for(var i in elements)
+      {
+        var element = elements[i];
+        if(element.HierarchyLevel == level)
+        {
+          // _log.d(level + " " + element.SourceList);
+          for(var j in gbTree)
+          {
+            node = gbTree[j];
+
+            if(node.SourceListID == element.SourceListParentID && node.Level == (level -1))
+            {
+                var category = {
+                  SourceListID : element.SourceListID,
+                  SourceListParentID : element.SourceListParentID,
+                  SourceList : element.SourceList,
+                  HasChild : element.HasChild,
+                  Level : level,
+                  children : [],
+                  checked : false,
+                }
+                node.children.push(category);
+                gbTree.push(category);
+                break;
+              // _log.d("ELEMENT: " + JSON.stringify(element));
+              // _log.d("PARENT: " + JSON.stringify(node));
+            }
+          }
+
+          found = true
+        }
+      }
+      // _log.d(level + " " + found);
+    }while(found == true)
+
+
+  return tree;  
 }
 ,
 nextStep : function()

@@ -13,6 +13,166 @@ IncidentCategories:1050,
 ReportedTo:474,
 External:537,
 
+getExternalParty: function(callback)
+{
+  sql.getFromSqlFile('externalParty.sql',callback);
+}
+,
+getIncidentCategories: function(callback)
+{
+  sql.getFromSqlFile('incidentCategories.sql',callback);
+}
+,
+getIncidentViews: function(callback)
+{
+  sql.getFromSqlFile('incidentViews.sql',callback);
+}
+,
+getIncidentLevels: function(callback)
+{
+  sql.getFromSqlFile('incidentLevels.sql',callback);
+}
+,
+getIncidentUsers: function(callback)
+{
+  sql.getFromSqlFile('incidentUsers.sql',callback);
+}
+,
+getIncidentStatus: function(callback)
+{
+  sql.getFromSqlFile('incidentStatus.sql',callback);
+}
+,
+getFromSqlFile: function(file,callback)
+{
+  fs.readFile('provider/adapters/sql/'+file, 'utf8', function (err,data) {
+    if (err) {
+       _log.d(err);
+       return;
+    }
+
+    var conParams = config.conParams[GLOBAL.RELEASE];
+
+    var sqlConfig =
+    {
+      user: conParams.user,
+      password: conParams.password,
+      server: conParams.server,
+      database: conParams.database,
+      options: {
+        appName : conParams.applicationName
+      }
+    };
+
+    var queryString = data;
+    // _log.d(queryString);
+    var connection = new mssql.Connection(sqlConfig, function (err) {
+      if (err)
+      {
+        _log.d("getFromSqlFile: mssql Conn Error " + err);
+        callback(false);
+        return;
+      }
+      var request = new mssql.Request(connection); // or: var request = connection.request();
+      // request.multiple = true;
+      request.query(queryString, function (err, recordset) {
+        if (err)
+        {
+          _log.d("getFromSqlFile: Query Error " + err);
+          callback(false);
+          return;
+        }
+        else
+        {
+            _log.d("getFromSqlFile: GOOD " );
+            retData = [];
+
+            for(var i in recordset)
+            {
+              record = recordset[i];
+              retData.push(record);
+              // _log.d("IncidentStatus " + record.SourceList);
+            }
+
+            callback(retData);
+            return;
+          }
+      });
+    }); 
+  });
+
+}
+,
+postIncident: function(obj, callback)
+{
+  _log.d("postIncident - Start" );
+  _log.d(JSON.stringify(obj) );
+
+  var conParams = config.conParams[GLOBAL.RELEASE];
+
+  var sqlConfig =
+  {
+    user: conParams.user,
+    password: conParams.password,
+    server: conParams.server,
+    database: conParams.database,
+    options: {
+      appName : conParams.applicationName
+    }
+  };
+
+ var connection = new mssql.Connection(sqlConfig, function (err) {
+    if (err)
+    {
+      _log.d("postIncident: mssql Conn Error " + err);
+      callback(false);
+      return;
+    }
+    var request = new mssql.Request(connection); // or: var request = connection.request();
+
+
+     var siteID_xml = '<st><s id="" siteId="" /></st>';
+    // var request = new mssql.Request(connection);
+     request.input('SiteID_xml', siteID_xml);
+     request.input('RiskTypeID_xml', obj.data.riskTypeID_xml);
+     request.input('c1E8BCC9E', obj.data.person);
+     request.input('c385D7025', obj.data.siteSelect);
+     request.input('c3D7380B8', obj.data.description);
+     request.input('c3E7CF6D4', obj.data.action);
+     // request.input('c7C5F61F0', 13);
+     request.input('c85B29C24', obj.data.usersSelect);
+     request.input('cA299231D', obj.data.location);
+     request.input('cAA24747C', obj.data.external);
+     request.input('cBCDBB162', obj.data.date + " " + obj.data.time);
+     request.input('cBF638E94', obj.data.incidentStatusSelect);
+     request.input('UserID', obj.data.userID);
+     request.output('Scope', mssql.BigInt);
+
+    var storedProcedure = '[dbo].[spi_M380_1]';
+    request.execute(storedProcedure, function (err, recordsets, returnValue)
+    {
+      if (err)
+      {
+        _log.d(err);
+        response = { code : 0 , req : obj.data, res : recordsets, msg : err  };
+      }
+      else
+      {
+
+        _log.d("GOOD ");
+        _log.d(JSON.stringify(recordsets));
+        _log.d(JSON.stringify(returnValue));
+
+        response = { code : 1, req : obj.data, res : recordsets, msg : "Good"  };
+        callback(response);
+
+      }
+    });
+  });
+
+
+}
+,
 getControls: function(callback)
 {
     RESPONSE = [];
@@ -30,7 +190,8 @@ getControls: function(callback)
 
     });
 
-},
+}
+,
 getInfoProc:function(callback)
 {
   fs.readFile('provider/adapters/sql/InfoProc.sql', 'utf8', function (err,data) {
@@ -177,7 +338,7 @@ getInfoProc:function(callback)
           var element = elements[i];
           if(element.HierarchyLevel == level)
           {
-            _log.d(level + " " + element.SourceList);
+            // _log.d(level + " " + element.SourceList);
             for(var j in gbTree)
             {
               node = gbTree[j];
@@ -195,7 +356,6 @@ getInfoProc:function(callback)
                   }
                   node.children.push(category);
                   gbTree.push(category);
-                  _log.d(JSON.stringify(tree[0]));
                   break;
                 // _log.d("ELEMENT: " + JSON.stringify(element));
                 // _log.d("PARENT: " + JSON.stringify(node));
@@ -205,7 +365,7 @@ getInfoProc:function(callback)
             found = true
           }
         }
-        _log.d(level + " " + found);
+        // _log.d(level + " " + found);
       }while(found == true)
 
 
@@ -859,77 +1019,6 @@ getInfoProc:function(callback)
       _log.d("Return Hierarchical Parents: " + JSON.stringify(parentNodes));
       done(parentNodes);
     }
-  },
-  postIncident: function(obj, callback)
-  {
-    _log.d("postIncident - Start" );
-    _log.d(JSON.stringify(obj) );
-
-    var conParams = config.conParams[GLOBAL.RELEASE];
-
-    var sqlConfig =
-    {
-      user: conParams.user,
-      password: conParams.password,
-      server: conParams.server,
-      database: conParams.database,
-      options: {
-        appName : conParams.applicationName
-      }
-    };
-
-   var connection = new mssql.Connection(sqlConfig, function (err) {
-      if (err)
-      {
-        _log.d("postIncident: mssql Conn Error " + err);
-        callback(false);
-        return;
-      }
-      var request = new mssql.Request(connection); // or: var request = connection.request();
-
-
-       var siteID_xml = '<st><s id="" siteId="" /></st>';
-       var riskTypeID_xml = '<rt><r id="" riskTypeId="" /></rt>';
-
-      // var request = new mssql.Request(connection);
-       request.input('SiteID_xml', siteID_xml);
-       request.input('RiskTypeID_xml', riskTypeID_xml);
-       request.input('c1E8BCC9E', obj.data.person);
-       request.input('c385D7025', obj.data.siteSelect);
-       request.input('c3D7380B8', obj.data.description);
-       request.input('c3E7CF6D4', obj.data.action);
-       request.input('c7C5F61F0', 13);
-       request.input('c85B29C24', obj.data.usersSelect);
-       request.input('cA299231D', obj.data.location);
-       request.input('cAA24747C', obj.data.external);
-       request.input('cBCDBB162', obj.data.date + " " + obj.data.time);
-       request.input('cBF638E94', obj.data.incidentStatusSelect);
-       request.input('UserID', obj.data.userID);
-       request.output('Scope', mssql.BigInt);
-
-      var storedProcedure = '[dbo].[spi_M380_1]';
-      request.execute(storedProcedure, function (err, recordsets, returnValue)
-      {
-        if (err)
-        {
-          _log.d(err);
-          response = { code : 0 , req : obj.data, res : recordsets, msg : err  };
-        }
-        else
-        {
-
-          _log.d("GOOD ");
-          _log.d(JSON.stringify(recordsets));
-          _log.d(JSON.stringify(returnValue));
-
-          response = { code : 1, req : obj.data, res : recordsets, msg : "Good"  };
-          callback(response);
-
-        }
-      });
-    });
-
-
   }
   ,
   postIncident_old: function(obj, callback)
