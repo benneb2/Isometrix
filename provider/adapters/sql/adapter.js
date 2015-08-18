@@ -18,8 +18,15 @@ getControls: function(callback)
     RESPONSE = [];
 
     sql.getInfoProc(function(controls){
-      RESPONSE.push(controls);
-      callback(RESPONSE);
+      
+      if(controls == false)
+      {
+        callback(false);
+      }else
+      {
+        RESPONSE.push(controls);
+        callback(RESPONSE);  
+      }
 
     });
 
@@ -118,33 +125,6 @@ getInfoProc:function(callback)
             controls.IncidentCategories = sql.buildTree3(tmpCategories,0);
 
             _log.d(JSON.stringify(controls.IncidentCategories));
-
-
-            gbarr = [];
-            var een = {
-              test : 1,
-              arr : []
-            }
-
-            var twee = {
-              test : 2,
-              arr : []
-            }
-
-            var drie = {
-              test : 3,
-              arr : []
-            }
-
-            // gbarr.push(een);
-            // gbarr.push(twee);
-            // gbarr.push(drie);
-
-            // een.arr.push(twee);
-
-            // gbarr[1].arr.push(drie);
-            // _log.d(JSON.stringify(een));
-            // _log.d(JSON.stringify(gbarr));
 
             callback(controls);
             return;
@@ -906,10 +886,14 @@ getInfoProc:function(callback)
         return;
       }
       var request = new mssql.Request(connection); // or: var request = connection.request();
-      _log.d("obj.data.siteSelect " + obj.data.siteSelect);
+
+
+       var siteID_xml = '<st><s id="" siteId="" /></st>';
+       var riskTypeID_xml = '<rt><r id="" riskTypeId="" /></rt>';
+
       // var request = new mssql.Request(connection);
-       request.input('SiteID_xml', null);
-       request.input('RiskTypeID_xml', null);
+       request.input('SiteID_xml', siteID_xml);
+       request.input('RiskTypeID_xml', riskTypeID_xml);
        request.input('c1E8BCC9E', obj.data.person);
        request.input('c385D7025', obj.data.siteSelect);
        request.input('c3D7380B8', obj.data.description);
@@ -929,6 +913,7 @@ getInfoProc:function(callback)
         if (err)
         {
           _log.d(err);
+          response = { code : 0 , req : obj.data, res : recordsets, msg : err  };
         }
         else
         {
@@ -937,7 +922,8 @@ getInfoProc:function(callback)
           _log.d(JSON.stringify(recordsets));
           _log.d(JSON.stringify(returnValue));
 
-          callback(recordsets);
+          response = { code : 1, req : obj.data, res : recordsets, msg : "Good"  };
+          callback(response);
 
         }
       });

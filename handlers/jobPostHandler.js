@@ -14,8 +14,12 @@ _log.d(JSON.stringify(obj));
 
 try{
   sql.postIncident(obj, function(postIncident){
- 		  obj.RESPONSE = postIncident;
- 		  cb(obj);
+
+    result = { req : postIncident.req, res : postIncident.res, msg : postIncident.msg  };
+
+    obj.RESPONSE = { jobID:obj.jobID, statusCode:postIncident.code, result:result};
+
+  	cb(obj);
  
  	 });
 	}catch(err)

@@ -130,7 +130,7 @@
               "default": false
           },
             "showControls": {
-                "menu": true,
+                "menu": false,
                 "icon": "&#xf004;",
                 "label": "Show Controls",
                 "subtext": "",
@@ -170,7 +170,7 @@
               "default": false
           },
             "showControls": {
-                "menu": true,
+                "menu": false,
                 "icon": "&#xf004;",
                 "label": "Show Controls",
                 "subtext": "",

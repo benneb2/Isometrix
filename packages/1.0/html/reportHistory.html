@@ -1,61 +1,243 @@
 <card id="reportHistory" fill="true" flip="rl">
-
-<face id="helpFront" settings="default:true" controller="_reportHistory.Ctrl">
-    <ctl>Help</ctl>
+<face id="historyFront" settings="default:true" controller="_reportHistory.Ctrl">
+    <ctl>History</ctl>
     <ctr></ctr>
     <content>
-      <ul>
-        <li class="cardListElement">
-          <table>
-            <tr>
-              <td class="txtTitle" flip-target="topic1">Help Topic 1<br /><x class="cardListElementSubText">The first topic in the help.</x></td>
-            </tr>
-          </table>
-        </li>
-        <li class="cardListElement">
-          <table>
-            <tr>
-              <td class="txtTitle" flip-target="topic2">Help Topic 2<br /><x class="cardListElementSubText">The second topic in the help.</x></td>
-            </tr>
-          </table>
-        </li>
-      </ul>
+      <div align="center">
+        History Size: {{model.length}}
+        <ul>
+          <li class="cardListElement" ng-repeat="item in model" ng-click="getDetails($index)">
+            <table class="cardFormList" width="100%">
+              <tr >
+                <td width="50" >
+                  {{item.description}}
+                </td>
+                <td align="right" >
+                  {{item.date}}:{{item.time}} 
+                </td>
+              </tr>
+            </table>
+          </li>
+        </ul>
+      </div>
     </content>
     <cbl></cbl>
     <cbr></cbr>
 </face>
-
-
-<face id="topic1" face="back">
-
-    <ctl>Help Topic 1</ctl>
+<face id="historyDetails" controller="_reportHistory.detailCtrl">
+    <ctl>Detail History</ctl>
     <ctr class="gui" flip-target="close">x</ctr>
-    <content>
-
-        <placeholder>
-              This is help section one - and provides the user with information relevant to the first help topic.
-        </placeholder>
-
-
+    <content >
+        <div align="center">
+        <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Incident description</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+            <li class="cardListElement">
+             <table>
+              <tr>
+                <td align="right">
+                  <input type="Text" ng-model="model.description" disabled/>
+                </td>
+              </tr>
+             </table>
+            </li>
+           </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Incident status</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+            <li class="cardListElement">
+             <table>
+              <tr>
+                <td align="right">
+                  <input type="Text" ng-model="model.incidentStatusSelectString" disabled/>
+                </td>
+              </tr>
+             </table>
+            </li>
+           </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Date incident occurred</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+            <li class="cardListElement">
+             <table>
+              <tr>
+                <td align="right">
+                  <input type="Text" ng-model="model.date"  disabled/>
+                </td>
+              </tr>
+             </table>
+            </li>
+           </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+          <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Time incident occurred</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+            <li class="cardListElement">
+             <table>
+              <tr>
+                <td align="right">
+                  <input type="Text" ng-model="model.time" disabled/>
+                </td>
+              </tr>
+             </table>
+            </li>
+           </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Person Reporting</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+            <li class="cardListElement">
+             <table>
+              <tr>
+                <td align="right">
+                  <input type="Text" ng-model="model.person" disabled/>
+                </td>
+              </tr>
+             </table>
+            </li>
+           </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+            <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Incident reported to</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+            <li class="cardListElement">
+             <table>
+              <tr>
+                <td align="right">
+                 <input type="Text" ng-model="model.userSelectString" disabled/>
+                </td>
+              </tr>
+             </table>
+            </li>
+           </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Where incident occurred</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+            <li class="cardListElement">
+             <table class="locationOccurred">
+              <tr>
+                <td align="right">
+                  <input type="Text" ng-model="model.sitePath" disabled/>
+                </td>
+              </tr>
+             </table>
+            </li>
+           </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Specific location</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay">
+               <ul>
+            <li class="cardListElement">
+             <table>
+              <tr>
+                <td align="right">
+                  <input type="Text" ng-model="model.location" disabled/>
+                </td>
+              </tr>
+             </table>
+            </li>
+           </ul>
+              </div>
+             </td>
+           </tr>
+      </table><br/>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
+          <tr>
+             <td class="cardFormElementTitle">Immediate action taken with reason for action taken</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div  class="cardInlay" >
+               <ul>
+                <li class="cardListElement"> 
+                 <textarea name="Text1" cols="40" rows="5" ng-model="model.action" disabled></textarea>
+                </li>
+               </ul>
+              </div>
+             </td>
+           </tr>
+      </table>
+      <br/>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
+          <tr>
+             <td class="cardFormElementTitle">External party involved?</td>
+          </tr>
+           <tr>
+            <td colspan="2" class="cardFormElementContent">
+              <div   class="cardInlay" style="overflow:auto;height:150px:" align="center">
+                <input type="Text" ng-model="model.externalString" disabled/>
+              </div>
+             </td>
+           </tr>
+      </table>
+    <br />
+    </div>
     </content>
     <cbl></cbl>
     <cbr></cbr>
 </face>
-
-<face id="topic2" face="back">
-
-    <ctl>Help Topic 2</ctl>
-    <ctr class="gui" flip-target="close">x</ctr>
-    <content>
-
-        <placeholder>
-              This is help section two - and provides the user with information relevant to the second help topic.
-        </placeholder>
-
-
-    </content>
-    <cbl></cbl>
-    <cbr></cbr>
-</face>
-
 </card>

@@ -148,12 +148,14 @@ _incidentCapture = {
           }
 
         }
-
+        return false;
       }
 
   }
   ,
   didPrep:false
+  ,
+  didtoggle:false
   ,
   prepareList : function() {
 
@@ -173,7 +175,22 @@ _incidentCapture = {
           {
             return;
           }
+          
+
           if (this == event.target) {
+
+            if(_incidentCapture.didtoggle != false)
+            {
+              return;
+            }
+
+            _incidentCapture.didtoggle = true;
+
+            setTimeout(
+              function() {
+                _incidentCapture.didtoggle = false;
+              } , 1000);
+
 
             if($(this).has('ul').length)
             {
@@ -190,7 +207,9 @@ _incidentCapture = {
               }
 
               $(this).children('div').toggle('medium');
-              _.currScrolls[0].refresh();
+              // _.currScrolls[0].destroy();
+              _scroll.add($('#level-scroll')[0]);
+              // _.currScrolls[0].refresh();
             }else
             {
               _incidentCapture.hide('popDiv');
@@ -216,8 +235,21 @@ _incidentCapture = {
       $("#expList").find('x').off("click");
       $('#expList').find('x').click( function(event) {
 
+
           if (this == event.target) 
           {
+            if(_incidentCapture.didtoggle != false)
+            {
+              return;
+            }
+
+            _incidentCapture.didtoggle = true;
+
+            setTimeout(
+              function() {
+                _incidentCapture.didtoggle = false;
+              } , 1000);
+
             var li = $(this).closest("li");
             if($(li).has('ul').length)
             {
@@ -231,7 +263,9 @@ _incidentCapture = {
               {
                 $(li).children('x')[0].innerHTML = '&#xf067;';
               }
-              _.currScrolls[0].refresh();
+              // _.currScrolls[0].refresh();
+              _.currScrolls[0].destroy();
+              _scroll.add($('#level-scroll')[0]);
             }
 
           }
@@ -359,6 +393,7 @@ onMessage : function(data) {
     _incidentCapture.external = scope.model.external;
     _incidentCapture.externalList = scope.model.externalList;
   }
+
 
     _incidentCapture.currStep = data;
     _incidentCapture._Ctrl();
@@ -537,6 +572,51 @@ submitData : function()
         _log.d("JOB = " + JSON.stringify(JOB));
         jobid = jobQueue.add(JOB);
 
+        data.incidentStatusSelectString = _incidentCapture.incidentStatusSelect.SourceList;
+        data.userSelectString = _incidentCapture.usersSelect.name;
+        data.sitePath = _incidentCapture.sitePath;
+
+        if(_incidentCapture.external == 0)
+          data.externalString = "Yes";
+        else
+          data.externalString = "No";
+
+        _log.d(JSON.stringify(data));
+        _model.set("reportHistory",
+            data,
+            function()
+             {  
+                alert('Save Successful');
+                try{
+                  _incidentCapture.description = null;
+                  _incidentCapture.incidentStatusSelect = null;
+                  _incidentCapture.date = null;
+                  _incidentCapture.time = null;
+                  _incidentCapture.usersSelect = null;
+                  _incidentCapture.person = null;
+                  _incidentCapture.location = null;
+                  _incidentCapture.sitePath = null;
+                  _incidentCapture.siteSelect = null;
+                  _incidentCapture.views = null;
+                  _incidentCapture.action = null;
+                  _incidentCapture.external = null;
+                  _incidentCapture.externalList = null;
+
+                  if(_incidentCapture.incidentStatus.length > 0)
+                  {
+                    _incidentCapture.incidentStatusSelect = _incidentCapture.incidentStatus[0];
+                  }
+                }catch(err)
+                {
+                  alert(err);
+                }
+
+                _incidentCapture.onMessage(1);
+             }
+           );
+
+
+
       }catch(err)
       {
 
@@ -547,11 +627,13 @@ submitData : function()
 ,
 nextStep : function()
 {
+  _log.d("nextStep " + _incidentCapture.currStep + " " + (_incidentCapture.currStep + 1));
   _incidentCapture.onMessage(_incidentCapture.currStep + 1);
 }
 ,
 prevStep : function()
 {
+  _log.d("prevStep " + _incidentCapture.currStep + " " + (_incidentCapture.currStep - 1));
   _incidentCapture.onMessage(_incidentCapture.currStep - 1);
 }
 ,
@@ -595,7 +677,7 @@ pop : function(div) {
      _incidentCapture.locpop = true;
       document.getElementById(div).style.display = 'block';
       _.currScrolls[0].destroy();
-      _scroll.add($('#expList')[0])
+      _scroll.add($('#level-scroll')[0]);
 
       setTimeout(
     function() {

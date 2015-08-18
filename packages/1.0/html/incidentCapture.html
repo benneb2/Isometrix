@@ -3,7 +3,7 @@
     <ctl>Adding an Incident record - {{currStep}}/4</ctl>
     <ctr></ctr>
     <content id="frontContent">
-      <div id="step1" ng-if="currStep == 1">
+      <div id="step1" ng-if="currStep == 1" align="center">
       <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
           <tr>
              <td class="cardFormElementTitle">Incident description</td>
@@ -93,8 +93,8 @@
            </tr>
       </table><br/>
     </div>
-    <div id="step2" ng-if="currStep == 2">
-      <div id="popDiv" class="ontop" ng-init="_click=false;">
+    <div id="step2" ng-if="currStep == 2" align="center">
+      <div id="popDiv" class="ontop" ng-init="_click=false;" align="left">
         <div id="popup" style="border: 1px solid #bbb">
           <div style="height: 20%; border-bottom: 1px solid #bbb;color:#000 ;margin: 0; padding: 0;">
             Location
@@ -208,15 +208,15 @@
       </table><br/>
     </div>
 
-    <div id="step3" ng-if="currStep == 3">
-       <div style=" height: 50%">
+    <div id="step3" ng-if="currStep == 3" align="center">
+       <div >
       <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
           <tr>
              <td class="cardFormElementTitle">Risk discipline (Nature of the impact)</td>
           </tr>
            <tr>
             <td colspan="2" class="cardFormElementContent">
-              <div  id="risk-scroll"  class="cardInlay" style="overflow:auto;height:150px">
+              <div  id="risk-scroll"  class="cardInlay" style="overflow:auto;height:200px">
                <ul>
                 <li class="cardListElement"> 
                  <table>
@@ -236,14 +236,14 @@
     </div>
     <br />
 
- <div style=" height: 50%">
+ <div >
       <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
           <tr>
              <td class="cardFormElementTitle">Incident category / sub category</td>
           </tr>
            <tr>
             <td colspan="2" class="cardFormElementContent">
-              <div  id="risk-scroll2"  class="cardInlay" style="overflow:auto;height:150px">
+              <div  id="risk-scroll2"  class="cardInlay" style="overflow:auto;height:200px">
                <ul>
             <li class="cardListElement">
              <div id="catList" class="gui-extra">
@@ -278,7 +278,7 @@
       </table>
     </div>
     </div>
-    <div id="step4" ng-if="currStep == 4">
+    <div id="step4" ng-if="currStep == 4" align="center">
 <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
           <tr>
              <td class="cardFormElementTitle">Immediate action taken with reason for action taken</td>
