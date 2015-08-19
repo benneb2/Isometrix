@@ -104,14 +104,14 @@
           "IncidentCapture": {
               "menu": true,
               "icon": "&#xf044;",
-              "label": "Add Incedent",
+              "label": "Add Incident",
               "subtext": "Create a new incident report",
               "views": [
                 "incidentSteps",
                 "incidentCapture"
               ],
-              "layout": "<table width='100%'><tr><td class='_incidentSteps' width='18%'></td><td class='_incidentCapture' width='82%'></td></tr></table>",
-              "default": true
+              "layout": "<table width='100%'><tr><td class='_incidentSteps' width='30%'></td><td class='_incidentCapture' width='70%'></td></tr></table>",
+              "default": false
             },
           "reportHistory": {
               "menu": true,
@@ -136,22 +136,31 @@
                 "subtext": "",
                 "views": ["showControls"],
                 "default": false
-            }
+            },
+            "startPage": {
+              "menu": true,
+              "icon": "&#xf059;",
+              "label": "startPage",
+              "subtext": "startPage",
+              "views": ["startPage"],
+              "default": true
+          }
 
         },
+
         "large": {
           
           "IncidentCapture": {
               "menu": true,
               "icon": "&#xf044;",
-              "label": "Add Incedent",
+              "label": "Add Incident",
               "subtext": "Create a new incident report",
               "views": [
                 "incidentSteps",
                 "incidentCapture"
               ],
-              "layout": "<table width='100%'><tr><td class='_incidentSteps' width='18%'></td><td class='_incidentCapture' width='82%'></td></tr></table>",
-              "default": true
+              "layout": "<table width='100%'><tr><td class='_incidentSteps' width='33%'></td><td class='_incidentCapture' width='67%'></td></tr></table>",
+              "default": false
             },
             "reportHistory": {
               "menu": true,
@@ -168,6 +177,14 @@
               "subtext": "Frequently asked questions",
               "views": ["help"],
               "default": false
+          },
+          "startPage": {
+              "menu": true,
+              "icon": "&#xf059;",
+              "label": "startPage",
+              "subtext": "startPage",
+              "views": ["startPage"],
+              "default": true
           },
             "showControls": {
                 "menu": false,

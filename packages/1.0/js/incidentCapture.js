@@ -6,7 +6,7 @@ _incidentCapture = {
     users : [],
     usersSelect : null,
     sites : [],
-    siteSelect : null,
+    siteSelect : 1,
     sitePath : null,
     views: [],
     viewSelect : [],
@@ -19,11 +19,52 @@ _incidentCapture = {
     externalList:[],
     action: null,
     IncidentCategories:[],
+    currJobs : [],
     onExit : function() { var _ = this;
 
     },
 
     onLoaded: function () { var _ = this;
+
+      $.pubsub('subscribe', 'jobQueueUpdate', function(topic, data) {
+           var jobID = data.jobId;
+           var status = data.status;
+          _log.d("data = " + JSON.stringify(data));
+          _log.d("topic = " + JSON.stringify(topic));
+
+          for (var i in _incidentCapture.currJobs)
+          {
+            var rjob = _incidentCapture.currJobs[i];
+            if(jobID == rjob.key)
+            {
+              try
+              {
+                rjob.status = status;
+                if(status == 'DONE')
+                {
+                  job = jobQueue.jobs[rjob.key];
+                  var _MSG = (typeof job.result == 'undefined' || typeof job.result.msg == 'undefined')  ? "REQUEST TIMED OUT" : job.result.msg;
+                  rjob.ID = _MSG;
+
+                  _model.set("reportHistory",
+                  rjob,
+                  function()
+                   {  
+                      alert('Save Successful ' + _MSG);
+                    });
+
+                  
+
+                }
+                
+
+              }catch(err)
+              {
+                _log.d(err);
+              }
+            }
+          }
+        });
 
       _model.getAll('incidentStatus', function(model) {
           _log.d("incidentStatus " + model.length);
@@ -53,6 +94,7 @@ _incidentCapture = {
             var item =  model[i];
             item.checked = false;
              _.views.push(item);
+             // alert("views " + item.SourceList);
           }
 
           _model.getAll('incidentCategory', function(model) {
@@ -268,20 +310,7 @@ preparePage3:function()
     _incidentCapture.didPrep = false;
   } , 1000);
 
-  setTimeout(
-      function() {
-        try
-        {
-          _log.d("prepPage3");
-          _.currScrolls[0].destroy();
-          _scroll.add($('#risk-scroll')[0]);
-          _scroll.add($('#risk-scroll2')[0]);
-        }catch(err)
-        {
-          alert("preppage3 " + err);
-        }
-      } , 1000);
-
+  
     $("#catList").find('li').off("click");
     $('#catList').find('li').click( function(event) {
 
@@ -301,7 +330,11 @@ preparePage3:function()
           }
 
           $(this).children('div').toggle('medium');
-          _.currScrolls[0].refresh();
+          // _.currScrolls[0].refresh();
+          setTimeout(
+            function() {
+              _scroll.buffer['risk-scroll2'].refresh();
+            } , 300);
         }else
         {
           // _incidentCapture.hide('popDiv');
@@ -326,12 +359,16 @@ preparePage3:function()
 
               if($(li).hasClass( "expanded" ))
               {
-                $(li).children('x')[0].innerHTML = '&#xf068;';
+                $(li).children('x')[0].innerHTML = '&#xf067;';
               }else
               {
-                $(li).children('x')[0].innerHTML = '&#xf067;';
+                $(li).children('x')[0].innerHTML = '&#xf068;';
               }
-              _.currScrolls[0].refresh();
+              setTimeout(
+                function() {
+                  _scroll.buffer['risk-scroll2'].refresh();
+                } , 300);
+              // _.currScrolls[0].refresh();
             }
 
           }
@@ -343,7 +380,14 @@ preparePage3:function()
 currStep : 1,
 onMessage : function(data) {
   
+
   _log.d("onMessage " + data);
+
+  if(data > 4 || data < 1)
+  {
+    _log.d("onMessage Step does not exist " + data);
+    return;
+  }
 
   e = document.getElementById('incidentCaptureStep1__FACE');
   scope = angular.element(e).scope();
@@ -451,7 +495,39 @@ setTimeout(
 
     scope.model.views = _incidentCapture.views;
     scope.model.subViews = [];
-    _incidentCapture.preparePage3();
+    if(_incidentCapture.currStep == 3)
+    {
+      _incidentCapture.preparePage3();
+      setTimeout(
+      function() {
+        try
+        {
+          _log.d("prepPage3");
+          _.currScrolls[0].destroy();
+          _scroll.add($('#risk-scroll')[0]);
+          _scroll.add($('#risk-scroll2')[0]);
+        }catch(err)
+        {
+          alert("preppage3 " + err);
+        }
+      } , 1000);
+
+    }else if(_incidentCapture.currStep == 4)
+    {
+      setTimeout(
+      function() {
+        try
+        {
+          _log.d("prepPage4");
+          _.currScrolls[0].destroy();
+          _scroll.add($('#exParty-scroll')[0]);
+        }catch(err)
+        {
+          alert("preppage3 " + err);
+        }
+      } , 1000);
+    }
+    
 
 
     scope.model.action = _incidentCapture.action;
@@ -476,6 +552,18 @@ setTimeout(
 reloadSubCat : function()
 {
   _incidentCapture.preparePage3();
+   setTimeout(
+        function() {
+          _scroll.buffer['risk-scroll2'].refresh();
+        } , 300);
+}
+,
+reloadExParty : function()
+{
+  setTimeout(
+        function() {
+          _scroll.buffer['exParty-scroll'].refresh();
+        } , 300);
 }
 ,
 save: function()
@@ -566,14 +654,19 @@ submitData : function()
         _log.d("JOB = " + JSON.stringify(JOB));
         jobid = jobQueue.add(JOB);
 
+        data.key = jobid;
         data.incidentStatusSelectString = _incidentCapture.incidentStatusSelect.SourceList;
         data.userSelectString = _incidentCapture.usersSelect.SourceList;
         data.sitePath = _incidentCapture.sitePath;
+        data.ID = "";
+        data.status = "";
 
         if(_incidentCapture.external == 0)
           data.externalString = "Yes";
         else
           data.externalString = "No";
+
+        _incidentCapture.currJobs.push(data);
 
         _log.d(JSON.stringify(data));
         _model.set("reportHistory",
@@ -581,31 +674,31 @@ submitData : function()
             function()
              {  
                 alert('Save Successful');
-                try{
-                  _incidentCapture.description = null;
-                  _incidentCapture.incidentStatusSelect = null;
-                  _incidentCapture.date = null;
-                  _incidentCapture.time = null;
-                  _incidentCapture.usersSelect = null;
-                  _incidentCapture.person = null;
-                  _incidentCapture.location = null;
-                  _incidentCapture.sitePath = null;
-                  _incidentCapture.siteSelect = null;
-                  _incidentCapture.views = null;
-                  _incidentCapture.action = null;
-                  _incidentCapture.external = null;
-                  _incidentCapture.externalList = null;
+                // try{
+                //   _incidentCapture.description = null;
+                //   _incidentCapture.incidentStatusSelect = null;
+                //   _incidentCapture.date = null;
+                //   _incidentCapture.time = null;
+                //   _incidentCapture.usersSelect = null;
+                //   _incidentCapture.person = null;
+                //   _incidentCapture.location = null;
+                //   _incidentCapture.sitePath = null;
+                //   _incidentCapture.siteSelect = null;
+                //   _incidentCapture.views = null;
+                //   _incidentCapture.action = null;
+                //   _incidentCapture.external = null;
+                //   _incidentCapture.externalList = null;
 
-                  if(_incidentCapture.incidentStatus.length > 0)
-                  {
-                    _incidentCapture.incidentStatusSelect = _incidentCapture.incidentStatus[0];
-                  }
-                }catch(err)
-                {
-                  alert(err);
-                }
+                //   if(_incidentCapture.incidentStatus.length > 0)
+                //   {
+                //     _incidentCapture.incidentStatusSelect = _incidentCapture.incidentStatus[0];
+                //   }
+                // }catch(err)
+                // {
+                  // alert(err);
+                // }
 
-                _incidentCapture.onMessage(1);
+                // _incidentCapture.onMessage(1);
              }
            );
 
@@ -718,12 +811,14 @@ nextStep : function()
 {
   _log.d("nextStep " + _incidentCapture.currStep + " " + (_incidentCapture.currStep + 1));
   _incidentCapture.onMessage(_incidentCapture.currStep + 1);
+  layout.sendMessage('incidentSteps',_incidentCapture.currStep,false);
 }
 ,
 prevStep : function()
 {
   _log.d("prevStep " + _incidentCapture.currStep + " " + (_incidentCapture.currStep - 1));
   _incidentCapture.onMessage(_incidentCapture.currStep - 1);
+  layout.sendMessage('incidentSteps',_incidentCapture.currStep ,false);
 }
 ,
 didLocPop:false

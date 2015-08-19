@@ -88,14 +88,7 @@
    #leftMenuContent
    {
       color: black;
-     background: #ebebeb; /* Old browsers */
---background: -moz-linear-gradient(45deg,  #ebebeb 0%, rgba(61,61,61,1) 100%); /* FF3.6+ */
---background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,rgba(86,86,86,1)), color-stop(100%,rgba(61,61,61,1))); /* Chrome,Safari4+ */
---background: -webkit-linear-gradient(45deg,  rgba(86,86,86,1) 0%,rgba(61,61,61,1) 100%); /* Chrome10+,Safari5.1+ */
---background: -o-linear-gradient(45deg,  rgba(86,86,86,1) 0%,rgba(61,61,61,1) 100%); /* Opera 11.10+ */
---background: -ms-linear-gradient(45deg,  rgba(86,86,86,1) 0%,rgba(61,61,61,1) 100%); /* IE10+ */
---background: linear-gradient(45deg,  rgba(86,86,86,1) 0%,rgba(61,61,61,1) 100%); /* W3C */
---filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#565656', endColorstr='#3d3d3d',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+     background: #FFF; /* Old browsers */
 
    }
 
@@ -107,7 +100,7 @@
    .menuHeaderRight
    {
       font-family: roboto_med;
-      background: rgba(0,0,0,0.6);
+      background: #014171;
       padding-right: 15px;
       height: 40px;
       color: white;
@@ -119,7 +112,7 @@
    .menuFooterRight
    {
       font-family: roboto_med;
-      background: rgba(0,0,0,0.6);
+      background: #014171;
       padding-left: 15px;
       text-align:center;
       height: 20px;
@@ -131,15 +124,11 @@
 
    #rightMenuContent {
 
-      color: white;
-     background: rgb(86,86,86); /* Old browsers */
-background: -moz-linear-gradient(45deg,  rgba(86,86,86,1) 0%, rgba(61,61,61,1) 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,rgba(86,86,86,1)), color-stop(100%,rgba(61,61,61,1))); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(45deg,  rgba(86,86,86,1) 0%,rgba(61,61,61,1) 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(45deg,  rgba(86,86,86,1) 0%,rgba(61,61,61,1) 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(45deg,  rgba(86,86,86,1) 0%,rgba(61,61,61,1) 100%); /* IE10+ */
-background: linear-gradient(45deg,  rgba(86,86,86,1) 0%,rgba(61,61,61,1) 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#565656', endColorstr='#3d3d3d',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+      color: black;
+     background: #FFF; /* Old browsers */
 
+    }
 
+    .jobQueue_ROW{
+      color: black;
     }

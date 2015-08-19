@@ -1,30 +1,62 @@
 <card id="incidentSteps" fill="true" >
 
 <face id="incidentStepsFront" settings="default:true" controller="_incidentSteps.Ctrl">
-    <ctl></ctl>
-    <ctr></ctr>
+    <ctl>Incident Management</ctl>
+    <ctr class="gui-extra">&#xf059;</ctr>
     <content>
       <ul>
        <li class="cardListElement">
          <table class="f20">
-          <tr onClick="layout.sendMessage('incidentCapture','1',false);">
-            <td class="gui-extra">&#xf044;
-              <x class="txtTitle" >Step 1</x><br/>
+          <tr onClick="_incidentSteps.gotoStep(1)">
+            <td style="width:50px">
+              <div style='background:{{(step == 1) ? "green" : "gray"}}; color:white; font-size:19pt; width:35px; height:35px; border-radius:20px; text-shadow:none'>
+                <center><x style='line-height: 1.5em;'>1</x></center>
+              </div>
+            </td>
+            <td class="gui-extra">
+              <x class="txtTitle" style="text-transform: none !important">Step 1</x><br/>
             </td>
           </tr>
-          <tr onClick="layout.sendMessage('incidentCapture','2',false);">
-            <td class="gui-extra">&#xf044;
-              <x class="txtTitle" >Step 2</x><br/>
+         </table>
+        </li>
+        <li class="cardListElement">
+         <table class="f20">
+          <tr onClick="_incidentSteps.gotoStep(2);">
+            <td style="width:50px">
+              <div style='background:{{(step == 2) ? "green" : "gray"}}; color:white; font-size:19pt; width:35px; height:35px; border-radius:20px; text-shadow:none'>
+                <center><x style='line-height: 1.5em;'>2</x></center>
+              </div>
+            </td>
+            <td class="gui-extra">
+              <x class="txtTitle" style="text-transform: none !important">Step 2</x><br/>
             </td>
           </tr>
-          <tr onClick="layout.sendMessage('incidentCapture','3',false);">  
-            <td class="gui-extra">&#xf044;
-              <x class="txtTitle" >Step 3</x><br/>
+          </table>
+        </li>
+        <li class="cardListElement">
+         <table class="f20">
+          <tr onClick="_incidentSteps.gotoStep(3);">  
+            <td style="width:40px">
+              <div style='background:{{(step == 3) ? "green" : "gray"}}; color:white; font-size:19pt; width:35px; height:35px; border-radius:20px; text-shadow:none'>
+                <center><x style='line-height: 1.5em;'>3</x></center>
+              </div>
+            </td>
+            <td class="gui-extra">
+              <x class="txtTitle" style="text-transform: none !important">Step 3</x><br/>
             </td>
           </tr>
-          <tr onClick="layout.sendMessage('incidentCapture','4',false);">
-            <td class="gui-extra">&#xf044;
-              <x class="txtTitle">Step 4</x><br/>
+          </table>
+        </li>
+        <li class="cardListElement">
+         <table class="f20">
+          <tr onClick="_incidentSteps.gotoStep(4)">
+            <td style="width:40px">
+              <div style='background:{{(step == 4) ? "green" : "gray"}}; color:white; font-size:19pt; width:35px; height:35px; border-radius:20px; text-shadow:none'>
+                <center><x style='line-height: 1.5em;'>4</x></center>
+              </div>
+            </td>
+            <td class="gui-extra">
+              <x class="txtTitle" style="text-transform: none !important">Step 4</x><br/>
             </td>
           </tr>
          </table>

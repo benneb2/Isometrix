@@ -161,9 +161,12 @@ postIncident: function(obj, callback)
 
         _log.d("GOOD ");
         _log.d(JSON.stringify(recordsets));
+        _log.d(JSON.stringify(recordsets[0][0].ID));
         _log.d(JSON.stringify(returnValue));
 
-        response = { code : 1, req : obj.data, res : recordsets, msg : "Good"  };
+// recordsets = [[{"ID":"113","RecordID":"113"}],[{"RV":{"type":"Buffer","data":[0,0,0,0,2,12,78,169]}}],[]]
+
+        response = { code : 10, req : obj.data, res : recordsets, msg : recordsets[0][0].ID };
         callback(response);
 
       }

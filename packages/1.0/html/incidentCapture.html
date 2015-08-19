@@ -3,96 +3,51 @@
     <ctl>Adding an Incident record - {{currStep}}/4</ctl>
     <ctr></ctr>
     <content id="frontContent">
-      <div id="step1" ng-if="currStep == 1" align="center">
+      <center>
+      <div id="step1" ng-if="currStep == 1" >
       <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
           <tr>
-             <td class="cardFormElementTitle">Incident description</td>
+             <td class="cardFormElementTitle"  >Incident description <x style="color:red">*</x></td>
+          </tr>
+          <tr>
+            <td>
+              <input type="Text" ng-model="model.description" placeholder="Insert incident description here"/>
+            </td>
+          </tr>
+      </table><br/>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle" >Incident status <x style="color:red">*</x></td>
           </tr>
            <tr>
-            <td colspan="2" class="cardFormElementContent">
-              <div  class="cardInlay">
-               <ul>
-		        <li class="cardListElement">
-		         <table>
-		          <tr>
-		            <td align="right">
-		              <input type="Text" ng-model="model.description" />
-		            </td>
-		          </tr>
-		         </table>
-		        </li>
-		       </ul>
-              </div>
+            <td >
+              <select ng-model="model.incidentStatusSelect" ng-options="status.SourceList for status in model.incidentStatus" ></select>
+            </td>
+           </tr>
+      </table><br/>
+      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+          <tr>
+             <td class="cardFormElementTitle">Date incident occurred <x style="color:red">*</x></td>
+          </tr>
+           <tr>
+            <td >
+		           <input type="date" ng-model="model.date"  />
              </td>
            </tr>
       </table><br/>
       <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
           <tr>
-             <td class="cardFormElementTitle">Incident status</td>
+             <td class="cardFormElementTitle">Time incident occurred <x style="color:red">*</x> </td>
           </tr>
            <tr>
-            <td colspan="2" class="cardFormElementContent">
-              <div  class="cardInlay">
-               <ul>
-		        <li class="cardListElement">
-		         <table>
-		          <tr>
-		            <td align="right">
-                  <select ng-model="model.incidentStatusSelect" ng-options="status.SourceList for status in model.incidentStatus" ></select>
-		            </td>
-		          </tr>
-		         </table>
-		        </li>
-		       </ul>
-              </div>
-             </td>
+            <td >
+              <input type="time" ng-model="model.time" />
+            </td> 
            </tr>
       </table><br/>
-      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
-          <tr>
-             <td class="cardFormElementTitle">Date incident occurred</td>
-          </tr>
-           <tr>
-            <td colspan="2" class="cardFormElementContent">
-              <div  class="cardInlay">
-               <ul>
-		        <li class="cardListElement">
-		         <table>
-		          <tr>
-		            <td align="right">
-		              <input type="date" ng-model="model.date"  />
-		            </td>
-		          </tr>
-		         </table>
-		        </li>
-		       </ul>
-              </div>
-             </td>
-           </tr>
-      </table><br/>
-      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
-          <tr>
-             <td class="cardFormElementTitle">Time incident occurred</td>
-          </tr>
-           <tr>
-            <td colspan="2" class="cardFormElementContent">
-              <div  class="cardInlay">
-               <ul>
-            <li class="cardListElement">
-             <table>
-              <tr>
-                <td align="right">
-                  <input type="time" ng-model="model.time" />
-                </td>
-              </tr>
-             </table>
-            </li>
-           </ul>
-              </div>
-             </td>
-           </tr>
-      </table><br/>
+
     </div>
+
     <div id="step2" ng-if="currStep == 2" align="center">
       <div id="popDiv" class="ontop" ng-init="_click=false;" align="left">
         <div id="popup" style="border: 1px solid #bbb">
@@ -120,89 +75,41 @@
 
       <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
           <tr>
-             <td class="cardFormElementTitle">Person Reporting</td>
+             <td class="cardFormElementTitle">Person Reporting <x style="color:red">*</x></td>
           </tr>
            <tr>
-            <td colspan="2" class="cardFormElementContent">
-              <div  class="cardInlay">
-               <ul>
-            <li class="cardListElement">
-             <table>
-              <tr>
-                <td align="right">
-                  <input type="Text" ng-model="model.person" />
-                </td>
-              </tr>
-             </table>
-            </li>
-           </ul>
-              </div>
-             </td>
+            <td>
+              <input type="Text" ng-model="model.person" placeholder="Please insert a value"/>
+            </td>
            </tr>
       </table><br/>
       <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
           <tr>
-             <td class="cardFormElementTitle">Incident reported to</td>
+             <td class="cardFormElementTitle">Incident reported to <x style="color:red">*</x></td>
           </tr>
            <tr>
-            <td colspan="2" class="cardFormElementContent">
-              <div  class="cardInlay">
-               <ul>
-            <li class="cardListElement">
-             <table>
-              <tr>
-                <td align="right">
-                 <select ng-model="model.usersSelect" ng-options="user.SourceList for user in model.users" ></select>
-                </td>
-              </tr>
-             </table>
-            </li>
-           </ul>
-              </div>
-             </td>
+            <td >
+             <select ng-model="model.usersSelect" ng-options="user.SourceList for user in model.users" placeholder="Please select a value"></select>
+            </td>
            </tr>
       </table><br/>
       <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
           <tr>
-             <td class="cardFormElementTitle">Where incident occurred</td>
+             <td class="cardFormElementTitle">Where incident occurred <x style="color:red">*</x></td>
           </tr>
            <tr>
-            <td colspan="2" class="cardFormElementContent">
-              <div  class="cardInlay">
-               <ul>
-            <li class="cardListElement">
-             <table class="locationOccurred">
-              <tr>
-                <td align="right">
-                  <input id="sitePath" type="Text" style="overflow:auto" ng-model="model.sitePath" />
-                </td>
-              </tr>
-             </table>
-            </li>
-           </ul>
-              </div>
-             </td>
+            <td >
+              <input id="sitePath" type="Text" style="overflow:auto" ng-model="model.sitePath" placeholder="Please select a value"/>
+            </td>
            </tr>
       </table><br/>
       <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
           <tr>
-             <td class="cardFormElementTitle">Specific location</td>
+             <td class="cardFormElementTitle">Specific location <x style="color:red">*</x></td>
           </tr>
            <tr>
-            <td colspan="2" class="cardFormElementContent">
-              <div  class="cardInlay">
-               <ul>
-            <li class="cardListElement">
-             <table>
-              <tr>
-                <td align="right">
-                  <input type="Text" ng-model="model.location" />
-                </td>
-              </tr>
-             </table>
-            </li>
-           </ul>
-              </div>
+            <td>
+              <input type="Text" ng-model="model.location" placeholder="Please insert a value"/>
              </td>
            </tr>
       </table><br/>
@@ -212,16 +119,16 @@
        <div >
       <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
           <tr>
-             <td class="cardFormElementTitle">Risk discipline (Nature of the impact)</td>
+             <td class="cardFormElementTitle">Risk discipline (Nature of the impact) <x style="color:red">*</x></td>
           </tr>
            <tr>
-            <td colspan="2" class="cardFormElementContent">
-              <div  id="risk-scroll"  class="cardInlay" style="overflow:auto;height:200px">
+            <td > 
+              <div  id="risk-scroll" style="overflow:auto;height:200px;border:solid;border-width:2px;border-color:black;">
                <ul>
                 <li class="cardListElement"> 
                  <table>
                   <tr ng-repeat="view in model.views">
-                    <td align="right">
+                    <td >
                       <input type="checkbox" onChange="_incidentCapture.reloadSubCat()" ng-model="view.checked" value="1"/> {{view.SourceList}}
                       <br>
                     </td>
@@ -239,32 +146,31 @@
  <div >
       <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
           <tr>
-             <td class="cardFormElementTitle">Incident category / sub category</td>
+             <td class="cardFormElementTitle">Incident category / sub category <x style="color:red">*</x></td>
           </tr>
            <tr>
-            <td colspan="2" class="cardFormElementContent">
-              <div  id="risk-scroll2"  class="cardInlay" style="overflow:auto;height:200px">
-               <ul>
+            <td >
+              <div  id="risk-scroll2"   style="overflow:auto;height:200px;border:solid;border-width:2px;border-color:black;">
+             <ul>
             <li class="cardListElement">
-             <div id="catList" class="gui-extra">
-              <table>
-              <tr ng-repeat="view in model.views">
-                <td align="right">
-                  <div ng-show="view.checked && view.categories.length > 0">
+             <div id="catList" >
+              <table class="gui-extra">
+              <tr ng-repeat="view in model.views" ng-show="view.checked && view.categories.length > 0">
+                <td >
+                  <div>
 
                     
                       <div ng-include="'partialCat'" ng-init="cats = view.categories"></div>
-                    
-                       <!--  <input type="checkbox" ng-click="" ng-model="view.checked" value="1"/> {{view.categories[0].SourceList}}
-                        <br> -->
+
                     <script type="text/ng-template" id="partialCat">
                       <ul>
-                        <li ng-repeat="cat in cats" SourceListID={{cat.SourceListID}}> <input type="checkbox" ng-if="cat.children.length == 0" ng-model="cat.checked" />{{cat.SourceList}} <x ng-if="cat.children.length > 0">&#xf068;</x>
+                        <li ng-repeat="cat in cats" SourceListID={{cat.SourceListID}}> <input type="checkbox" ng-if="cat.children.length == 0" ng-model="cat.checked" />{{cat.SourceList}}  <x ng-if="cat.children.length > 0" style="font-size: 25px;">&#xf068;</x>
                         <br ng-if="cat.children.length == 0">
-                            <div ng-if="cat.children.length > 0" ng-init="cats = cat.children" ng-include="'partialCat'" style="padding: 5px;"></div>
+                            <div ng-if="cat.children.length > 0" ng-init="cats = cat.children" ng-include="'partialCat'" style="padding: 10px;"></div>
                         </li>
                       </ul>
                     </script>
+
                   </div>
                 </td>
               </tr>
@@ -281,53 +187,40 @@
     <div id="step4" ng-if="currStep == 4" align="center">
 <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
           <tr>
-             <td class="cardFormElementTitle">Immediate action taken with reason for action taken</td>
+             <td class="cardFormElementTitle">Immediate action taken with reason for action taken <x style="color:red">*</x></td>
           </tr>
            <tr>
-            <td colspan="2" class="cardFormElementContent">
-              <div  class="cardInlay" >
-               <ul>
-                <li class="cardListElement"> 
-                 <textarea name="Text1" cols="40" rows="5" ng-model="model.action"></textarea>
-                </li>
-               </ul>
-              </div>
+            <td >
+                 <textarea name="Text1" cols="40" rows="4"  ng-model="model.action" placeholder="Please insert a value"></textarea>
              </td>
            </tr>
       </table>
-    <br />
     <div >
       <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
           <tr>
-             <td class="cardFormElementTitle">External party involved?</td>
+             <td class="cardFormElementTitle">External party involved? <x style="color:red">*</x></td>
           </tr>
            <tr>
-            <td colspan="2" class="cardFormElementContent">
-              <div   class="cardInlay" style="overflow:auto;height:150px:" align="center">
-                <center>
-                  Yes  <input type="range" name="points" min="0" max="1" style="width:100px" ng-model="model.external" >  No
-                </center>
-              </div>
+            <td style="color:black;" >
+                  Yes  <input type="range" name="points" min="0" max="1" style="width:100px" ng-model="model.external" onChange="_incidentCapture.reloadExParty()">  No
              </td>
            </tr>
       </table>
-    </div>
-    <br />
-
+    </div> 
         <div ng-show="model.external == 0">
           <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
               <tr>
-                 <td class="cardFormElementTitle">External party</td>
+                 <td class="cardFormElementTitle">External party <x style="color:red">*</x></td>
               </tr>
                <tr>
-                <td colspan="2" class="cardFormElementContent">
-                  <div  id="risk-scroll"  class="cardInlay" >
+                <td >
+                  <div id="exParty-scroll" style="overflow:auto;height:200px;border:solid;border-width:2px;border-color:black;">
                    <ul>
                     <li class="cardListElement"> 
                      <table>
                       <tr ng-repeat="view in model.externalList">
-                        <td align="right">
-                          <input type="checkbox" ng-model="view.checked" value="1"/> {{view.SourceList}}
+                        <td>
+                          <input type="checkbox" ng-model="view.checked" value="1" /> {{view.SourceList}}
                           <br>
                         </td>
                       </tr>
@@ -340,6 +233,7 @@
           </table>
         </div>
     </div>
+    </center>
     </content>
     <cbl>
       <x ng-show="currStep > 1" class="gui-extra" onClick="_incidentCapture.prevStep()">&#xf053; Back</x>

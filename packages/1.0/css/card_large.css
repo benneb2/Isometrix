@@ -1,3 +1,9 @@
+#incidentCaptureStep1__FACE .cardHeader
+{
+  background:gray;
+  color:white;
+}
+
 
  .ontop {
   z-index: 999;
@@ -63,7 +69,7 @@
 .cardFace
  {
    background: white;
-     border-radius: 10px;
+     border-radius: 0px;
 
  }
 
@@ -230,16 +236,17 @@
 
 .cardFormElementTitle {
 
-   background: rgba(0,0,0,0.1);
+   background: rgba(0,0,0);
    border-top-left-radius:8px;
    border-top-right-radius:8px;
    display: block;
-   font-size:11pt;
-   line-height:12pt;
-   display:block; text-align:center;
+   font-size:15pt;
+   line-height:17pt;
+   display:block; 
+   text-align:left;
    color: #666;
-
-
+   text-transform: none !important;
+   text-align: left;
 
 }
 
@@ -350,44 +357,60 @@ background: -webkit-linear-gradient(top,  #b5babc 0%,#847777 100%);
 
 }
 
+.cardFormContainer select {
+
+    border:solid;
+    -webkit-appearance: none;
+    font-family: roboto_con, sans-serif;
+    font-size:14pt;
+    line-height:1.8em;
+    background-color: #FFF;
+    color: #333;
+    border-radius: 1px;
+    border-width: 2px;
+    padding: 6px 10px 4px 10px;
+    width:100%;
+    text-align: left;
+
+}
+
 .cardFormContainer input {
 
-  border:none;
+  border:solid;
   width:100%;
-  background-color: #eee;
+  background-color: #FFF;
   font-size:14pt;
   line-height:1.8em;
   color: #333;
-  border-radius: 5px;
+  border-radius: 1px;
   font-family: roboto_con, sans-serif;
   padding: 6px 10px 4px 10px;
-  text-align:center;
+  text-align:left;
+  border-width: 2px;
 
+
+
+}
+
+.cardFormContainer textarea {
+
+  border:solid;
+  width:100%;
+  background-color: #FFF;
+  font-size:14pt;
+  line-height:1.8em;
+  color: #333;
+  border-radius: 1px;
+  font-family: roboto_con, sans-serif;
+  padding: 6px 10px 4px 10px;
+  text-align:left;
+  border-width: 2px;
 
 
 
 }
 
 .cardFormContainer input[type=checkbox] {
-}
-
-.cardFormContainer textarea {
-
-  border:none;
-  width:100%;
-  background-color: #eee;
-  font-size:14pt;
-  line-height:1.8em;
-  color: #333;
-  border-radius: 5px;
-  font-family: roboto_con, sans-serif;
-  padding: 6px 10px 4px 10px;
-  text-align:left;
-
-
-
-
-
 }
 
 .cardInlay {
@@ -432,21 +455,6 @@ background: -webkit-linear-gradient(top,  #b5babc 0%,#847777 100%);
 
 }
 
-
-.cardFormContainer select {
-
-    -webkit-appearance: none;
-    font-family: roboto_con, sans-serif;
-    font-size:20pt;
-    line-height:1.8em;
-    background-color: #eee;
-    color: #333;
-    border: none;
-    padding: 6px 10px 4px 10px;
-    width:100%;
-    text-align: center;
-
-}
 
 .cardEmptyElement {
 
