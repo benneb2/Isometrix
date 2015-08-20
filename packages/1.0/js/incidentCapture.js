@@ -19,7 +19,7 @@ _incidentCapture = {
     externalList:[],
     action: null,
     IncidentCategories:[],
-    currJobs : [],
+    currJobs : null,
     token : null,
     onExit : function() { var _ = this;
       alert("onexit ");
@@ -31,6 +31,7 @@ _incidentCapture = {
 
 
       try{
+        _incidentCapture.currJobs = null;
         _incidentCapture.currStep = 1;
         _incidentCapture.description = null;
         _incidentCapture.incidentStatusSelect = null;
@@ -596,12 +597,47 @@ save: function()
     _incidentCapture.submitData();
   }
 
-},
+}
+,
+getCategories: function(list)
+{
+    returnlist = [];
+    for(var i in list)
+    {
+      var cat = list[i];
+      if(cat.HasChild)
+      {
+        returnlist = returnlist.concat(_incidentCapture.getCategories(cat.children));
+      }else if(cat.checked)
+      {
+        alert("Checked " + cat.SourceList);
+        returnlist.push(cat);
+      }
+    }
+    return returnlist;
+}
+,
+getExternalParties: function()
+{
+  returnlist = [];
+  for(var i in _incidentCapture.externalList)
+  {
+    var ex = _incidentCapture.externalList[i];
+    if(ex.checked)
+    {
+      returnlist.push(ex);
+    }
+  }
+  return returnlist;
+}
+,
 submitData : function()
 {
   try
       {
 
+        var catData = _incidentCapture.getCategories(_incidentCapture.IncidentCategories);
+        var exData = _incidentCapture.getExternalParties();
 
         var riskTypeID_xml = '<rt>';
         for(var i in _incidentCapture.views )
@@ -609,7 +645,7 @@ submitData : function()
           var view = _incidentCapture.views[i];
           if(view.checked)
           {
-            
+            // alert(JSON.stringify(view));
             riskTypeID_xml = riskTypeID_xml + '<r id="" riskTypeId="'+view.SourceListID+'" />';
             _incidentCapture.viewSelect.push(view.SourceList);
           }
@@ -617,6 +653,7 @@ submitData : function()
         riskTypeID_xml = riskTypeID_xml + '</rt>';
 
         var data = { 
+
           userID : _login.roles,
           description : _incidentCapture.description,
           incidentStatusSelect : _incidentCapture.incidentStatusSelect.SourceListID,
@@ -627,9 +664,12 @@ submitData : function()
           location : _incidentCapture.location,
           siteSelect : _incidentCapture.siteSelect,
           // //views : _incidentCapture.views,
+          category : catData,
           riskTypeID_xml: riskTypeID_xml,
           action : _incidentCapture.action,
           external : 3200,
+          scope : -1,
+          externalList : exData,
           // //externalList : _incidentCapture.externalList,
 
         };
@@ -639,41 +679,92 @@ submitData : function()
           data.external = 3201;
         }
 
-        var jobData = { action:'postIncident', data: data};
+        // jobid = 0;
+        if(_incidentCapture.currJobs == null)
+        {
+          alert("Null");
 
-        var JOB = {
-          jobName: "Name",
-          jobDesc: _incidentCapture.description,
-          data: jobData,
-          allowDuplicate: true,
-          clearOnDone: false,
-        };
-      
-        _log.d("JOB = " + JSON.stringify(JOB));
-        jobid = jobQueue.add(JOB);
+          var jobData = { action:'postIncident', data: data};
+          alert("1");
+          var JOB = {
+            jobName: "New",
+            jobDesc: _incidentCapture.description,
+            data: jobData,
+            allowDuplicate: true,
+            clearOnDone: false,
+          };
 
-        data.key = jobid;
-        data.incidentStatusSelectString = _incidentCapture.incidentStatusSelect.SourceList;
-        data.userSelectString = _incidentCapture.usersSelect.SourceList;
-        data.sitePath = _incidentCapture.sitePath;
-        data.ID = "";
-        data.status = "";
+          _log.d("JOB = " + JSON.stringify(JOB));
+          jobid = jobQueue.add(JOB);
 
-        if(_incidentCapture.external == 0)
-          data.externalString = "Yes";
-        else
-          data.externalString = "No";
+          data.key = jobid;
 
-        _incidentCapture.currJobs.push(data);
+          data.incidentStatusSelectString = _incidentCapture.incidentStatusSelect.SourceList;
+          data.userSelectString = _incidentCapture.usersSelect.SourceList;
+          data.sitePath = _incidentCapture.sitePath;
+          data.ID = "";
+          data.status = "";
 
-        _log.d(JSON.stringify(data));
-        _model.set("reportHistory",
-            data,
-            function()
-             {  
-                alert('Save Successful');
-             }
-           );
+          if(_incidentCapture.external == 0)
+            data.externalString = "Yes";
+          else
+            data.externalString = "No";
+
+          _incidentCapture.currJobs = data;
+          _log.d(JSON.stringify(data));
+          _model.set("reportHistory",
+              data,
+              function()
+               {  
+                  alert('Save Successful');
+               }
+             );
+
+        }else
+        { 
+          alert("Not Null");
+          _model.getAll("reportHistory",  function(records) {  
+
+            for (var i in records)
+            {
+                var rjob = records[i];
+                if(_incidentCapture.currJobs.key == rjob.key)
+                {
+                  alert("Found Key " + rjob.key)
+                  alert(JSON.stringify(rjob));
+                  if(rjob.status == "DONE")
+                  {
+                    alert("Done");
+                    data.scope = rjob.ID;
+                    // jobid = rjob.key;
+
+                    var jobData = { action:'postIncident', data: data};
+
+                    var JOB = {
+                      jobName: "Update " + rjob.ID,
+                      jobDesc: _incidentCapture.description,
+                      data: jobData,
+                      allowDuplicate: true,
+                      clearOnDone: false,
+                    };
+                  
+                    _log.d("JOB = " + JSON.stringify(JOB));
+                    jobid = jobQueue.add(JOB);
+
+
+                  }else
+                  {
+                    alert("TODO Status " + rjob.status);
+                  }
+                }
+            }
+          });
+        }
+
+        
+        
+
+        
 
 
 

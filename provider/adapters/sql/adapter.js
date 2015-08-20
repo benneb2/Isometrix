@@ -121,6 +121,8 @@ postIncident: function(obj, callback)
     }
   };
 
+  
+
  var connection = new mssql.Connection(sqlConfig, function (err) {
     if (err)
     {
@@ -146,7 +148,10 @@ postIncident: function(obj, callback)
      request.input('cBCDBB162', obj.data.date + " " + obj.data.time);
      request.input('cBF638E94', obj.data.incidentStatusSelect);
      request.input('UserID', obj.data.userID);
-     request.output('Scope', mssql.BigInt);
+     if(obj.data.Scope != -1)
+      request.input('Scope', obj.data.Scope);
+    
+     // request.output('Scope', mssql.BigInt);
 
     var storedProcedure = '[dbo].[spi_M380_1]';
     request.execute(storedProcedure, function (err, recordsets, returnValue)
@@ -162,13 +167,47 @@ postIncident: function(obj, callback)
         _log.d("GOOD ");
         _log.d(JSON.stringify(recordsets));
         _log.d(JSON.stringify(recordsets[0][0].ID));
+        var IncidentId = recordsets[0][0].ID;
         _log.d(JSON.stringify(returnValue));
+        // recordsets = [[{"ID":"113","RecordID":"113"}],[{"RV":{"type":"Buffer","data":[0,0,0,0,2,12,78,169]}}],[]]
 
-// recordsets = [[{"ID":"113","RecordID":"113"}],[{"RV":{"type":"Buffer","data":[0,0,0,0,2,12,78,169]}}],[]]
+        var cbl_xml = '<chl>';
+        for(var i in obj.data.category )
+        {
+            var cat = obj.data.category[i];
+            cbl_xml = cbl_xml + '<c id="'+IncidentId+'" moduleDefinitionID="99662" sourceID="1050" sourceListID="'+cat.SourceListID +'" />';
+        }
+        for(var i in obj.data.externalList )
+        {
+            var ex = obj.data.externalList[i];
+            cbl_xml = cbl_xml + '<c id="'+IncidentId+'" moduleDefinitionID="99890" sourceID="537" sourceListID="'+ex.SourceListID +'" />';
+        }
 
-        response = { code : 10, req : obj.data, res : recordsets, msg : recordsets[0][0].ID };
-        callback(response);
+        
 
+        cbl_xml = cbl_xml + '</chl>';
+
+        var request = new mssql.Request(connection);
+        request.input('XML', cbl_xml);
+
+        var storedProcedure = '[dbo].[spi_M380_1_CheckboxList]';
+        request.execute(storedProcedure, function (err, recordsets, returnValue)
+        {
+          if (err)
+          {
+            _log.d(err);
+            response = { code : 0 , req : obj.data, res : recordsets, msg : err  };
+          }
+          else
+          {
+            _log.d("GOOD ");
+            _log.d(JSON.stringify(recordsets));
+            _log.d(JSON.stringify(returnValue));
+            response = { code : 10, req : obj.data, res : recordsets, msg : IncidentId };
+            callback(response);
+
+          }
+        });
       }
     });
   });

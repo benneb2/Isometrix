@@ -31,6 +31,7 @@ _startPage = {
         var status = data.status;
         _log.d("data = " + JSON.stringify(data));
         _log.d("topic = " + JSON.stringify(topic));
+        _log.d("topic = " + JSON.stringify(status));
 
         _model.getAll("reportHistory",  function(records) {  
 
@@ -49,7 +50,7 @@ _startPage = {
                       rjob.ID = _MSG;
                     }
                     _model.set("reportHistory",rjob,function(){
-                          alert('Save Successful ' + _MSG);
+                          alert('Save Successful ' + status + ' - ' + _MSG);
                     });
 
                   }catch(err)
