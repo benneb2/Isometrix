@@ -7,6 +7,7 @@ _incidentSteps = {
     },
 
     onLoaded: function () { var _ = this;
+        _incidentSteps.step = 1;
         layout.attach('#incidentStepsFront');
     },
 
@@ -29,8 +30,8 @@ _incidentSteps = {
         { 
             scope.step  = _incidentSteps.step;
         });
-    }
-    ,
+    },
+    
     gotoStep: function(step)
     {
 

@@ -1,5 +1,5 @@
 <card id="reportHistory" fill="true" flip="rl">
-<face id="historyFront" settings="default:true" controller="_reportHistory.Ctrl">
+<face id="historyFront" settings="default:true;scrollbars:true" controller="_reportHistory.Ctrl">
     <ctl>History</ctl>
     <ctr></ctr>
     <content>
@@ -13,7 +13,7 @@
                   {{item.ID}}:{{item.description}}
                 </td>
                 <td align="right" >
-                  {{item.date}}:{{item.time}} 
+                  {{item.date}}:{{item.time}}  
                 </td>
               </tr>
             </table>

@@ -1,51 +1,102 @@
 <card id="startPage" fill="true" flip="rl">
 
 <face id="startPageFront" settings="default:true" controller="_startPage.Ctrl">
-    <ctl>WELCOME!</ctl>
-    <ctr class="gui-extra" flip-target="exampleHelp">&#xf059;</ctr>
-    <content>
-
-
-              <placeholder ng-show="data.length == 0"> No Data</placeholder>
-
-              <ul>
-                 <li ng-repeat="dat in data">
-
-              <formElement title="Person" desc="">
-                 <input type="text" filter="alphanumeric" ng-model="dat.name" />
-                 <input type="text" filter="alphanumeric" ng-model="dat.surname" />
-                  Married : {{dat.married}}
-
-              </formElement>
-                  </li>
-                </ul>
-
-
-
-
-
+    <content style="backgroung:white">
+      <ul>
+       <li class="cardListElement" style="padding-top:1.5em;padding-bottom:0.5m">
+         <table>
+          <tr onClick="layout.show('IncidentCapture')">
+            <td style="width:80px">
+                <center><x class="gui-extra" style=' font-size:50px;color:#014171'>&#xf044;</x></center>
+            </td>
+            <td >
+              <table >
+                <tr>
+                  <td >
+                    <x style="text-transform: none !important;font-size:22px">Add Incident</x>
+                  </td>
+                </tr>
+                <tr>
+                  <td >
+                    <x style="text-transform: none !important;font-size:18px;color:gray">Create a new incident report</x>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+         </table>
+        </li>
+        <li class="cardListElement" style="padding-top:1.5em;padding-bottom:0.5m">
+        <table>
+          <tr onClick="layout.show('reportHistory')">
+            <td style="width:80px">
+                <center><x class="gui-extra" style=' font-size:50px;color:#014171'>&#xf1da;</x></center>
+            </td>
+            <td >
+              <table >
+                <tr>
+                  <td >
+                    <x style="text-transform: none !important;font-size:22px">Report History</x>
+                  </td>
+                </tr>
+                <tr>
+                  <td >
+                    <x style="text-transform: none !important;font-size:18px;color:gray">View Current Reports added</x>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+         </table>
+        </li>
+        <li class="cardListElement" style="padding-top:1.5em;padding-bottom:0.5m">
+         <table>
+          <tr onClick="layout.show('help')">
+            <td style="width:80px">
+                <center><x class="gui-extra" style=' font-size:50px;color:#014171'>&#xf059;</x></center>
+            </td>
+            <td >
+              <table >
+                <tr>
+                  <td >
+                    <x style="text-transform: none !important;font-size:22px">Help</x>
+                  </td>
+                </tr>
+                <tr>
+                  <td >
+                    <x style="text-transform: none !important;font-size:18px;color:gray">Frequently asked questions</x>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+         </table>
+        </li>
+        <li class="cardListElement" style="padding-top:1.5em;padding-bottom:0.5m">
+         <table>
+          <tr onClick="app.logout()">
+            <td style="width:80px">
+                <center><x class="gui-extra" style=' font-size:50px;color:#014171'>&#xf08b;</x></center>
+            </td>
+            <td >
+              <table>
+                <tr>
+                  <td >
+                    <x style="text-transform: none !important;font-size:22px">Logout</x>
+                  </td>
+                </tr>
+                <tr>
+                  <td >
+                    <x style="text-transform: none !important;font-size:18px;color:gray">Log out of your current session</x>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+         </table>
+        </li>
+      </ul>
 
     </content>
-    <cbl></cbl>
-    <cbr><x>SAVE</x></cbr>
-
 </face>
-
-
-<face id="exampleHelp" face="back">
-
-    <ctl>HELP</ctl>
-    <ctr class="gui" flip-target="close">x</ctr>
-    <content>
-
-        <placeholder>
-              This is a help section - and provides the user with information relevant to the current you are on.
-        </placeholder>
-
-
-    </content>
-    <cbl></cbl>
-    <cbr></cbr>
-</face>
-
 </card>

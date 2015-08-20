@@ -20,51 +20,40 @@ _incidentCapture = {
     action: null,
     IncidentCategories:[],
     currJobs : [],
+    token : null,
     onExit : function() { var _ = this;
-
+      alert("onexit ");
     },
 
     onLoaded: function () { var _ = this;
 
-      $.pubsub('subscribe', 'jobQueueUpdate', function(topic, data) {
-           var jobID = data.jobId;
-           var status = data.status;
-          _log.d("data = " + JSON.stringify(data));
-          _log.d("topic = " + JSON.stringify(topic));
+      layout.currLayoutID = "startPage";
 
-          for (var i in _incidentCapture.currJobs)
-          {
-            var rjob = _incidentCapture.currJobs[i];
-            if(jobID == rjob.key)
-            {
-              try
-              {
-                rjob.status = status;
-                if(status == 'DONE')
-                {
-                  job = jobQueue.jobs[rjob.key];
-                  var _MSG = (typeof job.result == 'undefined' || typeof job.result.msg == 'undefined')  ? "REQUEST TIMED OUT" : job.result.msg;
-                  rjob.ID = _MSG;
 
-                  _model.set("reportHistory",
-                  rjob,
-                  function()
-                   {  
-                      alert('Save Successful ' + _MSG);
-                    });
+      try{
+        _incidentCapture.currStep = 1;
+        _incidentCapture.description = null;
+        _incidentCapture.incidentStatusSelect = null;
+        _incidentCapture.date = null;
+        _incidentCapture.time = null;
+        _incidentCapture.usersSelect = null;
+        _incidentCapture.person = null;
+        _incidentCapture.location = null;
+        _incidentCapture.sitePath = null;
+        _incidentCapture.siteSelect = 1;
+        // _incidentCapture.views = null;
+        _incidentCapture.action = null;
+        _incidentCapture.external = 0;
+        // _incidentCapture.externalList = null;
 
-                  
-
-                }
-                
-
-              }catch(err)
-              {
-                _log.d(err);
-              }
-            }
-          }
-        });
+        if(_incidentCapture.incidentStatus.length > 0)
+        {
+          _incidentCapture.incidentStatusSelect = _incidentCapture.incidentStatus[0];
+        }
+      }catch(err)
+      {
+        alert(err);
+      }
 
       _model.getAll('incidentStatus', function(model) {
           _log.d("incidentStatus " + model.length);
@@ -129,8 +118,8 @@ _incidentCapture = {
 
       layout.attach('#incidentCaptureStep1');
 
-    },
-
+    }
+    ,
   getFullLocation: function(id,children)
   {
       var found = false;
@@ -213,25 +202,28 @@ _incidentCapture = {
               } , 1000);
 
 
-            if($(this).has('ul').length)
-            {
-              $(this).toggleClass('expanded');
-              if($(this).has('x').length)
-              {
-                if($(this).hasClass( "expanded" ))
-                {
-                  $(this).children('x')[0].innerHTML = '&#xf068;';
-                }else
-                {
-                  $(this).children('x')[0].innerHTML = '&#xf067;';
-                } 
-              }
+            // if($(this).has('ul').length)
+            // {
+            //   $(this).toggleClass('expanded');
+            //   if($(this).has('x').length)
+            //   {
+            //     if($(this).hasClass( "expanded" ))
+            //     {
+            //       $(this).children('x')[0].innerHTML = '&#xf068;';
+            //     }else
+            //     {
+            //       $(this).children('x')[0].innerHTML = '&#xf067;';
+            //     } 
+            //   }
 
-              $(this).children('div').toggle('medium');
-              // _.currScrolls[0].destroy();
-              _scroll.add($('#level-scroll')[0]);
-              // _.currScrolls[0].refresh();
-            }else
+            //   $(this).children('div').toggle('medium');
+
+            //   setTimeout(
+            //     function() {
+            //       _scroll.buffer['level-scroll'].refresh();
+            //     } , 500);
+
+            // }else
             {
               _incidentCapture.hide('popDiv');
               _incidentCapture.siteSelect = $(this).attr("siteId");
@@ -245,7 +237,11 @@ _incidentCapture = {
               _incidentCapture.person = scope.model.person;
               _incidentCapture.location = scope.model.location;
 
-               _incidentCapture._Ctrl();
+               // _incidentCapture._Ctrl();
+              scope.$apply(function() 
+              {  
+                scope.model.sitePath = _incidentCapture.sitePath;
+              });
 
             }
           }
@@ -255,7 +251,6 @@ _incidentCapture = {
 
       $("#expList").find('x').off("click");
       $('#expList').find('x').click( function(event) {
-
 
           if (this == event.target) 
           {
@@ -284,9 +279,12 @@ _incidentCapture = {
               {
                 $(li).children('x')[0].innerHTML = '&#xf067;';
               }
-              // _.currScrolls[0].refresh();
-              _.currScrolls[0].destroy();
-              _scroll.add($('#level-scroll')[0]);
+
+              setTimeout(
+                function() {
+                  _.currScrolls[0].refresh();
+                  _scroll.buffer['level-scroll'].refresh();
+                } , 500);
             }
 
           }
@@ -674,31 +672,6 @@ submitData : function()
             function()
              {  
                 alert('Save Successful');
-                // try{
-                //   _incidentCapture.description = null;
-                //   _incidentCapture.incidentStatusSelect = null;
-                //   _incidentCapture.date = null;
-                //   _incidentCapture.time = null;
-                //   _incidentCapture.usersSelect = null;
-                //   _incidentCapture.person = null;
-                //   _incidentCapture.location = null;
-                //   _incidentCapture.sitePath = null;
-                //   _incidentCapture.siteSelect = null;
-                //   _incidentCapture.views = null;
-                //   _incidentCapture.action = null;
-                //   _incidentCapture.external = null;
-                //   _incidentCapture.externalList = null;
-
-                //   if(_incidentCapture.incidentStatus.length > 0)
-                //   {
-                //     _incidentCapture.incidentStatusSelect = _incidentCapture.incidentStatus[0];
-                //   }
-                // }catch(err)
-                // {
-                  // alert(err);
-                // }
-
-                // _incidentCapture.onMessage(1);
              }
            );
 
@@ -860,8 +833,31 @@ locpop: null,
 pop : function(div) {
      _incidentCapture.locpop = true;
       document.getElementById(div).style.display = 'block';
+
+
+      // setTimeout(
+    // function() {
+      _scroll.buffer['scrollWrapper_incidentCaptureStep1__FACE'].destroy();
       _.currScrolls[0].destroy();
       _scroll.add($('#level-scroll')[0]);
+      _scroll.buffer['level-scroll'].refresh();
+    // } , 300);
+    
+_.currScrolls[0].vScrollbar= true;
+
+_incidentCapture.levelScroll = new iScroll($('#level-scroll')[0], {
+                            onBeforeScrollStart: function (e) {
+                                e.stopPropagation();
+                            },
+                            preventDefaultException: {tagName: /.*/},
+                            mouseWheel: true,
+                            scrollbars: true,
+                            keyBindings: false,
+                            deceleration: 0.0002
+                        });
+
+  _.currScrolls[0] = _incidentCapture.levelScroll;
+
 
       setTimeout(
     function() {
@@ -873,7 +869,7 @@ hide : function(div) {
     if(_incidentCapture.locpop == false)
     {
       document.getElementById(div).style.display = 'none';
-      _.currScrolls[0].destroy();
+      _scroll.buffer['level-scroll'].destroy();
       _scroll.add($('#scrollWrapper_incidentCaptureStep1__FACE')[0])
     }
     

@@ -1,6 +1,6 @@
 <card id="incidentSteps" fill="true" >
 
-<face id="incidentStepsFront" settings="default:true" controller="_incidentSteps.Ctrl">
+<face id="incidentStepsFront" settings="default:true;" controller="_incidentSteps.Ctrl">
     <ctl>Incident Management</ctl>
     <ctr class="gui-extra">&#xf059;</ctr>
     <content>
@@ -36,7 +36,7 @@
         <li class="cardListElement">
          <table class="f20">
           <tr onClick="_incidentSteps.gotoStep(3);">  
-            <td style="width:40px">
+            <td style="width:50px">
               <div style='background:{{(step == 3) ? "green" : "gray"}}; color:white; font-size:19pt; width:35px; height:35px; border-radius:20px; text-shadow:none'>
                 <center><x style='line-height: 1.5em;'>3</x></center>
               </div>
@@ -50,7 +50,7 @@
         <li class="cardListElement">
          <table class="f20">
           <tr onClick="_incidentSteps.gotoStep(4)">
-            <td style="width:40px">
+            <td style="width:50px">
               <div style='background:{{(step == 4) ? "green" : "gray"}}; color:white; font-size:19pt; width:35px; height:35px; border-radius:20px; text-shadow:none'>
                 <center><x style='line-height: 1.5em;'>4</x></center>
               </div>

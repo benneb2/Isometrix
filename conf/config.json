@@ -138,7 +138,7 @@
                 "default": false
             },
             "startPage": {
-              "menu": true,
+              "menu": false,
               "icon": "&#xf059;",
               "label": "startPage",
               "subtext": "startPage",
@@ -179,21 +179,15 @@
               "default": false
           },
           "startPage": {
-              "menu": true,
+              "menu": false,
+              "canView": true,
               "icon": "&#xf059;",
               "label": "startPage",
               "subtext": "startPage",
               "views": ["startPage"],
+              "layout": "<table width='100%'><tr><td class='_startPage' width='33%'></td><td width='67%'></td></tr></table>",
               "default": true
-          },
-            "showControls": {
-                "menu": false,
-                "icon": "&#xf004;",
-                "label": "Show Controls",
-                "subtext": "",
-                "views": ["showControls"],
-                "default": false
-            }
+          }
 
         }
     },
