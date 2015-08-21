@@ -12,8 +12,13 @@ _incidentSteps = {
     },
 
     onMessage : function(step) {
-        _incidentSteps.step = step;
-        _incidentSteps._Ctrl();
+        try{
+            _incidentSteps.step = step;
+            _incidentSteps._Ctrl();
+        }catch(err)
+        {
+            _log.d(err);
+        }
     },
 
     Ctrl : function($scope)

@@ -105,8 +105,17 @@ getFromSqlFile: function(file,callback)
 ,
 postIncident: function(obj, callback)
 {
+  var update = false;
   _log.d("postIncident - Start" );
   _log.d(JSON.stringify(obj) );
+
+  if(obj.data === "update")
+  {
+      _log.d("UPDATE GOOD ");
+      response = { code : 10, req : obj.data, res : "Update Good", msg : "Update Good" };
+      callback(response);
+      return;
+  }
 
   var conParams = config.conParams[GLOBAL.RELEASE];
 
@@ -131,7 +140,8 @@ postIncident: function(obj, callback)
       return;
     }
     var request = new mssql.Request(connection); // or: var request = connection.request();
-
+    request.multiple = true;
+    var storedProcedure = '[dbo].[spi_M380_1]';
 
      var siteID_xml = '<st><s id="" siteId="" /></st>';
     // var request = new mssql.Request(connection);
@@ -148,12 +158,10 @@ postIncident: function(obj, callback)
      request.input('cBCDBB162', obj.data.date + " " + obj.data.time);
      request.input('cBF638E94', obj.data.incidentStatusSelect);
      request.input('UserID', obj.data.userID);
-     if(obj.data.Scope != -1)
-      request.input('Scope', obj.data.Scope);
-    
-     // request.output('Scope', mssql.BigInt);
+ 
+     request.output('Scope', mssql.BigInt);
 
-    var storedProcedure = '[dbo].[spi_M380_1]';
+    
     request.execute(storedProcedure, function (err, recordsets, returnValue)
     {
       if (err)
@@ -167,6 +175,8 @@ postIncident: function(obj, callback)
         _log.d("GOOD ");
         _log.d(JSON.stringify(recordsets));
         _log.d(JSON.stringify(recordsets[0][0].ID));
+        _log.d(JSON.stringify(recordsets[1][0].RV.data));
+        var m380_1Recordset = recordsets;
         var IncidentId = recordsets[0][0].ID;
         _log.d(JSON.stringify(returnValue));
         // recordsets = [[{"ID":"113","RecordID":"113"}],[{"RV":{"type":"Buffer","data":[0,0,0,0,2,12,78,169]}}],[]]
@@ -196,14 +206,14 @@ postIncident: function(obj, callback)
           if (err)
           {
             _log.d(err);
-            response = { code : 0 , req : obj.data, res : recordsets, msg : err  };
+            response = { code : 0 , req : obj.data, res : m380_1Recordset, msg : err  };
           }
           else
           {
             _log.d("GOOD ");
             _log.d(JSON.stringify(recordsets));
             _log.d(JSON.stringify(returnValue));
-            response = { code : 10, req : obj.data, res : recordsets, msg : IncidentId };
+            response = { code : 10, req : obj.data, res : m380_1Recordset, msg : IncidentId };
             callback(response);
 
           }

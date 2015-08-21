@@ -19,42 +19,18 @@ _incidentCapture = {
     externalList:[],
     action: null,
     IncidentCategories:[],
-    currJobs : null,
+    currJob : null,
     token : null,
+    currKey:null,
     onExit : function() { var _ = this;
       alert("onexit ");
     },
 
     onLoaded: function () { var _ = this;
 
+      _incidentCapture.clearPage();
+
       layout.currLayoutID = "startPage";
-
-
-      try{
-        _incidentCapture.currJobs = null;
-        _incidentCapture.currStep = 1;
-        _incidentCapture.description = null;
-        _incidentCapture.incidentStatusSelect = null;
-        _incidentCapture.date = null;
-        _incidentCapture.time = null;
-        _incidentCapture.usersSelect = null;
-        _incidentCapture.person = null;
-        _incidentCapture.location = null;
-        _incidentCapture.sitePath = null;
-        _incidentCapture.siteSelect = 1;
-        // _incidentCapture.views = null;
-        _incidentCapture.action = null;
-        _incidentCapture.external = 0;
-        // _incidentCapture.externalList = null;
-
-        if(_incidentCapture.incidentStatus.length > 0)
-        {
-          _incidentCapture.incidentStatusSelect = _incidentCapture.incidentStatus[0];
-        }
-      }catch(err)
-      {
-        alert(err);
-      }
 
       _model.getAll('incidentStatus', function(model) {
           _log.d("incidentStatus " + model.length);
@@ -119,6 +95,37 @@ _incidentCapture = {
 
       layout.attach('#incidentCaptureStep1');
 
+    }
+    ,
+    clearPage: function()
+    {
+      try{
+        layout.sendMessage('incidentSteps',1,false);
+        _incidentCapture.currKey = _util.getUnique();
+        _incidentCapture.currJob = null;
+        _incidentCapture.currStep = 1;
+        _incidentCapture.description = null;
+        _incidentCapture.incidentStatusSelect = null;
+        _incidentCapture.date = null;
+        _incidentCapture.time = null;
+        _incidentCapture.usersSelect = null;
+        _incidentCapture.person = null;
+        _incidentCapture.location = null;
+        _incidentCapture.sitePath = null;
+        _incidentCapture.siteSelect = 1;
+        // _incidentCapture.views = null;
+        _incidentCapture.action = null;
+        _incidentCapture.external = 0;
+        // _incidentCapture.externalList = null;
+
+        if(_incidentCapture.incidentStatus.length > 0)
+        {
+          _incidentCapture.incidentStatusSelect = _incidentCapture.incidentStatus[0];
+        }
+      }catch(err)
+      {
+        alert(err);
+      }
     }
     ,
   getFullLocation: function(id,children)
@@ -594,8 +601,8 @@ save: function()
     _incidentCapture.external = scope.model.external;
     _incidentCapture.externalList = scope.model.externalList;
 
-    _incidentCapture.submitData();
   }
+  _incidentCapture.submitData();
 
 }
 ,
@@ -610,7 +617,6 @@ getCategories: function(list)
         returnlist = returnlist.concat(_incidentCapture.getCategories(cat.children));
       }else if(cat.checked)
       {
-        alert("Checked " + cat.SourceList);
         returnlist.push(cat);
       }
     }
@@ -668,7 +674,6 @@ submitData : function()
           riskTypeID_xml: riskTypeID_xml,
           action : _incidentCapture.action,
           external : 3200,
-          scope : -1,
           externalList : exData,
           // //externalList : _incidentCapture.externalList,
 
@@ -679,15 +684,34 @@ submitData : function()
           data.external = 3201;
         }
 
-        // jobid = 0;
-        if(_incidentCapture.currJobs == null)
+        if(_incidentCapture.currJob != null)
         {
-          alert("Null");
+          jobQueue.jobs[_incidentCapture.currJob].data.data = data;
+          var now = new Date();
+          var str = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + " " + now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() ;
+          jobQueue.jobs[_incidentCapture.currJob].jobName = "Update " + str;
+          jobQueue.refresh();
+          // var jobData = { action:'postIncident', data: "update"};
+          // var JOB = {
+          //   jobName: "Update",
+          //   jobDesc: _incidentCapture.description,
+          //   data: jobData,
+          //   allowDuplicate: true,
+          //   clearOnDone: false,
+          // };
 
+          // _log.d("JOB = " + JSON.stringify(JOB));
+          // jobid = jobQueue.add(JOB);
+
+          // data.jobKey = jobid;
+          
+        }else
+        {
           var jobData = { action:'postIncident', data: data};
-          alert("1");
+          var now = new Date();
+          var str = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + " " + now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() ;
           var JOB = {
-            jobName: "New",
+            jobName: "New " + str,
             jobDesc: _incidentCapture.description,
             data: jobData,
             allowDuplicate: true,
@@ -697,76 +721,31 @@ submitData : function()
           _log.d("JOB = " + JSON.stringify(JOB));
           jobid = jobQueue.add(JOB);
 
-          data.key = jobid;
-
-          data.incidentStatusSelectString = _incidentCapture.incidentStatusSelect.SourceList;
-          data.userSelectString = _incidentCapture.usersSelect.SourceList;
-          data.sitePath = _incidentCapture.sitePath;
-          data.ID = "";
-          data.status = "";
-
-          if(_incidentCapture.external == 0)
-            data.externalString = "Yes";
-          else
-            data.externalString = "No";
-
-          _incidentCapture.currJobs = data;
-          _log.d(JSON.stringify(data));
-          _model.set("reportHistory",
-              data,
-              function()
-               {  
-                  alert('Save Successful');
-               }
-             );
-
-        }else
-        { 
-          alert("Not Null");
-          _model.getAll("reportHistory",  function(records) {  
-
-            for (var i in records)
-            {
-                var rjob = records[i];
-                if(_incidentCapture.currJobs.key == rjob.key)
-                {
-                  alert("Found Key " + rjob.key)
-                  alert(JSON.stringify(rjob));
-                  if(rjob.status == "DONE")
-                  {
-                    alert("Done");
-                    data.scope = rjob.ID;
-                    // jobid = rjob.key;
-
-                    var jobData = { action:'postIncident', data: data};
-
-                    var JOB = {
-                      jobName: "Update " + rjob.ID,
-                      jobDesc: _incidentCapture.description,
-                      data: jobData,
-                      allowDuplicate: true,
-                      clearOnDone: false,
-                    };
-                  
-                    _log.d("JOB = " + JSON.stringify(JOB));
-                    jobid = jobQueue.add(JOB);
-
-
-                  }else
-                  {
-                    alert("TODO Status " + rjob.status);
-                  }
-                }
-            }
-          });
+          data.jobKey = jobid;
+          _incidentCapture.currJob = jobid;
         }
 
-        
-        
+        data.incidentStatusSelectString = _incidentCapture.incidentStatusSelect.SourceList;
+        data.userSelectString = _incidentCapture.usersSelect.SourceList;
+        data.sitePath = _incidentCapture.sitePath;
+        data.ID = "";
+        data.status = "";
+        data.key = _incidentCapture.currKey;
 
         
+        if(_incidentCapture.external == 0)
+          data.externalString = "Yes";
+        else
+          data.externalString = "No";
 
-
+        _log.d(JSON.stringify(data));
+        _model.set("reportHistory",
+            data,
+            function()
+             {  
+                alert('Save Successful');
+             }
+           );
 
       }catch(err)
       {
