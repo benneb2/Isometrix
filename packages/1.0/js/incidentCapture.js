@@ -22,12 +22,14 @@ _incidentCapture = {
     currJob : null,
     token : null,
     currKey:null,
+    showing:false, 
     onExit : function() { var _ = this;
       alert("onexit ");
     },
 
     onLoaded: function () { var _ = this;
 
+      _.showing = true;
       _incidentCapture.clearPage();
 
       layout.currLayoutID = "startPage";
@@ -102,21 +104,24 @@ _incidentCapture = {
       try{
         layout.sendMessage('incidentSteps',1,false);
         _incidentCapture.currKey = _util.getUnique();
-        _incidentCapture.currJob = null;
+        _incidentCapture.currJob = "";
         _incidentCapture.currStep = 1;
-        _incidentCapture.description = null;
-        _incidentCapture.incidentStatusSelect = null;
-        _incidentCapture.date = null;
-        _incidentCapture.time = null;
-        _incidentCapture.usersSelect = null;
-        _incidentCapture.person = null;
-        _incidentCapture.location = null;
-        _incidentCapture.sitePath = null;
+        _incidentCapture.description = "";
+        _incidentCapture.incidentStatusSelect = "";
+        _incidentCapture.date = "";
+        _incidentCapture.time = "";
+        _incidentCapture.usersSelect = "";
+        _incidentCapture.person = "";
+        _incidentCapture.location = "";
+        _incidentCapture.sitePath = "";
         _incidentCapture.siteSelect = 1;
         // _incidentCapture.views = null;
-        _incidentCapture.action = null;
+        _incidentCapture.action = "";
         _incidentCapture.external = 0;
         // _incidentCapture.externalList = null;
+        _incidentCapture.IncidentCategories = JSON.parse(JSON.stringify(_incidentCapture.IncidentCategories).replace(new RegExp("\"checked\":true", 'g'), "\"checked\":false"));
+        _incidentCapture.views = JSON.parse(JSON.stringify(_incidentCapture.views).replace(new RegExp("\"checked\":true", 'g'), "\"checked\":false"));
+        _incidentCapture.externalList = JSON.parse(JSON.stringify(_incidentCapture.externalList).replace(new RegExp("\"checked\":true", 'g'), "\"checked\":false"));
 
         if(_incidentCapture.incidentStatus.length > 0)
         {
@@ -579,7 +584,11 @@ save: function()
 
   if(_incidentCapture.currStep == 1)
   {
-    
+    if(scope.model.description == "" || scope.model.incidentStatusSelect == "" || scope.model.date == "" || scope.model.time == "")
+    {
+      alert("Please Complete all fields");
+      return;
+    }
     _incidentCapture.description = scope.model.description ;
     _incidentCapture.incidentStatusSelect = scope.model.incidentStatusSelect ;
     _incidentCapture.date = scope.model.date;
@@ -587,6 +596,12 @@ save: function()
 
   }else if(_incidentCapture.currStep == 2)
   {
+    if(scope.model.usersSelect == "" || scope.model.person == "" || scope.model.location == "" || scope.model.sitePath == "")
+    {
+      alert("Please Complete all fields");
+      return;
+    }
+
      _incidentCapture.usersSelect = scope.model.usersSelect;
      _incidentCapture.person = scope.model.person;
      _incidentCapture.location = scope.model.location;
@@ -595,8 +610,26 @@ save: function()
   }else if(_incidentCapture.currStep == 3)
   {
      _incidentCapture.views = scope.model.views;
+      // if(JSON.stringify(_incidentCapture.views).indexOf("\"checked\":true") == -1 || JSON.stringify(_incidentCapture.IncidentCategories).indexOf("\"checked\":true") == -1)
+      if(JSON.stringify(_incidentCapture.views).indexOf("\"checked\":true") == -1 )
+      {
+        alert("Please Complete all fields");
+        return;
+      }
+
   }else if(_incidentCapture.currStep == 4)
   {
+    if(scope.model.action == "")
+    {
+      alert("Please Complete all fields");
+      return;
+    }
+    if(scope.model.external == 0 && JSON.stringify(_incidentCapture.externalList).indexOf("\"checked\":true") == -1)
+    {
+      alert("Please Complete all fields");
+      return;
+    }
+
     _incidentCapture.action = scope.model.action;
     _incidentCapture.external = scope.model.external;
     _incidentCapture.externalList = scope.model.externalList;
@@ -643,9 +676,12 @@ submitData : function()
       {
 
         var catData = _incidentCapture.getCategories(_incidentCapture.IncidentCategories);
-        var exData = _incidentCapture.getExternalParties();
+        var exData = [];
+        if(_incidentCapture.external)
+          exData = _incidentCapture.getExternalParties();
 
         var riskTypeID_xml = '<rt>';
+        _incidentCapture.viewSelect = [];
         for(var i in _incidentCapture.views )
         {
           var view = _incidentCapture.views[i];
@@ -684,7 +720,7 @@ submitData : function()
           data.external = 3201;
         }
 
-        if(_incidentCapture.currJob != null)
+        if(_incidentCapture.currJob != "")
         {
           jobQueue.jobs[_incidentCapture.currJob].data.data = data;
           var now = new Date();
@@ -732,6 +768,7 @@ submitData : function()
         data.status = "";
         data.key = _incidentCapture.currKey;
 
+        data.viewSelect = _incidentCapture.viewSelect;
         
         if(_incidentCapture.external == 0)
           data.externalString = "Yes";

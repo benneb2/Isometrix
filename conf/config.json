@@ -39,7 +39,7 @@
 
       "pinLock" :
             {
-              "enabled" : true,
+              "enabled" : false,
               "timeout" : 200
             },
 
@@ -54,7 +54,7 @@
 
             "login": {
 
-                        "enabled"  : true,
+                        "enabled"  : false,
                         "heading"  : " ",
                         "fields": [
                             {

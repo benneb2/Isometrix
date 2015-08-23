@@ -12,7 +12,7 @@
     radial-gradient(black 15%, transparent 16%) 8px 8px,
     radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px,
     radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px;
-    background-color:#014171;
+    background-color:#004171;
     background-size:16px 16px;
 
 
@@ -26,12 +26,12 @@
 
 .toolbarContainer {
 
-background: #014171;
+background: #004171;
 
  }
 .footerContainer {
 
- background: #014171;
+ background: #344d68;
 
 }
 
@@ -1286,7 +1286,7 @@ background: #ebebeb  url("img/logomain.png") no-repeat center;
 
   color:white; font-size:20pt; padding-top:5px;
   text-shadow: none;
-  background: #014171;
+  background: #004171;
 
 
 }
@@ -1936,7 +1936,7 @@ text-shadow:none;
   text-shadow: none !important;
 }
 #menuScroll td.gui-extra{
-  color: #014171 !important;
+  color: #004171 !important;
   text-shadow: none !important;
   font-size:  : 20pt !important;
 }

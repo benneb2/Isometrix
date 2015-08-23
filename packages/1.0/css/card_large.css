@@ -92,7 +92,7 @@
 
 .cardHeader {
 
-  border-bottom: 1px solid #014171;
+  border-bottom: 1px solid #004171;
   /* color: rgba(255,255,255,0.6);*/
   color: white;
   width:100%;
@@ -104,7 +104,7 @@
   min-height: 40px;
   font-family: roboto_bc;
 
-  background: #014171;
+  background: #004171;
 
 
 
@@ -131,7 +131,7 @@
  .cardFooter
 {
 
-  border-top: 1px solid #014171;
+  border-top: 1px solid #344d68;
   /* color: rgba(255,255,255,0.6);*/
   color: white;
   width:100%;
@@ -143,7 +143,7 @@
   min-height: 40px;
   font-family: roboto_bc;
 
-  background: #014171;
+  background: #344d68;
 
 
 

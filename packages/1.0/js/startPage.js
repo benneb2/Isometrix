@@ -25,13 +25,22 @@ _startPage = {
 
       jobQueue.PROCESS =  function() {
         clearInterval(jobQueue.pollInt);
-        alert("PROCESS");
+        _log.d("PROCESS");
       }
 
       jobQueue.retryAll =  function() {
 
-        _incidentCapture.clearPage();
-        _incidentCapture._Ctrl();
+        if(layout.currLayoutID == "startPage")
+        {
+          if(_incidentCapture.showing)
+          {
+            _incidentCapture.clearPage();
+            _incidentCapture._Ctrl();
+          }
+        }else if(layout.currLayoutID == "reportHistory")
+        {
+
+        }
 
         for (var i in jobQueue.jobs) 
         {
@@ -126,7 +135,7 @@ _startPage = {
                       rjob.ID = _MSG;
                     }
                     _model.set("reportHistory",rjob,function(){
-                          alert('Save Successful ' + status + ' - ' + _MSG);
+                          _log.d('Save Successful ' + status + ' - ' + _MSG);
                     });
 
                   }catch(err)

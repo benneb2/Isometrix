@@ -108,6 +108,7 @@ postIncident: function(obj, callback)
   var update = false;
   _log.d("postIncident - Start" );
   _log.d(JSON.stringify(obj) );
+  //obj = JSON.parse(JSON.stringify(obj).replace(new RegExp("\"\"", 'g'), "null"));
 
   if(obj.data === "update")
   {
