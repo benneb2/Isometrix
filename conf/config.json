@@ -107,10 +107,8 @@
               "label": "Add Incident",
               "subtext": "Create a new incident report",
               "views": [
-                "incidentSteps",
                 "incidentCapture"
               ],
-              "layout": "<table width='100%'><tr><td class='_incidentSteps' width='30%'></td><td class='_incidentCapture' width='70%'></td></tr></table>",
               "default": false
             },
           "reportHistory": {
@@ -143,6 +141,7 @@
               "label": "startPage",
               "subtext": "startPage",
               "views": ["startPage"],
+              "canView": true,
               "default": true
           }
 

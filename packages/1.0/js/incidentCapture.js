@@ -24,10 +24,34 @@ _incidentCapture = {
     currKey:null,
     showing:false, 
     onExit : function() { var _ = this;
-      alert("onexit ");
+      _log.d("onexit ");
     },
 
     onLoaded: function () { var _ = this;
+
+      if(!isTablet)
+      {
+        $( "._tr" ).remove();
+        $( "._tl" ).removeAttr("style");
+        $( "._tl" ).removeAttr("ontouchend");
+        $( "._tl").off().on('touchstart');
+        $('#textArea').attr("rows","2")
+        $('.stepBtn').off()
+        .on('touchstart', function() { $(this).css({opacity:0.2}) })
+        .on('touchend', function() { $(this).css({opacity:1}); window.scrollTo(0,0); });
+
+      }
+
+      $('._br').off().on('touchstart');
+
+      $('._brS').off()
+      .on('touchstart', function() { $(this).css({opacity:0.2}) })
+      .on('touchend', function() { $(this).css({opacity:1}); window.scrollTo(0,0); });
+
+      $('._brN').off()
+      .on('touchstart', function() { $(this).css({opacity:0.2}) })
+      .on('touchend', function() { $(this).css({opacity:1}); window.scrollTo(0,0); });
+
 
       _.showing = true;
       _incidentCapture.clearPage();
@@ -391,6 +415,12 @@ preparePage3:function()
 currStep : 1,
 onMessage : function(data) {
   
+  if(!_incidentCapture.checkValid(_incidentCapture.currStep))
+  {
+    layout.sendMessage('incidentSteps',_incidentCapture.currStep,false);
+    return;
+  }
+   // _incidentCapture.saveCurrData();
 
   _log.d("onMessage " + data);
 
@@ -435,6 +465,7 @@ onMessage : function(data) {
 }
 ,
 Ctrl: function($scope){
+  $scope.isTablet = isTablet;
   $scope.model = {};
   $scope.currStep = 1;
   $scope.model.show = true;
@@ -483,6 +514,7 @@ _Ctrl: function($scope){
   scope.$apply(function() 
   {  
     scope.model = {};
+    scope.isTablet = isTablet;
     scope.currStep = _incidentCapture.currStep;
     scope.model.description = _incidentCapture.description;
     scope.model.date = _incidentCapture.date;
@@ -509,14 +541,32 @@ setTimeout(
     if(_incidentCapture.currStep == 3)
     {
       _incidentCapture.preparePage3();
+      _.currScrolls[0].destroy();
       setTimeout(
       function() {
         try
         {
           _log.d("prepPage3");
+          _scroll.buffer['scrollWrapper_incidentCaptureStep1__FACE'].destroy();
           _.currScrolls[0].destroy();
           _scroll.add($('#risk-scroll')[0]);
           _scroll.add($('#risk-scroll2')[0]);
+          _scroll.buffer['risk-scroll'].options.scrollbars = true;
+          _scroll.buffer['risk-scroll'].options.vScrollbar = true;
+          _scroll.buffer['risk-scroll'].refresh();
+
+          _scroll.buffer['risk-scroll2'].options.scrollbars = true;
+          _scroll.buffer['risk-scroll2'].options.vScrollbar = true;
+          _scroll.buffer['risk-scroll2'].refresh();
+          
+          // _scroll.buffer['risk-scroll2'].options.scrollbars = true;
+          // _scroll.buffer['risk-scroll2'].refresh();
+          setTimeout(
+            function() {
+            _scroll.buffer['scrollWrapper_incidentCaptureStep1__FACE'].destroy();
+            } , 1000);
+
+
         }catch(err)
         {
           alert("preppage3 " + err);
@@ -532,6 +582,10 @@ setTimeout(
           _log.d("prepPage4");
           _.currScrolls[0].destroy();
           _scroll.add($('#exParty-scroll')[0]);
+          _scroll.buffer['exParty-scroll'].options.scrollbars = true;
+          _scroll.buffer['exParty-scroll'].options.vScrollbar = true;
+          _scroll.buffer['exParty-scroll'].refresh();
+
         }catch(err)
         {
           alert("preppage3 " + err);
@@ -577,18 +631,89 @@ reloadExParty : function()
         } , 300);
 }
 ,
+toggleEx: function()
+{
+  alert("toggleEx");
+  e = document.getElementById('incidentCaptureStep1__FACE');
+  scope = angular.element(e).scope();
+
+    if( scope.model.external == 1)
+      _incidentCapture.external =0;
+    else
+      _incidentCapture.external = 1;
+
+
+    scope.$apply(function() 
+    {  
+      _incidentCapture.external = scope.model.external;
+      _incidentCapture.reloadExParty();
+    });
+}
+,
+checkValid: function(step)
+{
+  return true;
+  _log.d("checkValid " + step);
+  
+  e = document.getElementById('incidentCaptureStep1__FACE');
+  scope = angular.element(e).scope();
+
+  if(step == 0)
+  {
+
+  }else if(step == 1)
+  {
+    if(scope.model.description == "" || scope.model.incidentStatusSelect == "" || scope.model.date == "" || scope.model.time == "")
+    {
+      alert("Please Complete all fields");
+      return false;
+    }
+  }else if(step == 2)
+  {
+    if(scope.model.usersSelect == "" || scope.model.person == "" || scope.model.location == "" || scope.model.sitePath == "")
+    {
+      alert("Please Complete all fields");
+      return false;
+    }
+  }else if(step == 3)
+  {
+      if(JSON.stringify(_incidentCapture.views).indexOf("\"checked\":true") == -1 )
+      {
+        alert("Please Complete all fields");
+        return false;
+      }
+
+  }else if(step == 4)
+  {
+    if(scope.model.action == "")
+    {
+      alert("Please Complete all fields");
+      return false;
+    }
+    if(scope.model.external == 0 && JSON.stringify(_incidentCapture.externalList).indexOf("\"checked\":true") == -1)
+    {
+      alert("Please Complete all fields");
+      return false;
+    }
+
+  }else
+  {
+    alert("Step Whaaat? " + step);
+    return false;
+  }
+  return true;
+}
+,
 save: function()
 {
   e = document.getElementById('incidentCaptureStep1__FACE');
   scope = angular.element(e).scope();
 
+  if(!_incidentCapture.checkValid(_incidentCapture.currStep))
+    return;
+
   if(_incidentCapture.currStep == 1)
   {
-    if(scope.model.description == "" || scope.model.incidentStatusSelect == "" || scope.model.date == "" || scope.model.time == "")
-    {
-      alert("Please Complete all fields");
-      return;
-    }
     _incidentCapture.description = scope.model.description ;
     _incidentCapture.incidentStatusSelect = scope.model.incidentStatusSelect ;
     _incidentCapture.date = scope.model.date;
@@ -596,12 +721,6 @@ save: function()
 
   }else if(_incidentCapture.currStep == 2)
   {
-    if(scope.model.usersSelect == "" || scope.model.person == "" || scope.model.location == "" || scope.model.sitePath == "")
-    {
-      alert("Please Complete all fields");
-      return;
-    }
-
      _incidentCapture.usersSelect = scope.model.usersSelect;
      _incidentCapture.person = scope.model.person;
      _incidentCapture.location = scope.model.location;
@@ -610,25 +729,9 @@ save: function()
   }else if(_incidentCapture.currStep == 3)
   {
      _incidentCapture.views = scope.model.views;
-      // if(JSON.stringify(_incidentCapture.views).indexOf("\"checked\":true") == -1 || JSON.stringify(_incidentCapture.IncidentCategories).indexOf("\"checked\":true") == -1)
-      if(JSON.stringify(_incidentCapture.views).indexOf("\"checked\":true") == -1 )
-      {
-        alert("Please Complete all fields");
-        return;
-      }
 
   }else if(_incidentCapture.currStep == 4)
   {
-    if(scope.model.action == "")
-    {
-      alert("Please Complete all fields");
-      return;
-    }
-    if(scope.model.external == 0 && JSON.stringify(_incidentCapture.externalList).indexOf("\"checked\":true") == -1)
-    {
-      alert("Please Complete all fields");
-      return;
-    }
 
     _incidentCapture.action = scope.model.action;
     _incidentCapture.external = scope.model.external;
@@ -668,6 +771,72 @@ getExternalParties: function()
     }
   }
   return returnlist;
+}
+,
+loadCurrData: function()
+{
+  // _log.d("loadCurrData ");
+  // _model.getAll("currData",  function(records) {  
+  //           record = records[0];
+
+  //           _incidentCapture.description = record.description;
+  //           // _incidentCapture.incidentStatusSelect = _incidentCapture.incidentStatusSelect;
+  //           _incidentCapture.date = record.date;
+  //           _incidentCapture.time = record.time;
+  //           // _incidentCapture.usersSelect = record.usersSelect;
+  //           _incidentCapture.person = record.person;
+  //           _incidentCapture.location = record.location;
+  //           _incidentCapture.siteSelect = record.siteSelect;
+  //           riskTypeID_xml: riskTypeID_xml,
+  //           // _incidentCapture.category = record.category;
+  //       });
+}
+,
+saveCurrData: function()
+{
+    _log.d("saveCurrData ");
+
+    var catData = _incidentCapture.getCategories(_incidentCapture.IncidentCategories);
+    var exData = _incidentCapture.getExternalParties();
+    var data = { 
+
+      userID : _login.roles,
+      description : _incidentCapture.description,
+      incidentStatusSelect : _incidentCapture.incidentStatusSelect.SourceListID,
+      date : _incidentCapture.date,
+      time : _incidentCapture.time,
+      usersSelect : _incidentCapture.usersSelect.SourceListID,
+      person : _incidentCapture.person,
+      location : _incidentCapture.location,
+      siteSelect : _incidentCapture.siteSelect,
+      // //views : _incidentCapture.views,
+      category : catData,
+      riskTypeID_xml: riskTypeID_xml,
+      action : _incidentCapture.action,
+      external : 3200,
+      externalList : exData,
+      // //externalList : _incidentCapture.externalList,
+
+    };
+
+    if(_incidentCapture.external == 1)
+    {
+      data.external = 3201;
+    }
+
+    _model.nuke("currData", function() {  
+        alert("Delete Successful");
+    });
+
+     _model.set("currData",
+      data,
+      function()
+       {  
+          alert('Save Successful');
+       }
+     ); 
+
+
 }
 ,
 submitData : function()
@@ -947,10 +1116,11 @@ pop : function(div) {
       _scroll.buffer['scrollWrapper_incidentCaptureStep1__FACE'].destroy();
       _.currScrolls[0].destroy();
       _scroll.add($('#level-scroll')[0]);
+      _scroll.buffer['level-scroll'].options.scrollbars = true;
       _scroll.buffer['level-scroll'].refresh();
     // } , 300);
     
-_.currScrolls[0].vScrollbar= true;
+// _.currScrolls[0].vScrollbar= true;
 
 _incidentCapture.levelScroll = new iScroll($('#level-scroll')[0], {
                             onBeforeScrollStart: function (e) {
@@ -978,6 +1148,13 @@ hide : function(div) {
       document.getElementById(div).style.display = 'none';
       _scroll.buffer['level-scroll'].destroy();
       _scroll.add($('#scrollWrapper_incidentCaptureStep1__FACE')[0])
+      setTimeout(
+    function() {
+      _scroll.buffer['level-scroll'].destroy();
+      _scroll.add($('#scrollWrapper_incidentCaptureStep1__FACE')[0]);
+      _.currScrolls[0]=_scroll.buffer['scrollWrapper_incidentCaptureStep1__FACE'];
+    } , 500);
+
     }
     
   },

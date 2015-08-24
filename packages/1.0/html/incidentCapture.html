@@ -1,6 +1,63 @@
 <card id="incidentCapture" fill="true">
   <face id="incidentCaptureStep1" settings="default:true;" controller="_incidentCapture.Ctrl">
-    <ctl>Adding an Incident record - {{currStep}}/4</ctl>
+    <ctl> 
+      <div ng-show="isTablet">Adding an Incident record - {{currStep}}/4</div>
+      <div ng-show="!isTablet">
+        <table>
+          <tr>
+            <td>
+            <table>
+          <tr>
+            <td align="left" style="font-size:16pt;padding-left:5px">
+              Incident Management
+            </td>
+            <td class="gui-extra" align="right" style="font-size:16pt;padding-right:5px">
+              &#xf059;
+            </td>
+          </tr>
+        </table>
+        </td>
+          </tr>
+          <tr>
+            <td style="background:white;padding:2px" >
+          <table align="center">
+          <tr>
+            <td>
+              <center>
+              <div class="stepBtn" onClick="_incidentCapture.onMessage(1)" style='background:{{(currStep == 1) ? "green" : "gray"}}; color:white; font-size:19pt; width:35px; height:35px; border-radius:20px; text-shadow:none'>
+                <center><x style='line-height: 1.5em;'>1</x></center>
+              </div>
+              </center>
+            </td>
+            <td >
+              <center>
+               <div class="stepBtn" onClick="_incidentCapture.onMessage(2)" style='background:{{(currStep == 2) ? "green" : "gray"}}; color:white; font-size:19pt; width:35px; height:35px; border-radius:20px; text-shadow:none'>
+                <center><x style='line-height: 1.5em;'>2</x></center>
+              </div>
+              </center>
+            </td>
+             <td >
+              <center>
+               <div class="stepBtn" onClick="_incidentCapture.onMessage(3)" style='background:{{(currStep == 3) ? "green" : "gray"}}; color:white; font-size:19pt; width:35px; height:35px; border-radius:20px; text-shadow:none'>
+                <center><x style='line-height: 1.5em;'>3</x></center>
+              </div>
+              </center>
+            </td>
+             <td >
+              <center>
+               <div class="stepBtn" onClick="_incidentCapture.onMessage(4)" style='background:{{(currStep == 4) ? "green" : "gray"}}; color:white; font-size:19pt; width:35px; height:35px; border-radius:20px; text-shadow:none'>
+                <center><x style='line-height: 1.5em;'>4</x></center>
+              </div>
+            </center>
+            </td>
+            </td>
+          </tr>
+        </table>
+            </td>
+          </tr>
+        </table></div>
+    </ctl>
+    <!-- <ctl ng-if="!isTablet" >Not a Tablet Adding an Incident record - {{currStep}}/4</ctl> -->
     <ctr></ctr>
     <content id="frontContent">
       <center>
@@ -31,7 +88,7 @@
           </tr>
            <tr>
             <td >
-		           <input type="date" ng-model="model.date"  />
+		           <input type="date" ng-model="model.date"  style="padding-top: 11px;padding-bottom: 9px;"/>
              </td>
            </tr>
       </table><br/>
@@ -41,7 +98,7 @@
           </tr>
            <tr>
             <td >
-              <input type="time" ng-model="model.time" />
+              <input type="time" ng-model="model.time" style="padding-top: 11px;padding-bottom: 9px;" />
             </td> 
            </tr>
       </table><br/>
@@ -56,7 +113,7 @@
             Location
             <x>
           </div>
-        <div id="level-scroll" style="height: 70% ;padding-top: 5px; padding-bottom: 5px; overflow:auto">
+        <div id="level-scroll" >
           <div id="expList" class="gui-extra">
             <div ng-include="'partialMenu'" ng-init="sites = model.sites"></div>
           </div>
@@ -68,7 +125,7 @@
     </div>
     <script type="text/ng-template" id="partialMenu">
             <ul>
-              <li ng-repeat="site in sites" siteId={{site.SiteID}}> {{site.Site}} <x ng-if="site.children.length > 0" style="font-size:25px">&#xf067;</x>
+              <li ng-repeat="site in sites" siteId={{site.SiteID}}> {{site.Site}} <x ng-if="site.children.length > 0" style="font-size:25px;padding:3px;padding-right:10px">&#xf067;</x>
                   <div ng-if="site.children.length > 0" ng-init="sites = site.children" ng-include="'partialMenu'"></div>
               </li>
             </ul>
@@ -114,6 +171,10 @@
               <input type="Text" ng-model="model.location" placeholder="Please insert a value"/>
              </td>
            </tr>
+           <tr>
+            <td style="height:4px">
+             </td>
+           </tr>
       </table><br/>
     </div>
 
@@ -125,12 +186,12 @@
           </tr>
            <tr>
             <td > 
-              <div  id="risk-scroll" style="overflow:auto;height:200px;border:solid;border-width:2px;border-color:black;">
+              <div  id="risk-scroll">
                <ul>
                 <li class="cardListElement"> 
                  <table>
                   <tr ng-repeat="view in model.views">
-                    <td >
+                    <td style="text-transform: none !important;">
                       <input type="checkbox" onChange="_incidentCapture.reloadSubCat()" ng-model="view.checked" value="1"/> {{view.SourceList}}
                       <br>
                     </td>
@@ -152,7 +213,7 @@
           </tr>
            <tr>
             <td >
-              <div  id="risk-scroll2"   style="overflow:auto;height:200px;border:solid;border-width:2px;border-color:black;">
+              <div  id="risk-scroll2"  style="text-transform: none !important;">
              <ul>
             <li class="cardListElement">
              <div id="catList" >
@@ -193,7 +254,7 @@
           </tr>
            <tr>
             <td >
-                 <textarea name="Text1" cols="40" rows="4"  ng-model="model.action" placeholder="Please insert a value"></textarea>
+                 <textarea id="textArea" name="Text1" cols="40" rows="4"  ng-model="model.action" placeholder="Please insert a value"></textarea>
              </td>
            </tr>
       </table>
@@ -204,7 +265,23 @@
           </tr>
            <tr>
             <td style="color:black;" >
-                  Yes  <input type="range" name="points" min="0" max="1" style="width:100px" ng-model="model.external" onChange="_incidentCapture.reloadExParty()">  No
+<table>
+  <tr>
+    <td width="40"  style="width: 40px">
+      <x style="text-transform: none !important;color:black" >Yes</x>
+    </td>
+    <td width="70">
+      <div class="switch">
+        <input id="cmn-toggle-1" class="cmn-toggle cmn-toggle-round" type="checkbox" ng-model="model.external" onChange="_incidentCapture.reloadExParty()">
+        <label for="cmn-toggle-1"></label>
+      </div>
+    </td>
+    <td >
+      <x style="text-transform: none !important;color:black" >No</x>
+    </td>
+  </tr>
+</table>
+                 <!--  <x onclick="_incidentCapture.toggleEx();"> Yes </x>  <input type="range" name="points" min="0" max="1" style="width:100px" ng-model="model.external" onclick="_incidentCapture.toggleEx();" onChange="_incidentCapture.reloadExParty()">  <x onclick="_incidentCapture.toggleEx();">  No</x>  -->
              </td>
            </tr>
       </table>
@@ -216,12 +293,12 @@
               </tr>
                <tr>
                 <td >
-                  <div id="exParty-scroll" style="overflow:auto;height:200px;border:solid;border-width:2px;border-color:black;">
+                  <div id="exParty-scroll" >
                    <ul>
                     <li class="cardListElement"> 
                      <table>
                       <tr ng-repeat="view in model.externalList">
-                        <td>
+                        <td style="text-transform: none !important" >
                           <input type="checkbox" ng-model="view.checked" value="1" /> {{view.SourceList}}
                           <br>
                         </td>
@@ -241,8 +318,8 @@
       <x ng-show="currStep > 1" class="gui-extra" onClick="_incidentCapture.prevStep()">&#xf053; Back</x>
     </cbl>
     <cbr >
-      <x class="gui-extra" style="padding-right:5px ;" onClick="_incidentCapture.save()">&#xf0ed; Save</x>
-      <x ng-show="currStep < 4" class="gui-extra" onClick="_incidentCapture.nextStep()">Next &#xf054;</x>
+      <x  class="gui-extra _brS" style="padding-right:5px ;" onClick="_incidentCapture.save()">&#xf0ed; Save</x>
+      <x  class="gui-extra _brN" ng-show="currStep < 4" class="gui-extra" onClick="_incidentCapture.nextStep()">Next &#xf054;</x>
     </cbr>
 
 </face>

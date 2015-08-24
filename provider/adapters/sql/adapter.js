@@ -169,6 +169,8 @@ postIncident: function(obj, callback)
       {
         _log.d(err);
         response = { code : 0 , req : obj.data, res : recordsets, msg : err  };
+        callback(response);
+            return;
       }
       else
       {
@@ -208,6 +210,8 @@ postIncident: function(obj, callback)
           {
             _log.d(err);
             response = { code : 0 , req : obj.data, res : m380_1Recordset, msg : err  };
+            callback(response);
+            return;
           }
           else
           {

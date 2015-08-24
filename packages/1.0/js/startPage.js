@@ -19,17 +19,21 @@ _startPage = {
       _startPage.token = $.pubsub('subscribe', 'jobQueueUpdate', _startPage.subscriber);
 
       _startPage.realPROCESS = jobQueue.PROCESS;
+
+      _log.d("hier1");
+
       _startPage.realretryAll = jobQueue.retryAll;
 
       clearInterval(jobQueue.pollInt);
 
       jobQueue.PROCESS =  function() {
         clearInterval(jobQueue.pollInt);
-        _log.d("PROCESS");
+        _log.d("PROCESS " + _startPage.realPROCESS);
       }
 
       jobQueue.retryAll =  function() {
 
+        _log.d("retryall");
         if(layout.currLayoutID == "startPage")
         {
           if(_incidentCapture.showing)
@@ -75,6 +79,7 @@ _startPage = {
     _startPage.realPROCESS();
     _startPage.pollInt = setInterval(function() {
 
+      alert("start PROCESS");
       foundQueued = false;
       for (var i in jobQueue.jobs) 
       {
