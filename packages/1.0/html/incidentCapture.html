@@ -20,13 +20,19 @@
           </tr>
           <tr>
             <td style="background:white;padding:2px" >
-          <table align="center">
+              <center>
+          <table align="center" style="width:80%">
           <tr>
             <td>
               <center>
               <div class="stepBtn" onClick="_incidentCapture.onMessage(1)" style='background:{{(currStep == 1) ? "green" : "gray"}}; color:white; font-size:19pt; width:35px; height:35px; border-radius:20px; text-shadow:none'>
                 <center><x style='line-height: 1.5em;'>1</x></center>
               </div>
+              </center>
+            </td>
+            <td style="color:green">
+              <center>
+                &mdash;
               </center>
             </td>
             <td >
@@ -36,11 +42,21 @@
               </div>
               </center>
             </td>
+            <td style="color:green">
+              <center>
+                &mdash;
+              </center>
+            </td>
              <td >
               <center>
                <div class="stepBtn" onClick="_incidentCapture.onMessage(3)" style='background:{{(currStep == 3) ? "green" : "gray"}}; color:white; font-size:19pt; width:35px; height:35px; border-radius:20px; text-shadow:none'>
                 <center><x style='line-height: 1.5em;'>3</x></center>
               </div>
+              </center>
+            </td>
+            <td style="color:green">
+              <center>
+                &mdash;
               </center>
             </td>
              <td >
@@ -53,6 +69,11 @@
             </td>
           </tr>
         </table>
+      </center>
+            </td>
+          </tr>
+          <tr>
+            <td style="height:3px">
             </td>
           </tr>
         </table></div>
@@ -61,6 +82,11 @@
     <ctr></ctr>
     <content id="frontContent">
       <center>
+      <div id="step0" ng-if="currStep == 0">
+        <center>
+          <img src='img/loader_black.gif' width='50' padding-top="40"/>
+        </center>
+      </div>
       <div id="step1" ng-if="currStep == 1" >
       <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
           <tr>
@@ -105,10 +131,10 @@
 
     </div>
 
-    <div id="step2" ng-if="currStep == 2" align="center">
+    <div id="step2" ng-if="currStep == 2" align="center" style="height:100%" >
       <div id="popDiv" class="ontop" ng-init="_click=false;" align="left">
         <div id="popup" style="border: 1px solid #bbb">
-          <div style="height: 10%; border-bottom: 1px solid #bbb;color:white ;margin: 0; padding: 0; background:#004171;" align="center">
+          <div style="height: 15%; border-bottom: 1px solid #bbb;color:white ;margin: 0; padding: 0; background:#004171;" align="center">
             <x style="font-size:20pt">
             Location
             <x>
@@ -118,14 +144,14 @@
             <div ng-include="'partialMenu'" ng-init="sites = model.sites"></div>
           </div>
         </div>
-         <div style=" position: absolute;bottom: 0; height:10%;width:100%; background: rgba(240, 240, 240, 1) !important" >
-           <button style="border: 1px solid #000;border-radius: 1px;width: 100%; height: 100%; float: right; background: rgb(200,200,200); font-size:14pt" type="button" onClick="_incidentCapture.hide('popDiv')" >Cancel</button>
+         <div style=" position: absolute;bottom: 0; height:15%;width:100%; background: rgba(240, 240, 240, 1) !important" >
+           <button style="border: 1px solid #000;border-radius: 1px;width: 100%; height: 100%; float: right; background: rgb(200,200,200); font-size:16pt" type="button" onClick="_incidentCapture.hide('popDiv')" >Cancel</button>
          </div>
       </div>
     </div>
     <script type="text/ng-template" id="partialMenu">
-            <ul>
-              <li ng-repeat="site in sites" siteId={{site.SiteID}}> {{site.Site}} <x ng-if="site.children.length > 0" style="font-size:25px;padding:3px;padding-right:10px">&#xf067;</x>
+            <ul >
+              <li ng-repeat="site in sites" siteId={{site.SiteID}}> {{site.Site}} <x ng-if="site.children.length > 0" style="font-size:25px;padding:3px;padding-right:10px;{{site.SiteID == 1 ? 'margin-bottom: 1em;'">&#xf067;</x>
                   <div ng-if="site.children.length > 0" ng-init="sites = site.children" ng-include="'partialMenu'"></div>
               </li>
             </ul>
@@ -152,27 +178,29 @@
             </td>
            </tr>
       </table><br/>
-      <table class="cardFormContainer locationOccurred" cellspacing='0' cellpadding='0'>
+      <table class="cardFormContainer " cellspacing='0' cellpadding='0' id="siteTable" >
           <tr>
              <td class="cardFormElementTitle">Where incident occurred <x style="color:red">*</x></td>
           </tr>
-           <tr>
-            <td >
-              <input id="sitePath" type="Text" style="overflow:auto" ng-model="model.sitePath" placeholder="Please select a value"/>
-            </td>
+           <tr >
+            <td>
+              <div>
+            <div class="locationOccurred" id="test-scroll" >
+            <div style="display: inline-block" ><x id="sitePath" style='color:{{(model.sitePath != "") ? "#333" : "#BBB"}};'>{{model.sitePath != "" ? model.sitePath : "Please select a value"}}</x>
+            </div>
+            </div>
+          </div>
+             </td>
            </tr>
       </table><br/>
-      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+
+            <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
           <tr>
              <td class="cardFormElementTitle">Specific location <x style="color:red">*</x></td>
           </tr>
            <tr>
             <td>
               <input type="Text" ng-model="model.location" placeholder="Please insert a value"/>
-             </td>
-           </tr>
-           <tr>
-            <td style="height:4px">
              </td>
            </tr>
       </table><br/>
@@ -214,7 +242,7 @@
            <tr>
             <td >
               <div  id="risk-scroll2"  style="text-transform: none !important;">
-             <ul>
+             <ul style="margin-bottom: 5em;">
             <li class="cardListElement">
              <div id="catList" >
               <table class="gui-extra">
@@ -281,7 +309,6 @@
     </td>
   </tr>
 </table>
-                 <!--  <x onclick="_incidentCapture.toggleEx();"> Yes </x>  <input type="range" name="points" min="0" max="1" style="width:100px" ng-model="model.external" onclick="_incidentCapture.toggleEx();" onChange="_incidentCapture.reloadExParty()">  <x onclick="_incidentCapture.toggleEx();">  No</x>  -->
              </td>
            </tr>
       </table>

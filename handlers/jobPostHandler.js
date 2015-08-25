@@ -15,11 +15,18 @@ _log.d(JSON.stringify(obj));
 try{
   sql.postIncident(obj, function(postIncident){
 
-    result = { req : postIncident.req, res : postIncident.res, msg : postIncident.msg  };
-
-    obj.RESPONSE = { jobID:obj.jobID, statusCode:postIncident.code, result:result};
-
-  	cb(obj);
+  	if(postIncident == false)
+  	{
+  		result = { req : postIncident.req, res : postIncident.res, msg : postIncident.msg  };
+    	obj.RESPONSE = { jobID:obj.jobID, statusCode:postIncident.code, result:result};
+  		cb(obj);
+  	}else
+  	{
+		result = { req : postIncident.req, res : postIncident.res, msg : postIncident.msg  };
+    	obj.RESPONSE = { jobID:obj.jobID, statusCode:postIncident.code, result:result};
+  		cb(obj);
+  	}
+    
  
  	 });
 	}catch(err)

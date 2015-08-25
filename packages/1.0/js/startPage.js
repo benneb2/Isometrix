@@ -7,20 +7,21 @@ _startPage = {
     didretry:false,
     pollInt:false,
     updateInterval:5000,
+    currPage:"startPage",
+    needsClear:false,
     onExit : function() { var _ = this;
 
 
     },
 
     onLoaded: function () { var _ = this;
-
+      _startPage.currPage= "startPage";
       $('#startPageFront__FACE').find(".cardHeader").attr('hidden',true);
       $.pubsub('unsubscribe', _startPage.subscriber);
       _startPage.token = $.pubsub('subscribe', 'jobQueueUpdate', _startPage.subscriber);
 
-      _startPage.realPROCESS = jobQueue.PROCESS;
-
-      _log.d("hier1");
+      if(_startPage.realPROCESS == null)
+        _startPage.realPROCESS = jobQueue.PROCESS;
 
       _startPage.realretryAll = jobQueue.retryAll;
 
@@ -34,16 +35,13 @@ _startPage = {
       jobQueue.retryAll =  function() {
 
         _log.d("retryall");
-        if(layout.currLayoutID == "startPage")
+        if(layout.currLayoutID == "showControls")
         {
-          if(_incidentCapture.showing)
-          {
             _incidentCapture.clearPage();
             _incidentCapture._Ctrl();
-          }
-        }else if(layout.currLayoutID == "reportHistory")
+        }else
         {
-
+          _startPage.needsClear = true;
         }
 
         for (var i in jobQueue.jobs) 
@@ -79,7 +77,7 @@ _startPage = {
     _startPage.realPROCESS();
     _startPage.pollInt = setInterval(function() {
 
-      alert("start PROCESS");
+      _log.d("start PROCESS");
       foundQueued = false;
       for (var i in jobQueue.jobs) 
       {

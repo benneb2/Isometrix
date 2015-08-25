@@ -2,12 +2,14 @@ _reportHistory = {
 
     model: null,
     currModel : null,
-    onExit : function() { var _ = this;
+    testScroll:null,
+    onExit : function() { 
 
+        _log.d("onexit ");
     },
 
     onLoaded: function () { var _ = this;
-
+        _startPage.currPage= "reportHistory";
 		_model.getAll("reportHistory",  function(records) {  
 
 			_reportHistory.model = records;
@@ -15,6 +17,9 @@ _reportHistory = {
 			layout.attach('#historyFront');
 			layout.attach('#historyDetails');
         });
+
+        
+
 
     },
 
@@ -33,12 +38,10 @@ _reportHistory = {
         }
         $scope.delete = function(id)
         {
-            
-
-         _model.del("reportHistory", _reportHistory.model[id].key, function() {  
-            _reportHistory.model.splice(id,1);
-            _reportHistory._Ctrl();
-        });
+           _model.del("reportHistory", _reportHistory.model[id].key, function() {  
+              _reportHistory.model.splice(id,1);
+              _reportHistory._Ctrl();
+          });
         
         }
 
@@ -54,6 +57,24 @@ _reportHistory = {
     detailCtrl : function($scope)
     {
     	$scope.model = _reportHistory.currModel;
+        _reportHistory.testScroll = new iScroll($('#test-scroll')[0], {
+          onBeforeScrollStart: function (e) {
+              e.stopPropagation();
+          },
+          preventDefaultException: {tagName: /.*/},
+          // mouseWheel: true,
+          // scrollbars: false,
+          hScrollbar:false, 
+          vScrollbar:false,
+          hideScrollbar: true,
+          keyBindings: false,
+          deceleration: 0.0002
+      });
+      setTimeout(
+          function() {
+            _reportHistory.testScroll.refresh();
+          } , 1000);
+
     },
 
      _Ctrl : function()

@@ -1,8 +1,57 @@
+.histBlock
+{
+  background: #E6E6E6; 
+  border: 2px solid black ;
+  /*width: 98%;*/
+}
+
+#sitePath
+{
+  /*border: solid;*/
+  width: 100%;
+  background-color: #FFF;
+  font-size: 14pt;
+  line-height: 1.8em;
+  color: #333;
+  border-radius: 1px;
+  font-family: roboto_con, sans-serif;
+  /*padding: 10px 4px 10px;*/
+  text-align: left;
+  margin-right: 5em;
+  /*border-width: 2px;*/
+
+}
+
+#test-scroll
+{
+   height : 30px;
+   /*width:100%;*/
+   position:relative;
+   /*overflow:auto;*/
+   border:solid;
+   border-width:2px;
+   border-color:#333;
+   padding:10px ;
+   font-size:14pt;
+   text-transform: none !important;
+   border-radius: 1px;
+
+}
+
+#siteTable
+{
+  table-layout:fixed;
+  table-layout:fixed;
+  overflow:hidden; 
+  white-space: nowrap;
+  width:98%
+}
+
 #level-scroll
 {
 
   position:relative;
-  height: 80% ;
+  height: 70% ;
   padding-top: 0px;
    padding-bottom: 0px; 
    overflow:auto;
@@ -40,7 +89,7 @@
 }
 
 br {
-   display: none;
+   /*display: none;*/
    margin: 0px 0;
    height: 0px;
    padding: 0px;
@@ -209,6 +258,8 @@ input.cmn-toggle-round:checked + label:after {
 
 
 }
+
+
 
 .cardHeader _tr { font-size: 20pt;   }
 .cardHeader _tl { font-size: 20pt;   }

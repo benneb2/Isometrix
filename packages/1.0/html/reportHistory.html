@@ -16,7 +16,7 @@
                 <td width="50" ng-click="getDetails($index)">
                   Desription: {{item.description}}
                 </td>
-                <td align="right" class="gui-extra" ng-click="delete($index)">
+                <td align="right" class="gui-extra" style="padding:20px" ng-click="delete($index)">
                   <x>&#xf00d;</x>
                 </td>
               </tr>
@@ -100,17 +100,25 @@
                 </td>
 
            </tr>
-      </table><br/>
-      <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
+     </table><br/>
+
+      <table class="cardFormContainer " cellspacing='0' cellpadding='0' id="siteTable" >
           <tr>
-             <td class="cardFormElementTitle">Where incident occurred</td>
+             <td class="cardFormElementTitle">Where incident occurred </td>
           </tr>
-           <tr>
-                <td align="right">
-                  <input style="background: #E6E6E6;" type="Text" ng-model="model.sitePath" disabled/>
-                </td>
+           <tr >
+            <td>
+              <div>
+            <div id="test-scroll" style="background: #E6E6E6;;">
+            <div style="background: #E6E6E6;;display: inline-block" ><x style="background: #E6E6E6;;" id="sitePath" >{{model.sitePath}}</x>
+            </div>
+            </div>
+          </div>
+             </td>
            </tr>
       </table><br/>
+
+
       <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
           <tr>
              <td class="cardFormElementTitle">Specific location</td>
@@ -121,32 +129,38 @@
                 </td>
            </tr>
       </table><br/>
+
       <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
           <tr>
              <td class="cardFormElementTitle">Risk discipline (Nature of the impact)</td>
           </tr>
           <tr>
-            <table style="background: #E6E6E6; border: 2px solid black ;width: 90%;">
+            <td>
+            <table class="histBlock" >
               <tr ng-repeat="item in model.viewSelect" >
                 <td style="text-transform: none;font-size: 14pt;padding:10px">
                   <x style="color: #333;font-family: roboto_con, sans-serif;">{{item}}</x>
                 </td>
               </tr>
             </table>
+          </td>
           </tr>
-      </table><br/>
+      </table>
+      <br/>
             <table class="cardFormContainer" cellspacing='0' cellpadding='0'>
           <tr>
              <td class="cardFormElementTitle">Incident category / sub category</td>
           </tr>
           <tr>
-            <table style="background: #E6E6E6;border: 2px solid black ;width: 90%;">
+            <td>
+            <table class="histBlock" >
               <tr ng-repeat="item in model.category" >
                 <td style="text-transform: none;font-size: 14pt;padding:10px">
                   <x style="color: #333;font-family: roboto_con, sans-serif;">{{item.SourceList}}</x>
                 </td>
               </tr>
             </table>
+          </td>
           </tr>
       </table><br/>
       <table class="cardFormContainer" cellspacing='0' cellpadding='0' >
@@ -176,13 +190,15 @@
              <td class="cardFormElementTitle">External party</td>
           </tr>
           <tr>
-            <table style="background: #E6E6E6;border: 2px solid black ;width: 90%;">
+            <td>
+            <table class="histBlock">
               <tr ng-repeat="item in model.externalList" >
                 <td style="text-transform: none;font-size: 14pt;padding:10px">
                   <x style="color: #333;font-family: roboto_con, sans-serif;">{{item.SourceList}}</x>
                 </td>
               </tr>
             </table>
+          </td>
           </tr>
       </table><br/>
     </div>

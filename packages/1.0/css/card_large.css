@@ -1,12 +1,61 @@
+.histBlock
+{
+  background: #E6E6E6; 
+  border: 2px solid black ;
+  /*width: 90%;*/
+}
+
+#sitePath
+{
+  /*border: solid;*/
+  width: 100%;
+  background-color: #FFF;
+  font-size: 14pt;
+  line-height: 1.8em;
+  color: #333;
+  border-radius: 1px;
+  font-family: roboto_con, sans-serif;
+  /*padding: 10px 4px 10px;*/
+  text-align: left;
+  margin-right: 5em;
+  /*border-width: 2px;*/
+
+}
+
+#test-scroll
+{
+   height : 30px;
+   /*width:100%;*/
+   position:relative;
+   overflow:auto;
+   border:solid;
+   border-width:2px;
+   border-color:#333;
+   padding:10px ;
+   font-size:14pt;
+   text-transform: none !important;
+   border-radius: 1px;
+
+}
+
+#siteTable
+{
+  table-layout:fixed;
+  table-layout:fixed;
+  overflow:hidden; 
+  white-space: nowrap;
+  width:90%
+}
+
 #level-scroll
 {
 
   position:relative;
-  height: 80% ;
+  height: 70% ;
   padding-top: 0px;
    padding-bottom: 0px; 
    overflow:auto;
-   font-size:19px;
+   font-size:19pt;
 }
 
 #risk-scroll
@@ -110,12 +159,12 @@ input.cmn-toggle-round:checked + label:after {
 
 #popup {
     width: 80%;
-    height: 60%;
+    height: 70%;
     position: absolute;
     color: #000000;
     background: rgba(255, 255, 255 , 1) !important; 
     /* To align popup window at the center of screen*/
-    top: 25%;
+    top: 15%;
     left: 10%;
     /*margin-top: -100px;*/
     /*margin-left: -150px;*/

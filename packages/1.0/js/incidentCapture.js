@@ -2,33 +2,38 @@ _incidentCapture = {
 
     model: null,
     incidentStatus : [],
-    incidentStatusSelect : null,
+    incidentStatusSelect : "",
     users : [],
-    usersSelect : null,
+    usersSelect : "",
     sites : [],
-    siteSelect : 1,
-    sitePath : null,
+    siteSelect : "",
+    sitePath : "",
     views: [],
     viewSelect : [],
-    description : null,
-    date: null,
-    time: null,
-    person:null,
-    location:null,
+    description : "",
+    date: "",
+    time: "",
+    person:"",
+    location:"",
     external:"0",
     externalList:[],
-    action: null,
+    action: "",
     IncidentCategories:[],
-    currJob : null,
-    token : null,
-    currKey:null,
+    rawIncidentCategories:[],
+    currJob : "",
+    currKey:"",
     showing:false, 
-    onExit : function() { var _ = this;
-      _log.d("onexit ");
-    },
+    riskScroll:null,
+    riskScroll2:null,
+    currStep : 1,
+onExit:function(){
+  _incidentCapture.saveCurrData();
+},
+    
 
     onLoaded: function () { var _ = this;
 
+      _log.d("onloaded");
       if(!isTablet)
       {
         $( "._tr" ).remove();
@@ -52,11 +57,29 @@ _incidentCapture = {
       .on('touchstart', function() { $(this).css({opacity:0.2}) })
       .on('touchend', function() { $(this).css({opacity:1}); window.scrollTo(0,0); });
 
+      layout.sendMessage('incidentSteps',_incidentCapture.currStep,false);
+      layout.currLayoutID = "showControls";
 
-      _.showing = true;
-      _incidentCapture.clearPage();
+      if (_startPage.currPage == "incedentCapture" ) 
+      {
+        _log.d("clearPage");
 
-      layout.currLayoutID = "startPage";
+        navigator.notification.confirm("Click OK to create a New Incedent.", function(idx) {
+          if(idx == 1)
+          {
+             _incidentCapture.clearPage(); 
+             _incidentCapture._Ctrl();
+          }
+        });
+        
+      }else if( _startPage.needsClear == true)
+      {
+        _startPage.needsClear = false;
+        _log.d("clearPage");
+        _incidentCapture.clearPage();
+      }
+
+      _startPage.currPage= "incedentCapture";
 
       _model.getAll('incidentStatus', function(model) {
           _log.d("incidentStatus " + model.length);
@@ -66,65 +89,148 @@ _incidentCapture = {
             _.incidentStatusSelect = _.incidentStatus[0];
           }
 
-          _incidentCapture._Ctrl();
-      });
+          _model.getAll('incidentUsers', function(model) {
+              _log.d("incidentUsers " + model.length);
+              _.users = model;
 
-      _model.getAll('incidentUsers', function(model) {
-          _log.d("incidentUsers " + model.length);
-          _.users = model;
-      });
+               _model.getAll('incidentLevels', function(model) {
+                    _log.d("incidentLevels " + model.length);
+                    _.sites = _.buildTree(model,0);
 
-      _model.getAll('incidentLevels', function(model) {
-          _log.d("incidentLevels " + model.length);
-          _.sites = _.buildTree(model,0);
-      });
+                    _model.getAll('externalParty', function(model) {
+                        _log.d("externalParty " + model.length);
+                        _.externalList = model;
 
-      _model.getAll('incidentViews', function(model) {
-          _log.d("incidentViews " + model.length);
-          for(var i in model)
-          {
-            var item =  model[i];
-            item.checked = false;
-             _.views.push(item);
-             // alert("views " + item.SourceList);
-          }
+                         _model.getAll('incidentViews', function(model) {
+                              _log.d("incidentViews " + model.length);
+                              _.views = [];
+                              for(var i in model)
+                              {
+                                var item =  model[i];
+                                item.checked = false;
+                                 _.views.push(item);
+                                 // alert("views " + item.SourceList);
+                              }
 
-          _model.getAll('incidentCategory', function(model) {
-            _log.d("incidentCategory " + model.length);
-            _.IncidentCategories = _.buildCatTree(model,0);
+                              _model.getAll('incidentCategory', function(model) {
+                                _log.d("incidentCategory " + model.length);
+                                // _.rawIncidentCategories = model;
+                                _.IncidentCategories = _.buildCatTree(model,0);
 
-            for(var i in _.views)
-            {
-              var view = _.views[i];
-              for(var j in _.IncidentCategories)
-              {
-                var categories = _.IncidentCategories[j];
-                if(view.SourceList == categories.SourceList)
-                {
-                  if (typeof(view.categories ) === "undefined")
-                  { 
-                    view.categories = [];
-                  }
-                  view.categories.push(categories);
-                }
-              }
-              
-            }
-        });
+                                for(var i in _.views)
+                                {
+                                  var view = _.views[i];
+                                  for(var j in _.IncidentCategories)
+                                  {
+                                    var categories = _.IncidentCategories[j];
+                                    if(view.SourceList == categories.SourceList)
+                                    {
+                                      if (typeof(view.categories ) === "undefined")
+                                      { 
+                                        view.categories = [];
+                                      }
+                                      view.categories.push(categories);
+                                    }
+                                  }
+                                  
+                                }
+                          
+                                if(_.showing == false)
+                                {
+                                  _.showing = false;
+                                  _incidentCapture.loadCurrData();
+                                }
 
-      });
+                            });
 
-      _model.getAll('externalParty', function(model) {
-          _log.d("externalParty " + model.length);
-          _.externalList = model;
+                          });
+
+                    });
+
+                });
+          });
+
+          
       });
 
       layout.attach('#incidentCaptureStep1');
+      _.initScrolls();
+    }
+    ,
+    initScrolls:function()
+    {
+
+      _incidentCapture.riskScroll = new iScroll($('#risk-scroll')[0], {
+          onBeforeScrollStart: function (e) {
+              e.stopPropagation();
+          },
+          preventDefaultException: {tagName: /.*/},
+          mouseWheel: true,
+          scrollbars: true,
+          keyBindings: false,
+          deceleration: 0.0002
+      });
+
+      _incidentCapture.riskScroll2 = new iScroll($('#risk-scroll2')[0], {
+          onBeforeScrollStart: function (e) {
+              e.stopPropagation();
+          },
+          preventDefaultException: {tagName: /.*/},
+          mouseWheel: true,
+          scrollbars: true,
+          keyBindings: false,
+          deceleration: 0.0002
+      });
+
+      _incidentCapture.levelScroll = new iScroll($('#level-scroll')[0], {
+          onBeforeScrollStart: function (e) {
+              e.stopPropagation();
+          },
+          preventDefaultException: {tagName: /.*/},
+          mouseWheel: true,
+          scrollbars: true,
+          keyBindings: false,
+          deceleration: 0.0002
+      });
+
+          
+      _incidentCapture.exPartyScroll = new iScroll($('#exParty-scroll')[0], {
+          onBeforeScrollStart: function (e) {
+              e.stopPropagation();
+          },
+          preventDefaultException: {tagName: /.*/},
+          mouseWheel: true,
+          scrollbars: true,
+          keyBindings: false,
+          deceleration: 0.0002
+      });
+
+      _incidentCapture.testScroll = new iScroll($('#test-scroll')[0], {
+          onBeforeScrollStart: function (e) {
+              e.stopPropagation();
+          },
+          preventDefaultException: {tagName: /.*/},
+          // mouseWheel: true,
+          // scrollbars: false,
+          hScrollbar:false, 
+          vScrollbar:false,
+          hideScrollbar: true,
+          keyBindings: false,
+          deceleration: 0.0002
+      });
+      _incidentCapture.testScroll.hScrollbar = false;
+      _incidentCapture.testScroll.options.hScrollbar = false;
 
     }
     ,
     clearPage: function()
     {
+      _log.d("clearPage");
+
+      _model.nuke("currData", function() {  
+        _log.d("Delete successful currData");
+      });
+
       try{
         layout.sendMessage('incidentSteps',1,false);
         _incidentCapture.currKey = _util.getUnique();
@@ -138,7 +244,7 @@ _incidentCapture = {
         _incidentCapture.person = "";
         _incidentCapture.location = "";
         _incidentCapture.sitePath = "";
-        _incidentCapture.siteSelect = 1;
+        _incidentCapture.siteSelect = "";
         // _incidentCapture.views = null;
         _incidentCapture.action = "";
         _incidentCapture.external = 0;
@@ -218,69 +324,57 @@ _incidentCapture = {
       $("#expList").find('li').off("click"); 
       $('#expList').find('li').click( function(event) {
 
+   if (event.stopPropagation){
+       event.stopPropagation();
+   }
+   else if(window.event){
+      window.event.cancelBubble=true;
+   }
+
+          event.stopPropagation();
           if(_incidentCapture.locpop != false)
           {
-            return;
+            return false;
           }
           
+          if (this == event.target) 
+          {
 
-          if (this == event.target) {
+            // if(_incidentCapture.didtoggle != false)
+            // {
+            //   return false;
+            // }
 
-            if(_incidentCapture.didtoggle != false)
-            {
-              return;
-            }
+            // _incidentCapture.didtoggle = true;
 
-            _incidentCapture.didtoggle = true;
+            // setTimeout(
+            //   function() {
+            //     _incidentCapture.didtoggle = false;
+            //   } , 300);
 
+
+            _incidentCapture.hide('popDiv');
+            _incidentCapture.siteSelect = $(this).attr("siteId");
+            _incidentCapture.sitePath = _incidentCapture.getFullLocation(_incidentCapture.siteSelect,_incidentCapture.sites);
+            
+
+           e = document.getElementById('incidentCaptureStep1__FACE');
+           scope = angular.element(e).scope();
+
+            _incidentCapture.usersSelect = scope.model.usersSelect;
+            _incidentCapture.person = scope.model.person;
+            _incidentCapture.location = scope.model.location;
+
+             // _incidentCapture._Ctrl();
+            scope.$apply(function() 
+            {  
+              scope.model.sitePath = _incidentCapture.sitePath;
+            });
             setTimeout(
               function() {
-                _incidentCapture.didtoggle = false;
+                _incidentCapture.testScroll.refresh();
               } , 1000);
-
-
-            // if($(this).has('ul').length)
-            // {
-            //   $(this).toggleClass('expanded');
-            //   if($(this).has('x').length)
-            //   {
-            //     if($(this).hasClass( "expanded" ))
-            //     {
-            //       $(this).children('x')[0].innerHTML = '&#xf068;';
-            //     }else
-            //     {
-            //       $(this).children('x')[0].innerHTML = '&#xf067;';
-            //     } 
-            //   }
-
-            //   $(this).children('div').toggle('medium');
-
-            //   setTimeout(
-            //     function() {
-            //       _scroll.buffer['level-scroll'].refresh();
-            //     } , 500);
-
-            // }else
-            {
-              _incidentCapture.hide('popDiv');
-              _incidentCapture.siteSelect = $(this).attr("siteId");
-              _incidentCapture.sitePath = _incidentCapture.getFullLocation(_incidentCapture.siteSelect,_incidentCapture.sites);
-              
-
-             e = document.getElementById('incidentCaptureStep1__FACE');
-             scope = angular.element(e).scope();
-
-              _incidentCapture.usersSelect = scope.model.usersSelect;
-              _incidentCapture.person = scope.model.person;
-              _incidentCapture.location = scope.model.location;
-
-               // _incidentCapture._Ctrl();
-              scope.$apply(function() 
-              {  
-                scope.model.sitePath = _incidentCapture.sitePath;
-              });
-
-            }
+            return false;
           }
 
           return false;
@@ -291,9 +385,11 @@ _incidentCapture = {
 
           if (this == event.target) 
           {
+            event.stopPropagation();
+
             if(_incidentCapture.didtoggle != false)
             {
-              return;
+              return false;
             }
 
             _incidentCapture.didtoggle = true;
@@ -301,7 +397,7 @@ _incidentCapture = {
             setTimeout(
               function() {
                 _incidentCapture.didtoggle = false;
-              } , 1000);
+              } , 300);
 
             var li = $(this).closest("li");
             if($(li).has('ul').length)
@@ -319,8 +415,7 @@ _incidentCapture = {
 
               setTimeout(
                 function() {
-                  _.currScrolls[0].refresh();
-                  _scroll.buffer['level-scroll'].refresh();
+                  _incidentCapture.levelScroll.refresh();
                 } , 500);
             }
 
@@ -333,16 +428,17 @@ _incidentCapture = {
 
 preparePage3:function()
 {
+
   if(_incidentCapture.didPrep == true)
   {
     return;
   }
-
   _incidentCapture.didPrep = true;
 
   setTimeout(
   function() {
     _incidentCapture.didPrep = false;
+
   } , 1000);
 
   
@@ -350,6 +446,20 @@ preparePage3:function()
     $('#catList').find('li').click( function(event) {
 
       if (this == event.target) {
+
+        if(_incidentCapture.didtoggle != false)
+            {
+              return false;
+            }
+
+            _incidentCapture.didtoggle = true;
+
+            setTimeout(
+              function() {
+                _incidentCapture.didtoggle = false;
+              } , 300);
+
+
         if($(this).has('ul').length)
         {
           $(this).toggleClass('expanded');
@@ -365,10 +475,9 @@ preparePage3:function()
           }
 
           $(this).children('div').toggle('medium');
-          // _.currScrolls[0].refresh();
           setTimeout(
             function() {
-              _scroll.buffer['risk-scroll2'].refresh();
+              _incidentCapture.riskScroll2.refresh();
             } , 300);
         }else
         {
@@ -383,9 +492,21 @@ preparePage3:function()
 
     $("#catList").find('x').off("click");
     $('#catList').find('x').click( function(event) {
-
           if (this == event.target) 
           {
+            
+            if(_incidentCapture.didtoggle != false)
+            {
+              return false;
+            }
+
+            _incidentCapture.didtoggle = true;
+
+            setTimeout(
+              function() {
+                _incidentCapture.didtoggle = false;
+              } , 300);
+
             var li = $(this).closest("li");
             if($(li).has('ul').length)
             {
@@ -401,7 +522,7 @@ preparePage3:function()
               }
               setTimeout(
                 function() {
-                  _scroll.buffer['risk-scroll2'].refresh();
+                  _incidentCapture.riskScroll2.refresh();
                 } , 300);
               // _.currScrolls[0].refresh();
             }
@@ -412,7 +533,7 @@ preparePage3:function()
 
 },
 
-currStep : 1,
+
 onMessage : function(data) {
   
   if(!_incidentCapture.checkValid(_incidentCapture.currStep))
@@ -420,8 +541,7 @@ onMessage : function(data) {
     layout.sendMessage('incidentSteps',_incidentCapture.currStep,false);
     return;
   }
-   // _incidentCapture.saveCurrData();
-
+  
   _log.d("onMessage " + data);
 
   if(data > 4 || data < 1)
@@ -432,6 +552,12 @@ onMessage : function(data) {
 
   e = document.getElementById('incidentCaptureStep1__FACE');
   scope = angular.element(e).scope();
+
+  // scope.$apply(function() 
+  // { 
+  //   scope.currStep = 0;
+
+  // });
 
   if(_incidentCapture.currStep == 1)
   {
@@ -458,16 +584,17 @@ onMessage : function(data) {
     _incidentCapture.externalList = scope.model.externalList;
   }
 
-
-    _incidentCapture.currStep = data;
-    _incidentCapture._Ctrl();
+  _incidentCapture.currStep = data;
+  _incidentCapture.saveCurrData();
+  
+  _incidentCapture._Ctrl();
 
 }
 ,
 Ctrl: function($scope){
   $scope.isTablet = isTablet;
   $scope.model = {};
-  $scope.currStep = 1;
+  $scope.currStep = _incidentCapture.currStep;
   $scope.model.show = true;
   $scope.model.description = _incidentCapture.description;
   $scope.model.date = _incidentCapture.date;
@@ -495,13 +622,14 @@ Ctrl: function($scope){
 
   setTimeout(
       function() {
+        _incidentCapture.initScrolls();
         _incidentCapture.prepareList();
       } , 1000);
 
-      setTimeout(
-        function() {
-          _scroll.add($('#scrollWrapper_incidentCaptureStep1__FACE')[0])
-        } , 1000);
+      // setTimeout(
+        // function() {
+          // _scroll.add($('#scrollWrapper_incidentCaptureStep1__FACE')[0])
+        // } , 1000);
 
   
 }
@@ -529,42 +657,22 @@ _Ctrl: function($scope){
     scope.model.location = _incidentCapture.location;
     scope.model.sitePath = _incidentCapture.sitePath;
 
-setTimeout(
-    function() {
-      _incidentCapture.setupPopup();
-    } , 1000);
-
-    
+    setTimeout(
+      function() {
+        _incidentCapture.setupPopup();
+        _incidentCapture.initScrolls();
+      } , 1000);
 
     scope.model.views = _incidentCapture.views;
     scope.model.subViews = [];
     if(_incidentCapture.currStep == 3)
     {
-      _incidentCapture.preparePage3();
-      _.currScrolls[0].destroy();
       setTimeout(
       function() {
         try
         {
           _log.d("prepPage3");
-          _scroll.buffer['scrollWrapper_incidentCaptureStep1__FACE'].destroy();
-          _.currScrolls[0].destroy();
-          _scroll.add($('#risk-scroll')[0]);
-          _scroll.add($('#risk-scroll2')[0]);
-          _scroll.buffer['risk-scroll'].options.scrollbars = true;
-          _scroll.buffer['risk-scroll'].options.vScrollbar = true;
-          _scroll.buffer['risk-scroll'].refresh();
-
-          _scroll.buffer['risk-scroll2'].options.scrollbars = true;
-          _scroll.buffer['risk-scroll2'].options.vScrollbar = true;
-          _scroll.buffer['risk-scroll2'].refresh();
-          
-          // _scroll.buffer['risk-scroll2'].options.scrollbars = true;
-          // _scroll.buffer['risk-scroll2'].refresh();
-          setTimeout(
-            function() {
-            _scroll.buffer['scrollWrapper_incidentCaptureStep1__FACE'].destroy();
-            } , 1000);
+          _incidentCapture.preparePage3();
 
 
         }catch(err)
@@ -580,11 +688,8 @@ setTimeout(
         try
         {
           _log.d("prepPage4");
-          _.currScrolls[0].destroy();
-          _scroll.add($('#exParty-scroll')[0]);
-          _scroll.buffer['exParty-scroll'].options.scrollbars = true;
-          _scroll.buffer['exParty-scroll'].options.vScrollbar = true;
-          _scroll.buffer['exParty-scroll'].refresh();
+
+
 
         }catch(err)
         {
@@ -604,10 +709,10 @@ setTimeout(
           _incidentCapture.prepareList();
         } , 1000);
 
-    setTimeout(
-        function() {
-          _scroll.add($('#scrollWrapper_incidentCaptureStep1__FACE')[0])
-        } , 300);
+    // setTimeout(
+    //     function() {
+    //       _scroll.add($('#scrollWrapper_incidentCaptureStep1__FACE')[0])
+    //     } , 300);
 
     });
 
@@ -619,7 +724,7 @@ reloadSubCat : function()
   _incidentCapture.preparePage3();
    setTimeout(
         function() {
-          _scroll.buffer['risk-scroll2'].refresh();
+          _incidentCapture.riskScroll2.refresh();
         } , 300);
 }
 ,
@@ -627,32 +732,13 @@ reloadExParty : function()
 {
   setTimeout(
         function() {
-          _scroll.buffer['exParty-scroll'].refresh();
+          _incidentCapture.exPartyScroll.refresh();
         } , 300);
-}
-,
-toggleEx: function()
-{
-  alert("toggleEx");
-  e = document.getElementById('incidentCaptureStep1__FACE');
-  scope = angular.element(e).scope();
-
-    if( scope.model.external == 1)
-      _incidentCapture.external =0;
-    else
-      _incidentCapture.external = 1;
-
-
-    scope.$apply(function() 
-    {  
-      _incidentCapture.external = scope.model.external;
-      _incidentCapture.reloadExParty();
-    });
 }
 ,
 checkValid: function(step)
 {
-  return true;
+  // return true;
   _log.d("checkValid " + step);
   
   e = document.getElementById('incidentCaptureStep1__FACE');
@@ -677,7 +763,7 @@ checkValid: function(step)
     }
   }else if(step == 3)
   {
-      if(JSON.stringify(_incidentCapture.views).indexOf("\"checked\":true") == -1 )
+      if(JSON.stringify(scope.model.views).indexOf("\"checked\":true") == -1 )
       {
         alert("Please Complete all fields");
         return false;
@@ -690,7 +776,7 @@ checkValid: function(step)
       alert("Please Complete all fields");
       return false;
     }
-    if(scope.model.external == 0 && JSON.stringify(_incidentCapture.externalList).indexOf("\"checked\":true") == -1)
+    if(scope.model.external == 0 && JSON.stringify(scope.model.externalList).indexOf("\"checked\":true") == -1)
     {
       alert("Please Complete all fields");
       return false;
@@ -738,6 +824,7 @@ save: function()
     _incidentCapture.externalList = scope.model.externalList;
 
   }
+  
   _incidentCapture.submitData();
 
 }
@@ -775,21 +862,103 @@ getExternalParties: function()
 ,
 loadCurrData: function()
 {
-  // _log.d("loadCurrData ");
-  // _model.getAll("currData",  function(records) {  
-  //           record = records[0];
+  // alert("loadCurrData ");
+  _log.d("loadCurrData ");
+  _model.getAll("currData",  function(records) {  
+        if(records.length == 1)
+        {
+          _log.d(JSON.stringify(records));
+          record = records[0];
 
-  //           _incidentCapture.description = record.description;
-  //           // _incidentCapture.incidentStatusSelect = _incidentCapture.incidentStatusSelect;
-  //           _incidentCapture.date = record.date;
-  //           _incidentCapture.time = record.time;
-  //           // _incidentCapture.usersSelect = record.usersSelect;
-  //           _incidentCapture.person = record.person;
-  //           _incidentCapture.location = record.location;
-  //           _incidentCapture.siteSelect = record.siteSelect;
-  //           riskTypeID_xml: riskTypeID_xml,
-  //           // _incidentCapture.category = record.category;
-  //       });
+          _incidentCapture.description = record.description;
+
+          for(var i in _incidentCapture.incidentStatus)
+          {
+            var status = _incidentCapture.incidentStatus[i]
+            if(status.SourceListID == record.incidentStatusSelect)
+            {
+              _incidentCapture.incidentStatusSelect = status;
+              break;
+            }
+          }
+
+          _incidentCapture.date = record.date;
+          _incidentCapture.time = record.time;
+          // _incidentCapture.usersSelect = record.usersSelect;
+
+          _incidentCapture.person = record.person;
+          for(var i in _incidentCapture.users)
+          {
+            var user = _incidentCapture.users[i]
+            if(user.SourceListID == record.usersSelectID)
+            {
+              _incidentCapture.usersSelect = user;
+              break;
+            }
+          }
+          _incidentCapture.siteSelect = record.siteSelect;
+          _incidentCapture.sitePath = _incidentCapture.getFullLocation(_incidentCapture.siteSelect,_incidentCapture.sites);
+          _incidentCapture.location = record.location;
+
+          // _incidentCapture.viewSelectId = record.viewSelect;
+
+          for(var i in record.viewSelect)
+          {
+            var viewID = record.viewSelect[i];
+            for(var j in _incidentCapture.views)
+            {
+              var view = _incidentCapture.views[j];
+              if(view.SourceListID == viewID)
+              {
+                view.checked = true;
+                break;
+              }
+            }
+          }
+          for(var i in record.category)
+          {
+            var catS = record.category[i];
+            for(var j in _incidentCapture.rawIncidentCategories)
+            {
+              var cat = _incidentCapture.rawIncidentCategories[j];
+              if(catS.SourceListID == cat.SourceListID)
+              {
+                cat.checked = true;
+                break;
+              }
+            }
+          }
+
+          // _incidentCapture.siteSelect = record.siteSelect;
+          // riskTypeID_xml: riskTypeID_xml,
+          // _incidentCapture.category = record.category;
+
+          _incidentCapture.action = record.action
+          _incidentCapture.external = record.external
+          for(var i in record.externalList)
+          {
+            var ex = record.externalList[i];
+            for(var j in _incidentCapture.externalList)
+            {
+              var external = _incidentCapture.externalList[j];
+              if(external.SourceListID == ex.SourceListID)
+              {
+                external.checked = true;
+                break;
+              }
+            }
+          }
+
+
+          _incidentCapture.currJob = record.currJob
+          _incidentCapture.currKey = record.currKey;
+
+        }else
+        {
+          _incidentCapture.clearPage(); 
+        }
+        _incidentCapture._Ctrl();
+    });
 }
 ,
 saveCurrData: function()
@@ -798,45 +967,64 @@ saveCurrData: function()
 
     var catData = _incidentCapture.getCategories(_incidentCapture.IncidentCategories);
     var exData = _incidentCapture.getExternalParties();
+
+
+    _incidentCapture.viewSelectId = [];
+    for(var i in _incidentCapture.views )
+    {
+      var view = _incidentCapture.views[i];
+      if(view.checked)
+      {
+        _incidentCapture.viewSelectId.push(view.SourceListID);
+      }
+    }
+
     var data = { 
 
-      userID : _login.roles,
       description : _incidentCapture.description,
       incidentStatusSelect : _incidentCapture.incidentStatusSelect.SourceListID,
       date : _incidentCapture.date,
       time : _incidentCapture.time,
-      usersSelect : _incidentCapture.usersSelect.SourceListID,
+
+
+      // usersSelect : _incidentCapture.usersSelect.SourceListID,
       person : _incidentCapture.person,
+      usersSelectID : _incidentCapture.usersSelect.SourceListID,
+      siteSelect: _incidentCapture.siteSelect,
       location : _incidentCapture.location,
-      siteSelect : _incidentCapture.siteSelect,
+      // siteSelect : _incidentCapture.siteSelect,
+
+
+
       // //views : _incidentCapture.views,
+      viewSelect : _incidentCapture.viewSelectId,
       category : catData,
-      riskTypeID_xml: riskTypeID_xml,
+      // riskTypeID_xml: riskTypeID_xml,
+      
       action : _incidentCapture.action,
-      external : 3200,
+      external : _incidentCapture.external,
       externalList : exData,
-      // //externalList : _incidentCapture.externalList,
+
+      currJob : _incidentCapture.currJob,
+      currKey: _incidentCapture.currKey,
 
     };
 
-    if(_incidentCapture.external == 1)
-    {
-      data.external = 3201;
-    }
+    // if(_incidentCapture.external == 1)
+    // {
+    //   data.external = 3201;
+    // }
 
     _model.nuke("currData", function() {  
-        alert("Delete Successful");
+      _log.d("Delete successful currData");
+      _model.set("currData",
+        data,
+        function()
+         {  
+            _log.d('Save Successful currData');
+         }
+       ); 
     });
-
-     _model.set("currData",
-      data,
-      function()
-       {  
-          alert('Save Successful');
-       }
-     ); 
-
-
 }
 ,
 submitData : function()
@@ -846,7 +1034,7 @@ submitData : function()
 
         var catData = _incidentCapture.getCategories(_incidentCapture.IncidentCategories);
         var exData = [];
-        if(_incidentCapture.external)
+        if(!_incidentCapture.external)
           exData = _incidentCapture.getExternalParties();
 
         var riskTypeID_xml = '<rt>';
@@ -893,8 +1081,11 @@ submitData : function()
         {
           jobQueue.jobs[_incidentCapture.currJob].data.data = data;
           var now = new Date();
-          var str = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + " " + now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() ;
-          jobQueue.jobs[_incidentCapture.currJob].jobName = "Update " + str;
+          // ("00" + h).slice (-3);
+          var str = ("0" + now.getHours()).slice (-2) + ":" + ("0" + now.getMinutes()).slice (-2) + ":" + ("0" + now.getSeconds()).slice (-2) + " " + now.getFullYear() + "-" + ("0" + (now.getMonth() + 1)).slice (-2) + "-" + ("0" + now.getDate()).slice (-2) ;
+          jobQueue.jobs[_incidentCapture.currJob].jobName = _incidentCapture.description;
+          jobQueue.jobs[_incidentCapture.currJob].jobDesc = "Update " + str;
+          jobQueue.jobs[_incidentCapture.currJob].timeSubmitted = now.getTime();
           jobQueue.refresh();
           // var jobData = { action:'postIncident', data: "update"};
           // var JOB = {
@@ -914,10 +1105,10 @@ submitData : function()
         {
           var jobData = { action:'postIncident', data: data};
           var now = new Date();
-          var str = now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + " " + now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() ;
+          var str = ("0" + now.getHours()).slice (-2) + ":" + ("0" + now.getMinutes()).slice (-2) + ":" + ("0" + now.getSeconds()).slice (-2) + " " + now.getFullYear() + "-" + ("0" + (now.getMonth() + 1)).slice (-2) + "-" + ("0" + now.getDate()).slice (-2) ;
           var JOB = {
-            jobName: "New " + str,
-            jobDesc: _incidentCapture.description,
+            jobName: _incidentCapture.description,
+            jobDesc: "New " + str,
             data: jobData,
             allowDuplicate: true,
             clearOnDone: false,
@@ -928,6 +1119,7 @@ submitData : function()
 
           data.jobKey = jobid;
           _incidentCapture.currJob = jobid;
+          _incidentCapture.saveCurrData();
         }
 
         data.incidentStatusSelectString = _incidentCapture.incidentStatusSelect.SourceList;
@@ -949,7 +1141,7 @@ submitData : function()
             data,
             function()
              {  
-                alert('Save Successful');
+                _log.d('Save Successful');
              }
            );
 
@@ -993,7 +1185,7 @@ buildCatTree: function(elements,parentId)
     var level = 1;
     var found = false;
     var tree = [];
-    var gbTree = [];
+    _incidentCapture.rawIncidentCategories = [];
     for(var i in elements)
     {
       var element = elements[i];
@@ -1009,7 +1201,7 @@ buildCatTree: function(elements,parentId)
           Level : 1,
           checked : false,
         }
-        gbTree.push(category);
+        _incidentCapture.rawIncidentCategories.push(category);
         tree.push(category);
       }
     }
@@ -1023,9 +1215,9 @@ buildCatTree: function(elements,parentId)
         if(element.HierarchyLevel == level)
         {
           // _log.d(level + " " + element.SourceList);
-          for(var j in gbTree)
+          for(var j in _incidentCapture.rawIncidentCategories)
           {
-            node = gbTree[j];
+            node = _incidentCapture.rawIncidentCategories[j];
 
             if(node.SourceListID == element.SourceListParentID && node.Level == (level -1))
             {
@@ -1039,7 +1231,7 @@ buildCatTree: function(elements,parentId)
                   checked : false,
                 }
                 node.children.push(category);
-                gbTree.push(category);
+                _incidentCapture.rawIncidentCategories.push(category);
                 break;
               // _log.d("ELEMENT: " + JSON.stringify(element));
               // _log.d("PARENT: " + JSON.stringify(node));
@@ -1085,10 +1277,11 @@ setupPopup : function()
     } , 1000);
 
     var evt = _util.getEvt();
-    $(".locationOccurred").off(evt);
-    $('.locationOccurred').on(evt, function () {
-          var me = $(this);
-          _incidentCapture.handlePopup(me);   
+    $(".locationOccurred").off("click");
+    $('.locationOccurred').on("click", function (evt) {
+          
+        _incidentCapture.handlePopup();   
+          return false;
      });
   }
 
@@ -1105,56 +1298,35 @@ handlePopup : function()
         alert(err);
       }
 }, 
-locpop: null, 
+locpop: false, 
 pop : function(div) {
+
+  if(_incidentCapture.locpop == false)
+    {
      _incidentCapture.locpop = true;
       document.getElementById(div).style.display = 'block';
-
-
-      // setTimeout(
-    // function() {
-      _scroll.buffer['scrollWrapper_incidentCaptureStep1__FACE'].destroy();
-      _.currScrolls[0].destroy();
-      _scroll.add($('#level-scroll')[0]);
-      _scroll.buffer['level-scroll'].options.scrollbars = true;
-      _scroll.buffer['level-scroll'].refresh();
-    // } , 300);
-    
-// _.currScrolls[0].vScrollbar= true;
-
-_incidentCapture.levelScroll = new iScroll($('#level-scroll')[0], {
-                            onBeforeScrollStart: function (e) {
-                                e.stopPropagation();
-                            },
-                            preventDefaultException: {tagName: /.*/},
-                            mouseWheel: true,
-                            scrollbars: true,
-                            keyBindings: false,
-                            deceleration: 0.0002
-                        });
-
-  _.currScrolls[0] = _incidentCapture.levelScroll;
-
-
+      _scroll.buffer['scrollWrapper_incidentCaptureStep1__FACE'].disable();
       setTimeout(
-    function() {
-      _incidentCapture.locpop = false;
-    } , 1000);
+      function() {
+        _incidentCapture.locpop = false;
+      } , 1000);
+    }
   },
 hide : function(div) {
 
     if(_incidentCapture.locpop == false)
     {
-      document.getElementById(div).style.display = 'none';
-      _scroll.buffer['level-scroll'].destroy();
-      _scroll.add($('#scrollWrapper_incidentCaptureStep1__FACE')[0])
+      
       setTimeout(
-    function() {
-      _scroll.buffer['level-scroll'].destroy();
-      _scroll.add($('#scrollWrapper_incidentCaptureStep1__FACE')[0]);
-      _.currScrolls[0]=_scroll.buffer['scrollWrapper_incidentCaptureStep1__FACE'];
-    } , 500);
+      function() {
+        document.getElementById(div).style.display = 'none';
+      _scroll.buffer['scrollWrapper_incidentCaptureStep1__FACE'].enable();
+      } , 200);
 
+      setTimeout(
+      function() {
+        _incidentCapture.locpop = false;
+      } , 1000);
     }
     
   },

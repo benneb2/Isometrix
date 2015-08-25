@@ -137,7 +137,8 @@ postIncident: function(obj, callback)
     if (err)
     {
       _log.d("postIncident: mssql Conn Error " + err);
-      callback(false);
+      response = { code : 0, req : obj.data, res : "postIncident: mssql Conn Error", msg : err };
+      callback(response);
       return;
     }
     var request = new mssql.Request(connection); // or: var request = connection.request();

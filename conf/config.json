@@ -54,7 +54,7 @@
 
             "login": {
 
-                        "enabled"  : false,
+                        "enabled"  : true,
                         "heading"  : " ",
                         "fields": [
                             {
@@ -132,7 +132,7 @@
                 "icon": "&#xf004;",
                 "label": "Show Controls",
                 "subtext": "",
-                "views": ["showControls"],
+                "views": ["incidentCapture"],
                 "default": false
             },
             "startPage": {
@@ -161,13 +161,13 @@
               "layout": "<table width='100%'><tr><td class='_incidentSteps' width='33%'></td><td class='_incidentCapture' width='67%'></td></tr></table>",
               "default": false
             },
-            "reportHistory": {
-              "menu": true,
-              "icon": "&#xf1da;",
-              "label": "Report History",
-              "subtext": "View Current Reports added",
-              "views": ["reportHistory"],
-              "default": false
+          "reportHistory": {
+            "menu": true,
+            "icon": "&#xf1da;",
+            "label": "Report History",
+            "subtext": "View Current Reports added",
+            "views": ["reportHistory"],
+            "default": false
           },
           "help": {
               "menu": true,
@@ -177,6 +177,14 @@
               "views": ["help"],
               "default": false
           },
+            "showControls": {
+                "menu": false,
+                "icon": "&#xf004;",
+                "label": "Show Controls",
+                "subtext": "",
+                "views": ["incidentCapture"],
+                "default": false
+            },
           "startPage": {
               "menu": false,
               "canView": true,

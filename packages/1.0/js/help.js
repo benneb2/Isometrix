@@ -10,7 +10,7 @@ _help = {
     },
 
     onLoaded: function () { var _ = this;
-
+		_startPage.currPage= "help";
 
 
 
