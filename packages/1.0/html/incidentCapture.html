@@ -151,7 +151,7 @@
     </div>
     <script type="text/ng-template" id="partialMenu">
             <ul >
-              <li ng-repeat="site in sites" siteId={{site.SiteID}}> {{site.Site}} <x ng-if="site.children.length > 0" style="font-size:25px;padding:3px;padding-right:10px;{{site.SiteID == 1 ? 'margin-bottom: 1em;'">&#xf067;</x>
+              <li ng-repeat="site in sites" siteId={{site.SiteID}}> {{site.Site}} <x ng-if="site.children.length > 0" style="font-size:25px;padding:3px;padding-right:10px;">&#xf067;</x>
                   <div ng-if="site.children.length > 0" ng-init="sites = site.children" ng-include="'partialMenu'"></div>
               </li>
             </ul>
@@ -342,11 +342,11 @@
     </center>
     </content>
     <cbl>
-      <x ng-show="currStep > 1" class="gui-extra" onClick="_incidentCapture.prevStep()">&#xf053; Back</x>
+      <x ng-show="currStep > 1" class="gui-extra" >&#xf053; Back</x>
     </cbl>
     <cbr >
-      <x  class="gui-extra _brS" style="padding-right:5px ;" onClick="_incidentCapture.save()">&#xf0ed; Save</x>
-      <x  class="gui-extra _brN" ng-show="currStep < 4" class="gui-extra" onClick="_incidentCapture.nextStep()">Next &#xf054;</x>
+      <x  class="gui-extra _brS" style="padding-right:5px ;" >&#xf0ed; Save</x>
+      <x  class="gui-extra _brN" ng-show="currStep < 4" class="gui-extra" >Next &#xf054;</x>
     </cbr>
 
 </face>

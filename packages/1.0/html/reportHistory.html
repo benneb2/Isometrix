@@ -17,7 +17,7 @@
                   Desription: {{item.description}}
                 </td>
                 <td align="right" class="gui-extra" style="padding:20px" ng-click="delete($index)">
-                  <x>&#xf00d;</x>
+                  <x ng-show="item.status == 'DONE' || item.status == 'FAILED' || item.status == ''" >&#xf00d;</x>
                 </td>
               </tr>
               <tr>

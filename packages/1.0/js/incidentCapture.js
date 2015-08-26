@@ -42,20 +42,50 @@ onExit:function(){
         $( "._tl").off().on('touchstart');
         $('#textArea').attr("rows","2")
         $('.stepBtn').off()
-        .on('touchstart', function() { $(this).css({opacity:0.2}) })
+        .on('touchstart', function() { 
+          $(this).css({opacity:0.2}) ;
+      // setTimeout(
+      // function() {
+      //   $(this).css({opacity:1}); window.scrollTo(0,0); 
+      // } , 1000);
+    })
         .on('touchend', function() { $(this).css({opacity:1}); window.scrollTo(0,0); });
 
       }
 
       $('._br').off().on('touchstart');
+      $('._br').off().on('touchend');
+
+      $('._bl').off()
+      .on('touchstart', function() {
+        $(this).css({opacity:0.2}) ;        
+      })
+      .on('touchend', function() { 
+        $(this).css({opacity:1}); window.scrollTo(0,0); 
+        _incidentCapture.prevStep();});
+
 
       $('._brS').off()
-      .on('touchstart', function() { $(this).css({opacity:0.2}) })
-      .on('touchend', function() { $(this).css({opacity:1}); window.scrollTo(0,0); });
+      .on('touchstart', function() {
+        $(this).css({opacity:0.2}) ;        
+      })
+      .on('touchend', function() { 
+        $(this).css({opacity:1}); window.scrollTo(0,0); 
+        _incidentCapture.save();});
 
       $('._brN').off()
-      .on('touchstart', function() { $(this).css({opacity:0.2}) })
-      .on('touchend', function() { $(this).css({opacity:1}); window.scrollTo(0,0); });
+      .on('touchstart', function() { 
+        $(this).css({opacity:0.2}) ;
+        // _incidentCapture.nextStep();
+      //   setTimeout(
+      // function() {
+      //   $(this).css({opacity:1}); window.scrollTo(0,0); 
+      // } , 1000);
+
+      })
+      .on('touchend', function() {
+       $(this).css({opacity:1}); window.scrollTo(0,0); 
+       _incidentCapture.nextStep();});
 
       layout.sendMessage('incidentSteps',_incidentCapture.currStep,false);
       layout.currLayoutID = "showControls";
@@ -397,7 +427,7 @@ onExit:function(){
             setTimeout(
               function() {
                 _incidentCapture.didtoggle = false;
-              } , 300);
+              } , 600);
 
             var li = $(this).closest("li");
             if($(li).has('ul').length)
@@ -457,7 +487,7 @@ preparePage3:function()
             setTimeout(
               function() {
                 _incidentCapture.didtoggle = false;
-              } , 300);
+              } , 600);
 
 
         if($(this).has('ul').length)
@@ -478,7 +508,7 @@ preparePage3:function()
           setTimeout(
             function() {
               _incidentCapture.riskScroll2.refresh();
-            } , 300);
+            } , 600);
         }else
         {
           // _incidentCapture.hide('popDiv');
@@ -751,21 +781,21 @@ checkValid: function(step)
   {
     if(scope.model.description == "" || scope.model.incidentStatusSelect == "" || scope.model.date == "" || scope.model.time == "")
     {
-      alert("Please Complete all fields");
+      navigator.notification.alert("Please Complete all fields");
       return false;
     }
   }else if(step == 2)
   {
     if(scope.model.usersSelect == "" || scope.model.person == "" || scope.model.location == "" || scope.model.sitePath == "")
     {
-      alert("Please Complete all fields");
+      navigator.notification.alert("Please Complete all fields");
       return false;
     }
   }else if(step == 3)
   {
       if(JSON.stringify(scope.model.views).indexOf("\"checked\":true") == -1 )
       {
-        alert("Please Complete all fields");
+        navigator.notification.alert("Please Complete all fields");
         return false;
       }
 
@@ -773,18 +803,18 @@ checkValid: function(step)
   {
     if(scope.model.action == "")
     {
-      alert("Please Complete all fields");
+      navigator.notification.alert("Please Complete all fields");
       return false;
     }
     if(scope.model.external == 0 && JSON.stringify(scope.model.externalList).indexOf("\"checked\":true") == -1)
     {
-      alert("Please Complete all fields");
+      navigator.notification.alert("Please Complete all fields");
       return false;
     }
 
   }else
   {
-    alert("Step Whaaat? " + step);
+    navigator.notification.alert("Step Whaaat? " + step);
     return false;
   }
   return true;
@@ -1079,10 +1109,12 @@ submitData : function()
 
         if(_incidentCapture.currJob != "")
         {
+          data.jobKey = _incidentCapture.currJob;
           jobQueue.jobs[_incidentCapture.currJob].data.data = data;
           var now = new Date();
           // ("00" + h).slice (-3);
-          var str = ("0" + now.getHours()).slice (-2) + ":" + ("0" + now.getMinutes()).slice (-2) + ":" + ("0" + now.getSeconds()).slice (-2) + " " + now.getFullYear() + "-" + ("0" + (now.getMonth() + 1)).slice (-2) + "-" + ("0" + now.getDate()).slice (-2) ;
+          // var str = ("0" + now.getHours()).slice (-2) + ":" + ("0" + now.getMinutes()).slice (-2) + ":" + ("0" + now.getSeconds()).slice (-2) + " " + now.getFullYear() + "-" + ("0" + (now.getMonth() + 1)).slice (-2) + "-" + ("0" + now.getDate()).slice (-2) ;
+          var str = now.getFullYear() + "-" + ("0" + (now.getMonth() + 1)).slice (-2) + "-" + ("0" + now.getDate()).slice (-2)  + " " + ("0" + now.getHours()).slice (-2) + ":" + ("0" + now.getMinutes()).slice (-2) + ":" + ("0" + now.getSeconds()).slice (-2) ;
           jobQueue.jobs[_incidentCapture.currJob].jobName = _incidentCapture.description;
           jobQueue.jobs[_incidentCapture.currJob].jobDesc = "Update " + str;
           jobQueue.jobs[_incidentCapture.currJob].timeSubmitted = now.getTime();
@@ -1105,7 +1137,8 @@ submitData : function()
         {
           var jobData = { action:'postIncident', data: data};
           var now = new Date();
-          var str = ("0" + now.getHours()).slice (-2) + ":" + ("0" + now.getMinutes()).slice (-2) + ":" + ("0" + now.getSeconds()).slice (-2) + " " + now.getFullYear() + "-" + ("0" + (now.getMonth() + 1)).slice (-2) + "-" + ("0" + now.getDate()).slice (-2) ;
+          // var str = ("0" + now.getHours()).slice (-2) + ":" + ("0" + now.getMinutes()).slice (-2) + ":" + ("0" + now.getSeconds()).slice (-2) + " " + now.getFullYear() + "-" + ("0" + (now.getMonth() + 1)).slice (-2) + "-" + ("0" + now.getDate()).slice (-2) ;
+          var str = now.getFullYear() + "-" + ("0" + (now.getMonth() + 1)).slice (-2) + "-" + ("0" + now.getDate()).slice (-2)  + " " + ("0" + now.getHours()).slice (-2) + ":" + ("0" + now.getMinutes()).slice (-2) + ":" + ("0" + now.getSeconds()).slice (-2) ;
           var JOB = {
             jobName: _incidentCapture.description,
             jobDesc: "New " + str,

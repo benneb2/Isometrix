@@ -9,6 +9,7 @@ _startPage = {
     updateInterval:5000,
     currPage:"startPage",
     needsClear:false,
+    tempvar:null,
     onExit : function() { var _ = this;
 
 
@@ -33,6 +34,10 @@ _startPage = {
       }
 
       jobQueue.retryAll =  function() {
+
+        _model.nuke("currData", function() {  
+          _log.d("Delete successful currData");
+        });
 
         _log.d("retryall");
         if(layout.currLayoutID == "showControls")
@@ -119,35 +124,53 @@ _startPage = {
         _log.d("topic = " + JSON.stringify(topic));
         _log.d("topic = " + JSON.stringify(status));
 
-        _model.getAll("reportHistory",  function(records) {  
 
+        _model.getAll("reportHistory",  function(records) {  
+            _startPage.tempvar = records;
+            console.log("in reportHistory " + jobID);
+            _log.d(JSON.stringify(records));
+            var found = false;
             for (var i in records)
             {
                 var rjob = records[i];
                 if(jobID == rjob.jobKey)
                 {
+                  found = true;
+                  _log.d("jobID == rjob.jobKey  " + jobID);
                   try
                   {
                     rjob.status = status;
                     if(status == 'DONE')
                     {
-                      job = jobQueue.jobs[rjob.jobKey
-
-                      ];
+                      job = jobQueue.jobs[rjob.jobKey];
                       var _MSG = (typeof job.result == 'undefined' || typeof job.result.msg == 'undefined')  ? "REQUEST TIMED OUT" : job.result.msg;
                       rjob.ID = _MSG;
+                      _log.d( status + " " + _MSG);
                     }
+                    _log.d('Before Save' + status + ' - ' + _MSG);
                     _model.set("reportHistory",rjob,function(){
-                          _log.d('Save Successful ' + status + ' - ' + _MSG);
+                          _log.d('Save Successful ' + status );
                     });
 
                   }catch(err)
                   {
                     _log.d(err);
+                    _log.d(err);
+                    _log.d(err);
+                    _log.d(err);
+                    _log.d(err);
+
                   }
                   break;
                 }
             }
+            if(found == false)
+            {
+              // alert("Not Found FALSE");
+            }
+              
+
+
 
         });
     }

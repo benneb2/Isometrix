@@ -1281,7 +1281,7 @@ width:100%;
   color: black;
   font-size: 14pt;
    -webkit-backface-visibility: hidden;
-background: #ebebeb  url("img/logomain.png") no-repeat center;
+  background: #ebebeb  url("img/logomain.png") no-repeat center;
    /*border-bottom: 1px solid orange;*/
 
 }

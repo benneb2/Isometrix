@@ -137,7 +137,7 @@ postIncident: function(obj, callback)
     if (err)
     {
       _log.d("postIncident: mssql Conn Error " + err);
-      response = { code : 0, req : obj.data, res : "postIncident: mssql Conn Error", msg : err };
+      response = { code : 0, req : obj.data, res : "postIncident: mssql Conn Error", msg : JSON.stringify(err) };
       callback(response);
       return;
     }
@@ -169,7 +169,7 @@ postIncident: function(obj, callback)
       if (err)
       {
         _log.d(err);
-        response = { code : 0 , req : obj.data, res : recordsets, msg : err  };
+        response = { code : 0 , req : obj.data, res : recordsets, msg : JSON.stringify(err) };
         callback(response);
             return;
       }
@@ -210,7 +210,7 @@ postIncident: function(obj, callback)
           if (err)
           {
             _log.d(err);
-            response = { code : 0 , req : obj.data, res : m380_1Recordset, msg : err  };
+            response = { code : 0 , req : obj.data, res : m380_1Recordset, msg : JSON.stringify(err)  };
             callback(response);
             return;
           }
