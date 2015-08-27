@@ -1,3 +1,4 @@
+
 .histBlock
 {
   background: #E6E6E6; 
@@ -643,3 +644,15 @@ background: -webkit-linear-gradient(top,  #b5babc 0%,#847777 100%);
 
 
 }
+
+#loginFace__FACE .cardHeader
+{
+  display : none;
+}
+
+
+#loginFace__FACE .cardFooter
+{
+  display : none;
+}
+

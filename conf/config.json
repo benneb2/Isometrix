@@ -58,15 +58,26 @@
                         "heading"  : " ",
                         "fields": [
                             {
-                                "name": "username",
+                                "name": "usernameL",
                                 "label": "Username",
                                 "type": "text"
                             },
                             {
-                                "name": "password",
+                                "name": "username",
+                                "label": "",
+                                "type": "text"
+                            },
+                            {
+                                "name": "passwordL",
                                 "label": "Password",
+                                "type": "text"
+                            },
+                            {
+                                "name": "password",
+                                "label": "",
                                 "type": "password"
                             }
+
                         ]
 
                     },
@@ -236,7 +247,7 @@
           {
             "service":"incidentCategory",
             "label":"Incident Category",
-            "key":"SourceListID",
+            "key":"key",
             "handler":"incidentCategory"
           }
           ,

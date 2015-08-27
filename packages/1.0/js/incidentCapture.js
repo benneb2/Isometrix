@@ -26,6 +26,10 @@ _incidentCapture = {
     riskScroll:null,
     riskScroll2:null,
     currStep : 1,
+    step1:false,
+    step2:false,
+    step3:false,
+    step4:false,
 onExit:function(){
   _incidentCapture.saveCurrData();
 },
@@ -90,11 +94,11 @@ onExit:function(){
       layout.sendMessage('incidentSteps',_incidentCapture.currStep,false);
       layout.currLayoutID = "showControls";
 
-      if (_startPage.currPage == "incedentCapture" ) 
+      if (_startPage.currPage == "incidentCapture" ) 
       {
         _log.d("clearPage");
 
-        navigator.notification.confirm("Click OK to create a New Incedent.", function(idx) {
+        navigator.notification.confirm("Click OK to create a New Incident.", function(idx) {
           if(idx == 1)
           {
              _incidentCapture.clearPage(); 
@@ -109,7 +113,7 @@ onExit:function(){
         _incidentCapture.clearPage();
       }
 
-      _startPage.currPage= "incedentCapture";
+      _startPage.currPage= "incidentCapture";
 
       _model.getAll('incidentStatus', function(model) {
           _log.d("incidentStatus " + model.length);
@@ -650,6 +654,8 @@ Ctrl: function($scope){
   $scope.model.external = _incidentCapture.external;
   $scope.model.externalList = _incidentCapture.externalList;
 
+  scope.cansave = _incidentCapture.checkValidSave(_incidentCapture.currStep);
+
   setTimeout(
       function() {
         _incidentCapture.initScrolls();
@@ -739,6 +745,8 @@ _Ctrl: function($scope){
           _incidentCapture.prepareList();
         } , 1000);
 
+      scope.cansave = _incidentCapture.checkValidSave(_incidentCapture.currStep);
+      
     // setTimeout(
     //     function() {
     //       _scroll.add($('#scrollWrapper_incidentCaptureStep1__FACE')[0])
@@ -764,6 +772,44 @@ reloadExParty : function()
         function() {
           _incidentCapture.exPartyScroll.refresh();
         } , 300);
+}
+,
+checkValidSave: function(step)
+{
+  if(step != 1)
+  {
+    if(scope.model.description == "" || scope.model.incidentStatusSelect == "" || scope.model.date == "" || scope.model.time == "")
+    {
+      return false;
+    }
+  }
+  if(step != 2)
+  {
+     if(scope.model.usersSelect == "" || scope.model.person == "" || scope.model.location == "" || scope.model.sitePath == "")
+    {
+      return false;
+    }
+  }
+   if(step != 3)
+  {
+    if(JSON.stringify(scope.model.views).indexOf("\"checked\":true") == -1 )
+    {
+      return false;
+    }
+  }
+   if(step != 4)
+  {
+    if(scope.model.action == "")
+    {
+      return false;
+   }
+   if(scope.model.external == 0 && JSON.stringify(scope.model.externalList).indexOf("\"checked\":true") == -1)
+    {
+      return false;
+    }
+ }
+
+  return true
 }
 ,
 checkValid: function(step)

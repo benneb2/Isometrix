@@ -1,3 +1,4 @@
+
 .histBlock
 {
   background: #E6E6E6; 
@@ -688,3 +689,143 @@ background: -webkit-linear-gradient(top,  #b5babc 0%,#847777 100%);
 
 
 }
+
+#loginFace__FACE 
+{
+  /*display : none;*/
+  /*background:#ebebeb;*/
+  /*background: transparent;*/
+   background: -webkit-linear-gradient(left top, #FFF , #ebebeb); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(bottom right, #FFF , #ebebeb); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(bottom right, #FFF , #ebebeb); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(to bottom right, #FFF , #ebebeb); /* Standard syntax (must be last) */
+
+}
+
+#loginFace__FACE .cardHeader
+{
+  /*display : none;*/
+  background:#ebebeb;
+  /*background: transparent;*/
+}
+
+
+#loginFace__FACE .cardFooter
+{
+  /*display : none;*/
+  background: transparent;
+  border: none;
+  border:solid;
+  border-width:2px;
+  border-color:#333;
+  border-top: none;
+  box-sizing: border-box;
+
+}
+
+#loginFace__FACE .cardFooter ._bl
+{
+  /*background: transparent;*/
+  background:#ebebeb;
+  width: 50%;
+}
+
+#loginFace__FACE .cardFooter ._br
+{
+  width: 50%;
+  background: #344d68;
+}
+
+#loginFace__FACE .contentWrapper
+{
+   border:solid;
+   border-width:2px;
+   border-color:#333;
+   border-bottom: none;
+   box-sizing: border-box;
+}
+
+#loginFace__FACE .cardContent
+{
+  background: transparent;
+}
+
+#loginFace__FACE .cardContent table
+{
+  background: transparent !important;
+}
+
+#loginFace__FACE .contentWrapper img
+{
+   display:none;
+   /*position: absolute;*/
+   /*left: 0px;*/
+   /*top:0px;*/
+   /*z-index: 1;*/
+}
+
+#loginFace__FACE  td.m5.rndtop.bbtm ::before
+{
+  content: "fokkers";
+}
+
+#loginFace__FACE  td.m5.rndbtm ::before
+{
+  content: "fokkers2";
+}
+
+#loginFace__FACE ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    #000;
+}
+#loginFace__FACE :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    #000;
+   opacity:  1;
+}
+#loginFace__FACE ::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    #000;
+   opacity:  1;
+}
+#loginFace__FACE :-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    #000;
+}
+
+
+/*card #login {
+display: inline;
+top: 0;
+left: 0;
+position: absolute;
+width: 100%;
+height: 100%;
+background: #ebebeb;
+}*/
+#username{
+  border:solid;
+  border-width:2px;
+  border-color:#333;
+  margin-left: 25;
+}
+
+#password{
+  border:solid;
+  border-width:2px;
+  border-color:#333;
+  margin-left: 25;
+}
+
+#usernameL{
+  pointer-events:none;
+  color:#000;
+  background: transparent;
+}
+
+#passwordL{
+  pointer-events:none;
+  color:#000;
+  background: transparent;
+}
+
+/*#btnUserlogin{
+  alignt:right;
+}*/
+

@@ -16,6 +16,7 @@ _startPage = {
     },
 
     onLoaded: function () { var _ = this;
+      // $('#widgetBar').html("hallo widgetBar");//was a test
       _startPage.currPage= "startPage";
       $('#startPageFront__FACE').find(".cardHeader").attr('hidden',true);
       $.pubsub('unsubscribe', _startPage.subscriber);
@@ -127,7 +128,7 @@ _startPage = {
 
         _model.getAll("reportHistory",  function(records) {  
             _startPage.tempvar = records;
-            console.log("in reportHistory " + jobID);
+            // console.log("in reportHistory " + jobID);
             _log.d(JSON.stringify(records));
             var found = false;
             for (var i in records)

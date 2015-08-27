@@ -11,7 +11,7 @@
             <td align="left" style="font-size:16pt;padding-left:5px">
               Incident Management
             </td>
-            <td class="gui-extra" align="right" style="font-size:16pt;padding-right:5px">
+            <td class="gui-extra" align="right" onClick="layout.show('help')" style="font-size:16pt;padding-right:5px">
               &#xf059;
             </td>
           </tr>
@@ -345,7 +345,7 @@
       <x ng-show="currStep > 1" class="gui-extra" >&#xf053; Back</x>
     </cbl>
     <cbr >
-      <x  class="gui-extra _brS" style="padding-right:5px ;" >&#xf0ed; Save</x>
+      <x  ng-show="cansave" class="gui-extra _brS" style="padding-right:5px ;" >&#xf0ed; Save</x>
       <x  class="gui-extra _brN" ng-show="currStep < 4" class="gui-extra" >Next &#xf054;</x>
     </cbr>
 

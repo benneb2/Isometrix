@@ -1,0 +1,91 @@
+
+<card id="login" dynamic="true" flip="rl">
+
+        <face id="loginFace" settings="default:true">
+
+                <ctl class="loginHeading">SIGN IN</ctl>
+              <!--   <ctr class="btnRegister" flip-target="registerFace" flip-callback="_login.initRegister()"></ctr> -->
+                <ctr></ctr>
+                <content>
+
+                   <center>   <br />
+                    <center>
+                        <img src="img/logomain.png" style="max-width:200px; max-height:80px;"  />
+                        <br />
+                        <img src="img/logomain.png" style="max-width:200px; max-height:80px;"  />
+                    </center>
+                    <br />
+
+                              <table style=" width: 90%; background: rgba(0,0,0,0.05); padding: 10px; margin: 10px; margin-top:15px; margin-bottom:15px;  border-radius: 5px; " class="loginFields">
+                                    <tr>
+
+                                    <td class="m5 rndTop bBtm">
+                                          <input type="text" class="input-login login-username" id="uusername"  placeholder="Usernameqweqweqweqwe"></input>
+                                    </td>
+                                    </tr>
+
+                                    <tr>
+                                    <td class="m5 rndBtm">
+                                          <input type="password" class="input-login" id="uupassword" placeholder="Passwordqweqweqweqwewqe"></input>
+                                    </td>
+                                    </tr>
+                               </table>
+                              <x class="loginFooter"></x>
+
+                   </center>
+
+                </content>
+                <cbl></cbl>
+                <cbr id="btnUserlogin">PROCEED</cbr>
+          </face>
+
+
+          <face id="registerFace">
+
+                  <ctl class="registerHeading">REGISTER</ctl>
+                  <ctr class="gui" flip-target="close">x</ctr>
+
+                  <content>
+
+                     <center>
+                      <br />
+
+  <table class="registerFields" style=" width: 90%; background: rgba(0,0,0,0.05); padding: 10px; margin: 10px; margin-top:15px; margin-bottom:15px;  border-radius: 5px; ">
+  </table>
+
+                                 <br />
+
+                     </center>
+
+                  </content>
+                  <cbl></cbl>
+                  <cbr id="btnUserRegister">PROCEED</cbr>
+            </face>
+
+
+
+           <face id="helpFace" face="back">
+
+                <ctl>TEST</ctl>
+                <ctr class="gui" flip-target="close">x</ctr>
+                <ctr></ctr>
+
+                <content>
+
+                  <center>
+                   <br /><br /><br />HELP GOES HERE<br /><br /><br />
+                  </center>
+
+
+                </content>
+
+                <cbl></cbl>
+                <cbr></cbr>
+
+          </face>
+
+
+
+
+
+</card>

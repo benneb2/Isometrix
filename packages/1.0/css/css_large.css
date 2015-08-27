@@ -7,11 +7,7 @@
   box-shadow: -2px 2px 4px 4px rgba(0,0,0,0.4);
   overflow: hidden;
 
-    background:
-    radial-gradient(black 15%, transparent 16%) 0 0,
-    radial-gradient(black 15%, transparent 16%) 8px 8px,
-    radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px,
-    radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px;
+    
     background-color:#004171;
     background-size:16px 16px;
 

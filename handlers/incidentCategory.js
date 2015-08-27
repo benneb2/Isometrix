@@ -7,7 +7,13 @@ exports.req = function(obj, cb) {
 
    sql.getIncidentCategories(function(IncidentCategories){
 
-		_log.d("IncidentCategories resp");
+		_log.d("IncidentCategories resp " );
+		for(var i in IncidentCategories)
+		{
+			cat = IncidentCategories[i];
+			// _log.d(cat.SourceListID + "-" + cat.HierarchyLevel);
+			cat.key = cat.SourceListID + "-" + cat.HierarchyLevel;
+		}
 
 		obj.RESPONSE = IncidentCategories;
 		cb(obj);
