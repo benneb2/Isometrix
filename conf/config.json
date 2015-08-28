@@ -58,18 +58,8 @@
                         "heading"  : " ",
                         "fields": [
                             {
-                                "name": "usernameL",
-                                "label": "Username",
-                                "type": "text"
-                            },
-                            {
                                 "name": "username",
                                 "label": "",
-                                "type": "text"
-                            },
-                            {
-                                "name": "passwordL",
-                                "label": "Password",
                                 "type": "text"
                             },
                             {

@@ -645,14 +645,157 @@ background: -webkit-linear-gradient(top,  #b5babc 0%,#847777 100%);
 
 }
 
+
+
+#loginFace__FACE 
+{
+  /*display : none;*/
+  /*background:#ebebeb;*/
+  /*background: transparent;*/
+   /*background: -webkit-linear-gradient(left top, #FFF , #ebebeb); */
+    /*background: -o-linear-gradient(bottom right, #FFF , #ebebeb); */
+    /*background: -moz-linear-gradient(bottom right, #FFF , #ebebeb); */
+    /*background: linear-gradient(to bottom right, #FFF , #ebebeb); */
+
+
+   border:solid;
+   border-width:2px;
+   border-color:#333;
+   box-sizing: border-box;
+
+    background: -webkit-linear-gradient(left top, #FFF , #ebebeb); 
+    background: -o-linear-gradient(bottom right, #FFF , #ebebeb); 
+    background: -moz-linear-gradient(bottom right, #FFF , #ebebeb); 
+    background: linear-gradient(to bottom right, #FFF , #ebebeb); 
+
+    height:95% ;
+
+}
+
 #loginFace__FACE .cardHeader
 {
-  display : none;
+  /*display : none;*/
+  height: 0px;
+  max-height: 0px;
+  min-height: 0px;
+  /*background:#ebebeb;*/
+  background: transparent;
 }
 
 
 #loginFace__FACE .cardFooter
 {
-  display : none;
+  /*display : none;*/
+  background: transparent;
+  border: none;
+  /*border:solid;*/
+  /*border-width:2px;*/
+  /*border-color:#333;*/
+  /*border-top: none;*/
+  /*box-sizing: border-box;*/
+  width: 95%;
+}
+
+#loginFace__FACE .cardFooter ._bl
+{
+  background: transparent;
+  /*background:#ebebeb;*/
+  width: 60%;
+}
+
+#loginFace__FACE .cardFooter ._br
+{
+  width: 50%;
+  background: #344d68;
+  padding-right: 15px;
+}
+
+#loginFace__FACE .contentWrapper
+{
+
+
+
+}
+
+#loginFace__FACE .cardContent
+{
+  background: transparent;
+}
+
+#loginFace__FACE .cardContent table
+{
+  background: transparent !important;
+}
+
+#loginFace__FACE .contentWrapper img
+{
+   display:none;
+   /*position: absolute;*/
+   /*left: 0px;*/
+   /*top:0px;*/
+   /*z-index: 1;*/
+}
+
+#loginFace__FACE .contentWrapper br
+{
+   display:none;
+   /*position: absolute;*/
+   /*left: 0px;*/
+   /*top:0px;*/
+   /*z-index: 1;*/
+}
+
+
+#loginFace__FACE ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    #000;
+}
+#loginFace__FACE :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    #000;
+   opacity:  1;
+}
+#loginFace__FACE ::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    #000;
+   opacity:  1;
+}
+#loginFace__FACE :-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    #000;
+}
+
+
+/*card #login {
+display: inline;
+top: 0;
+left: 0;
+position: absolute;
+width: 100%;
+height: 100%;
+background: #ebebeb;
+}*/
+#username{
+  border:solid;
+  border-width:2px;
+  border-color:#333;
+  margin-left: 25;
+}
+
+#password{
+  border:solid;
+  border-width:2px;
+  border-color:#333;
+  margin-left: 25;
+}
+
+td.m5.rndTop.bBtm::before
+{
+  text-transform: none !important;
+  color:black;
+  content:"Username";
+}
+
+td.m5.rndBtm::before
+{
+  text-transform: none !important;
+  color:black;
+  content:"Password";
 }
 

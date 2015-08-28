@@ -131,7 +131,7 @@
 
     </div>
 
-    <div id="step2" ng-if="currStep == 2" align="center" style="height:100%" >
+    <div id="step2" ng-if="currStep == 2" align="center"  >
       <div id="popDiv" class="ontop" ng-init="_click=false;" align="left">
         <div id="popup" style="border: 1px solid #bbb">
           <div style="height: 15%; border-bottom: 1px solid #bbb;color:white ;margin: 0; padding: 0; background:#004171;" align="center">
@@ -174,7 +174,7 @@
           </tr>
            <tr>
             <td >
-             <select ng-model="model.usersSelect" ng-options="user.SourceList for user in model.users" placeholder="Please select a value"></select>
+             <select ng-model="model.usersSelect" ng-options="user.SourceList for user in model.users" placeholder="Please select a value"><option ng-if='model.usersSelect = ""' value="" selected hidden /></select>
             </td>
            </tr>
       </table><br/>

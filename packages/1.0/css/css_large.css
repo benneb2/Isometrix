@@ -275,7 +275,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', e
 
  /************ BORDERS ***************/
 
- .bBtm { border-bottom: 1px solid rgba(0,0,0,0.1) }
+ .bBtm { border-bottom: 0px solid rgba(0,0,0,0.1) }
 
  /************ BORDERS ***************/
 
@@ -1249,18 +1249,23 @@ background: linear-gradient(to bottom,  rgba(255,204,0,0.75) 0%,rgba(255,221,0,0
   }
 
 
+
+
 #contentContainer {
-width:100%;
+  width:100%;
   /*background: rgba(255,255,255,1);*/
   overflow: hidden;
   /*background: url(img/logomain.png) repeat;*/
   color: black;
   font-size: 14pt;
    -webkit-backface-visibility: hidden;
-background: #ebebeb  url("img/logomain.png") no-repeat center;
+  background: #ebebeb  url("img/logomain.png") no-repeat center;
+  background-position: 50% 5%;
+  background-size: 50%;
    /*border-bottom: 1px solid orange;*/
 
 }
+
 
 #contentContainer ul {
     overflow: hidden;
@@ -1936,3 +1941,16 @@ text-shadow:none;
   text-shadow: none !important;
   font-size:  : 20pt !important;
 }
+
+.menuHeaderLeft img
+{
+  max-width: 1000px !important;
+  -webkit-filter: brightness(0) invert(1);  
+  display:none;
+}
+
+#widgetBar
+{
+  width:80%;
+}
+

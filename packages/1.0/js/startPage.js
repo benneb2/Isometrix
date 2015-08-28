@@ -15,7 +15,21 @@ _startPage = {
 
     },
 
-    onLoaded: function () { var _ = this;
+    onLoaded: function () { 
+      // $(".menuHeaderLeft").find('img').attr("src","img/logo_small.png");
+      $("#widgetBar").html('<center><img src="img/logo_small.png" height="30" style="margin-right:15px; -webkit-filter: brightness(0) invert(1);  "></center>');
+      
+      if(isTablet)
+      {
+        $("#contentContainer").css("background-position",'50%');
+        $("#contentContainer").css("background-size",'30%');
+      }else
+      {
+        $("#contentContainer").css("background-position",'50%');
+        $("#contentContainer").css("background-size",'80%');
+      };
+
+      var _ = this;
       // $('#widgetBar').html("hallo widgetBar");//was a test
       _startPage.currPage= "startPage";
       $('#startPageFront__FACE').find(".cardHeader").attr('hidden',true);

@@ -690,23 +690,41 @@ background: -webkit-linear-gradient(top,  #b5babc 0%,#847777 100%);
 
 }
 
+
+
 #loginFace__FACE 
 {
   /*display : none;*/
   /*background:#ebebeb;*/
   /*background: transparent;*/
-   background: -webkit-linear-gradient(left top, #FFF , #ebebeb); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(bottom right, #FFF , #ebebeb); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(bottom right, #FFF , #ebebeb); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to bottom right, #FFF , #ebebeb); /* Standard syntax (must be last) */
+   /*background: -webkit-linear-gradient(left top, #FFF , #ebebeb); */
+    /*background: -o-linear-gradient(bottom right, #FFF , #ebebeb); */
+    /*background: -moz-linear-gradient(bottom right, #FFF , #ebebeb); */
+    /*background: linear-gradient(to bottom right, #FFF , #ebebeb); */
+
+
+       border:solid;
+   border-width:2px;
+   border-color:#333;
+   box-sizing: border-box;
+
+    background: -webkit-linear-gradient(left top, #FFF , #ebebeb); 
+    background: -o-linear-gradient(bottom right, #FFF , #ebebeb); 
+    background: -moz-linear-gradient(bottom right, #FFF , #ebebeb); 
+    background: linear-gradient(to bottom right, #FFF , #ebebeb); 
+
+    height:85% ;
 
 }
 
 #loginFace__FACE .cardHeader
 {
   /*display : none;*/
-  background:#ebebeb;
-  /*background: transparent;*/
+  height: 0px;
+  max-height: 0px;
+  min-height: 0px;
+  /*background:#ebebeb;*/
+  background: transparent;
 }
 
 
@@ -715,34 +733,33 @@ background: -webkit-linear-gradient(top,  #b5babc 0%,#847777 100%);
   /*display : none;*/
   background: transparent;
   border: none;
-  border:solid;
-  border-width:2px;
-  border-color:#333;
-  border-top: none;
-  box-sizing: border-box;
-
+  /*border:solid;*/
+  /*border-width:2px;*/
+  /*border-color:#333;*/
+  /*border-top: none;*/
+  /*box-sizing: border-box;*/
+  width: 95%;
 }
 
 #loginFace__FACE .cardFooter ._bl
 {
-  /*background: transparent;*/
-  background:#ebebeb;
-  width: 50%;
+  background: transparent;
+  /*background:#ebebeb;*/
+  width: 60%;
 }
 
 #loginFace__FACE .cardFooter ._br
 {
   width: 50%;
   background: #344d68;
+  padding-right: 15px;
 }
 
 #loginFace__FACE .contentWrapper
 {
-   border:solid;
-   border-width:2px;
-   border-color:#333;
-   border-bottom: none;
-   box-sizing: border-box;
+
+
+
 }
 
 #loginFace__FACE .cardContent
@@ -764,15 +781,15 @@ background: -webkit-linear-gradient(top,  #b5babc 0%,#847777 100%);
    /*z-index: 1;*/
 }
 
-#loginFace__FACE  td.m5.rndtop.bbtm ::before
+#loginFace__FACE .contentWrapper br
 {
-  content: "fokkers";
+   display:none;
+   /*position: absolute;*/
+   /*left: 0px;*/
+   /*top:0px;*/
+   /*z-index: 1;*/
 }
 
-#loginFace__FACE  td.m5.rndbtm ::before
-{
-  content: "fokkers2";
-}
 
 #loginFace__FACE ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
     color:    #000;
@@ -813,16 +830,18 @@ background: #ebebeb;
   margin-left: 25;
 }
 
-#usernameL{
-  pointer-events:none;
-  color:#000;
-  background: transparent;
+td.m5.rndTop.bBtm::before
+{
+  text-transform: none !important;
+  color:black;
+  content:"Username";
 }
 
-#passwordL{
-  pointer-events:none;
-  color:#000;
-  background: transparent;
+td.m5.rndBtm::before
+{
+  text-transform: none !important;
+  color:black;
+  content:"Password";
 }
 
 /*#btnUserlogin{

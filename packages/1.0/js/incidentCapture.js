@@ -567,9 +567,20 @@ preparePage3:function()
 
 },
 
-
+onMsg : false,
 onMessage : function(data) {
   
+  if(_incidentCapture.onMsg == true)
+  {
+    return;
+  }
+  _incidentCapture.onMsg = true;
+
+  setTimeout(
+  function() {
+    _incidentCapture.onMsg = false;
+  } , 5000);
+
   if(!_incidentCapture.checkValid(_incidentCapture.currStep))
   {
     layout.sendMessage('incidentSteps',_incidentCapture.currStep,false);
@@ -654,7 +665,7 @@ Ctrl: function($scope){
   $scope.model.external = _incidentCapture.external;
   $scope.model.externalList = _incidentCapture.externalList;
 
-  scope.cansave = _incidentCapture.checkValidSave(_incidentCapture.currStep);
+  $scope.cansave = _incidentCapture.checkValidSave(_incidentCapture.currStep,$scope);
 
   setTimeout(
       function() {
@@ -745,13 +756,14 @@ _Ctrl: function($scope){
           _incidentCapture.prepareList();
         } , 1000);
 
-      scope.cansave = _incidentCapture.checkValidSave(_incidentCapture.currStep);
+      scope.cansave = _incidentCapture.checkValidSave(_incidentCapture.currStep,scope);
       
     // setTimeout(
     //     function() {
     //       _scroll.add($('#scrollWrapper_incidentCaptureStep1__FACE')[0])
     //     } , 300);
 
+      _incidentCapture.onMsg = false;
     });
 
  
@@ -774,7 +786,7 @@ reloadExParty : function()
         } , 300);
 }
 ,
-checkValidSave: function(step)
+checkValidSave: function(step,scope)
 {
   if(step != 1)
   {
