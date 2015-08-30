@@ -31,7 +31,35 @@ _incidentCapture = {
     step3:false,
     step4:false,
 onExit:function(){
+  e = document.getElementById('incidentCaptureStep1__FACE');
+  scope = angular.element(e).scope();
+
+  if(_incidentCapture.currStep == 1)
+  {
+    
+    _incidentCapture.description = scope.model.description ;
+    _incidentCapture.incidentStatusSelect = scope.model.incidentStatusSelect ;
+    _incidentCapture.date = scope.model.date;
+    _incidentCapture.time = scope.model.time;
+
+  }else if(_incidentCapture.currStep == 2)
+  {
+     _incidentCapture.usersSelect = scope.model.usersSelect;
+     _incidentCapture.person = scope.model.person;
+     _incidentCapture.location = scope.model.location;
+     _incidentCapture.sitePath = scope.model.sitePath;
+     // _incidentCapture.siteSelect = scope.model.siteSelect;
+  }else if(_incidentCapture.currStep == 3)
+  {
+     _incidentCapture.views = scope.model.views;
+  }else if(_incidentCapture.currStep == 4)
+  {
+    _incidentCapture.action = scope.model.action;
+    _incidentCapture.external = scope.model.external;
+    _incidentCapture.externalList = scope.model.externalList;
+  }
   _incidentCapture.saveCurrData();
+
 },
     
 
@@ -358,6 +386,7 @@ onExit:function(){
       $("#expList").find('li').off("click"); 
       $('#expList').find('li').click( function(event) {
 
+        _log.d("explist.click");
    if (event.stopPropagation){
        event.stopPropagation();
    }
@@ -386,7 +415,7 @@ onExit:function(){
             //     _incidentCapture.didtoggle = false;
             //   } , 300);
 
-
+           // _incidentCapture.clicksAllowed = false;
             _incidentCapture.hide('popDiv');
             _incidentCapture.siteSelect = $(this).attr("siteId");
             _incidentCapture.sitePath = _incidentCapture.getFullLocation(_incidentCapture.siteSelect,_incidentCapture.sites);
@@ -539,7 +568,7 @@ preparePage3:function()
             setTimeout(
               function() {
                 _incidentCapture.didtoggle = false;
-              } , 300);
+              } , 600);
 
             var li = $(this).closest("li");
             if($(li).has('ul').length)
@@ -557,7 +586,7 @@ preparePage3:function()
               setTimeout(
                 function() {
                   _incidentCapture.riskScroll2.refresh();
-                } , 300);
+                } , 600);
               // _.currScrolls[0].refresh();
             }
 
@@ -720,7 +749,10 @@ _Ctrl: function($scope){
         {
           _log.d("prepPage3");
           _incidentCapture.preparePage3();
-
+          // if( _incidentCapture.usersSelect == "")
+          // {
+            // $("#userSelect").attr("selectedIndex", -1);
+          // }
 
         }catch(err)
         {
@@ -1003,13 +1035,14 @@ loadCurrData: function()
               }
             }
           }
+
           for(var i in record.category)
           {
             var catS = record.category[i];
             for(var j in _incidentCapture.rawIncidentCategories)
             {
               var cat = _incidentCapture.rawIncidentCategories[j];
-              if(catS.SourceListID == cat.SourceListID)
+              if(catS.SourceListID == cat.SourceListID && catS.Level == cat.Level)
               {
                 cat.checked = true;
                 break;
@@ -1052,8 +1085,15 @@ loadCurrData: function()
 saveCurrData: function()
 {
     _log.d("saveCurrData ");
-
-    var catData = _incidentCapture.getCategories(_incidentCapture.IncidentCategories);
+    var catData = [];
+    for(var i in _incidentCapture.views)
+    {
+        view = _incidentCapture.views[i];
+        catData = catData.concat(_incidentCapture.getCategories(view.categories));
+        
+    }
+    // alert(JSON.stringify(catData));
+    //var catData = _incidentCapture.getCategories(_incidentCapture.IncidentCategories);
     var exData = _incidentCapture.getExternalParties();
 
 
@@ -1120,7 +1160,15 @@ submitData : function()
   try
       {
 
-        var catData = _incidentCapture.getCategories(_incidentCapture.IncidentCategories);
+        // var catData = _incidentCapture.getCategories(_incidentCapture.IncidentCategories);
+        var catData = [];
+        for(var i in _incidentCapture.views)
+        {
+            view = _incidentCapture.views[i];
+            catData = catData.concat(_incidentCapture.getCategories(view.categories));
+            
+        }
+
         var exData = [];
         if(!_incidentCapture.external)
           exData = _incidentCapture.getExternalParties();
@@ -1355,6 +1403,8 @@ prevStep : function()
 ,
 didLocPop:false
 ,
+clicksAllowed :true
+,
 setupPopup : function()
 {
 
@@ -1374,6 +1424,35 @@ setupPopup : function()
         _incidentCapture.handlePopup();   
           return false;
      });
+
+    // var clickNumber = 0,
+    // clicksAllowed = true;
+
+//   $("#step2").click(function (event) {
+    
+//     if (event.stopPropagation){
+//        event.stopPropagation();
+//    }
+//    else if(window.event){
+//       window.event.cancelBubble=true;
+//    }
+
+//     if(_incidentCapture.clicksAllowed)
+//     {
+//             _incidentCapture.clicksAllowed = false;
+//             _log.d("step 2 click");
+//             setTimeout(function() {
+//                 _incidentCapture.clicksAllowed = true;
+//       }, 1000);
+
+//     }else
+//     {
+//       _log.d("step 2 false");
+//       return false;
+//     }
+// });
+
+
   }
 
 },
@@ -1392,7 +1471,7 @@ handlePopup : function()
 locpop: false, 
 pop : function(div) {
 
-  if(_incidentCapture.locpop == false)
+  if(_incidentCapture.locpop == false && (_incidentCapture.clicksAllowed))
     {
      _incidentCapture.locpop = true;
       document.getElementById(div).style.display = 'block';
@@ -1414,9 +1493,11 @@ hide : function(div) {
       _scroll.buffer['scrollWrapper_incidentCaptureStep1__FACE'].enable();
       } , 200);
 
+      _incidentCapture.clicksAllowed = false;
       setTimeout(
       function() {
         _incidentCapture.locpop = false;
+        _incidentCapture.clicksAllowed = true;
       } , 1000);
     }
     

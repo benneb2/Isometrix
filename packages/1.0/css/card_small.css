@@ -1,3 +1,16 @@
+input[type=text]:disabled {
+    background: #E6E6E6;
+    color: #000000;
+    /*background-color: #FFF;*/
+    opacity: 1;
+}
+
+textarea:disabled {
+    background: #E6E6E6;
+    color: #000000 !important;
+    /*background-color: #FFF;*/
+    opacity: 1;
+}
 
 .histBlock
 {

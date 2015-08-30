@@ -174,7 +174,9 @@
           </tr>
            <tr>
             <td >
-             <select ng-model="model.usersSelect" ng-options="user.SourceList for user in model.users" placeholder="Please select a value"><option ng-if='model.usersSelect = ""' value="" selected hidden /></select>
+             <select id="userSelect" ng-model="model.usersSelect" ng-options="user.SourceList for user in model.users" placeholder="Please select a value">
+              <option value="" selected disabled hidden>Please select an option...</option>
+            </select>
             </td>
            </tr>
       </table><br/>
