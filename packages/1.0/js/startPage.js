@@ -11,12 +11,17 @@ _startPage = {
     needsClear:false,
     tempvar:null,
     onExit : function() { var _ = this;
-
-
+      
+      menu.isBusy = false;
+      $('#linkMenuWrapper').find(".icon").css("display","");
     },
 
     onLoaded: function () { 
-      // $(".menuHeaderLeft").find('img').attr("src","img/logo_small.png");
+
+      $('#linkMenuWrapper').find(".icon").css("display","none");
+
+      $('#startPageFront__FACE').find(".contentWrapper").css("height","100%");
+
       $("#widgetBar").html('<center><img src="img/logo_small.png" height="30" style="margin-right:15px; -webkit-filter: brightness(0) invert(1);  "></center>');
       
       if(isTablet)
@@ -29,6 +34,7 @@ _startPage = {
         $("#contentContainer").css("background-size",'80%');
       };
 
+      menu.isBusy = true;
       var _ = this;
       // $('#widgetBar').html("hallo widgetBar");//was a test
       _startPage.currPage= "startPage";

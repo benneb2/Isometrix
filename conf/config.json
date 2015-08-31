@@ -222,7 +222,7 @@
           ,
           {
             "service":"incidentLevels",
-            "label":"Where indident occurred",
+            "label":"Where incident occurred",
             "key":"SourceListID",
             "handler":"incidentLevels"
           }

@@ -1,3 +1,7 @@
+#siloette{
+  -webkit-filter: brightness(0) invert(1);
+}
+
 input[type=text]:disabled {
     background: #E6E6E6;
     color: #000000;
@@ -204,6 +208,7 @@ input.cmn-toggle-round:checked + label:after {
     margin:0;
     padding:0;
     cursor: pointer;
+    font-size: 13px;
 }
 #expList p {
     margin:0;
@@ -218,6 +223,7 @@ input.cmn-toggle-round:checked + label:after {
     background-position: 1px 8px;
     padding-left: 20px;
     background-repeat: no-repeat;
+    font-size: 13px;
 }
 
 
@@ -764,14 +770,15 @@ background: -webkit-linear-gradient(top,  #b5babc 0%,#847777 100%);
 #loginFace__FACE .cardFooter ._br
 {
   width: 50%;
-  background: #344d68;
+  background: gray;
   padding-right: 15px;
+  color:white;
 }
 
 #loginFace__FACE .contentWrapper
 {
 
-
+color:white;
 
 }
 
@@ -861,3 +868,40 @@ td.m5.rndBtm::before
   alignt:right;
 }*/
 
+#btnUserlogin
+{
+  background: gray !important;
+  color: white !important;
+}
+
+#loginFace__FACE .contentContainer
+{
+
+color:white;
+
+}
+
+.menuHeaderLeft img
+{
+  max-width: 1000px !important;
+  -webkit-filter: brightness(0) invert(1);  
+  display:none;
+
+}
+
+#loginFace__FACE  .cardFooterText
+{
+  color: white !important;
+}
+
+#widgetBar
+{
+  width:80%;
+  margin-right:15px;
+  -webkit-filter: brightness(0) invert(1);
+}
+
+#startPageFront__FACE.contentWrapper.scrollTarget
+{
+  height: :100%;
+}

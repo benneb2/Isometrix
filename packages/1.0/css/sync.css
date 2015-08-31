@@ -1,5 +1,10 @@
 /* TOOLTIPS */
-
+#widgetBar
+{
+  width:80%;
+  margin-right:15px;
+  -webkit-filter: brightness(0) invert(1);
+}
 
 
 .syncHeader {

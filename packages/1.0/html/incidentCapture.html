@@ -104,7 +104,8 @@
           </tr>
            <tr>
             <td >
-              <select ng-model="model.incidentStatusSelect" ng-options="status.SourceList for status in model.incidentStatus" ></select>
+              <select ng-model="model.incidentStatusSelect" ng-options="status.SourceList for status in model.incidentStatus" >
+              </select>
             </td>
            </tr>
       </table><br/>
@@ -151,7 +152,7 @@
     </div>
     <script type="text/ng-template" id="partialMenu">
             <ul >
-              <li ng-repeat="site in sites" siteId={{site.SiteID}}> {{site.Site}} <x ng-if="site.children.length > 0" style="font-size:25px;padding:3px;padding-right:10px;">&#xf067;</x>
+              <li ng-repeat="site in sites" siteId={{site.SiteID}} style=";margin-top: 0.4em;text-transform: none !important;"> {{site.Site}} <x ng-if="site.children.length > 0" style="font-size:25px;padding:3px;padding-right:10px">&#xf067;</x>
                   <div ng-if="site.children.length > 0" ng-init="sites = site.children" ng-include="'partialMenu'"></div>
               </li>
             </ul>
@@ -174,8 +175,11 @@
           </tr>
            <tr>
             <td >
-             <select id="userSelect" ng-model="model.usersSelect" ng-options="user.SourceList for user in model.users" placeholder="Please select a value">
-              <option value="" selected disabled hidden>Please select an option...</option>
+             <select id="userSelect" ng-model="model.usersSelect" ng-options="user.SourceList for user in model.users" placeholder="Please select a value" style='color:{{(model.usersSelect == "") ? "gray" : "black"}};border-color:black;'>
+              <option style="display:none" value="" disabled hidden>Please select a value</option>
+              
+              <!-- <option selected disabled hidden value="" style="display:none;"></option> -->
+              <!-- <option value="" selected disabled hidden >Please select an option...</option> -->
             </select>
             </td>
            </tr>

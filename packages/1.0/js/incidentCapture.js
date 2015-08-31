@@ -66,6 +66,19 @@ onExit:function(){
     onLoaded: function () { var _ = this;
 
       _log.d("onloaded");
+      
+      $('#incidentCaptureStep1__FACE').off().on('click',function()
+        {
+          // alert("hide keybord");
+          try
+          {
+            keyboard.hide();
+          }catch(err)
+          {
+            _log.d("Hide error " + err);
+          }
+        });
+
       if(!isTablet)
       {
         $( "._tr" ).remove();
@@ -749,6 +762,12 @@ _Ctrl: function($scope){
         {
           _log.d("prepPage3");
           _incidentCapture.preparePage3();
+          // $("#userSelect")[0].selectedIndex = -1;
+
+          // $('#userSelect option').filter(function() {
+          //   return !this.value || $.trim(this.value).length == 0 || this.value == "?";
+          // }).remove();
+
           // if( _incidentCapture.usersSelect == "")
           // {
             // $("#userSelect").attr("selectedIndex", -1);
